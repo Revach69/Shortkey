@@ -20,16 +20,14 @@ struct MenuBarPopoverView: View {
         VStack(spacing: 0) {
             PopoverHeaderView()
             
+            ProviderStatusView()
+            
             Divider()
             
             ActionsListView(
                 showingActionEditor: $showingActionEditor,
                 editingAction: $editingAction
             )
-            
-            Divider()
-            
-            ProviderStatusView()
             
             Divider()
             

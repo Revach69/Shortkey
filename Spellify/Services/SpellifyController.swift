@@ -54,7 +54,7 @@ final class SpellifyController {
         
         // Check if AI provider is configured
         guard aiProviderManager.status.isReady else {
-            showConfigurationAlert()
+            notificationManager.showAPIKeyNotConfigured()
             return
         }
         
@@ -125,29 +125,6 @@ final class SpellifyController {
             } catch {
                 // Show error notification
                 notificationManager.showError(error.localizedDescription)
-            }
-        }
-    }
-    
-    private func showConfigurationAlert() {
-        guard let actionsManager = actionsManager,
-              let aiProviderManager = aiProviderManager else {
-            return
-        }
-        
-        DispatchQueue.main.async {
-            let alert = NSAlert()
-            alert.messageText = "Spellify"
-            alert.informativeText = Strings.Errors.configureAPIKey
-            alert.alertStyle = .warning
-            alert.addButton(withTitle: "Open Settings")
-            alert.addButton(withTitle: "Cancel")
-            
-            if alert.runModal() == .alertFirstButtonReturn {
-                SettingsWindowController.shared.showWindow(
-                    actionsManager: actionsManager,
-                    aiProviderManager: aiProviderManager
-                )
             }
         }
     }

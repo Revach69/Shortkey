@@ -63,6 +63,14 @@ final class NotificationManager: ObservableObject {
         )
     }
     
+    /// Shows a notification when API key is not configured
+    func showAPIKeyNotConfigured() {
+        showNotification(
+            title: "Spellify",
+            body: "Please configure your API key in Settings"
+        )
+    }
+    
     // MARK: - Private Methods
     
     private func requestAuthorization() {

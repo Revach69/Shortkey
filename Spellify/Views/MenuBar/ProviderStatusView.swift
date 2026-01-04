@@ -30,7 +30,8 @@ struct ProviderStatusView: View {
         }
         .font(.callout)
         .padding(.horizontal, 16)
-        .padding(.vertical, 10)
+        .padding(.top, 4)
+        .padding(.bottom, 10)
     }
 }
 
