@@ -27,16 +27,29 @@ struct ActionsListView: View {
             
             // Actions list
             ForEach(actionsManager.actions) { action in
-                ActionRowView(
-                    action: action,
-                    onEdit: {
-                        editingAction = action
-                        showingActionEditor = true
-                    },
-                    onDelete: {
-                        actionsManager.delete(action)
+                Button(action: {
+                    editingAction = action
+                    showingActionEditor = true
+                }) {
+                    HStack(spacing: 12) {
+                        // Icon
+                        Image(systemName: action.icon)
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundStyle(.secondary)
+                            .frame(width: 16)
+                        
+                        // Name
+                        Text(action.name)
+                            .foregroundStyle(.primary)
+                            .lineLimit(1)
+                        
+                        Spacer()
                     }
-                )
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(HoverButtonStyle())
             }
             
             // Add action button
@@ -55,9 +68,22 @@ struct ActionsListView: View {
                 .padding(.vertical, 8)
                 .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(HoverButtonStyle())
             .padding(.bottom, 4)
         }
+    }
+}
+
+/// Button style with hover effect
+struct HoverButtonStyle: ButtonStyle {
+    @State private var isHovered = false
+    
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .background(isHovered || configuration.isPressed ? Color.accentColor.opacity(0.1) : Color.clear)
+            .onHover { hovering in
+                isHovered = hovering
+            }
     }
 }
 

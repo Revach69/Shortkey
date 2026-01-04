@@ -51,7 +51,14 @@ struct MenuBarPopoverView: View {
                 onCancel: {
                     showingActionEditor = false
                     editingAction = nil
-                }
+                },
+                onDelete: editingAction != nil ? {
+                    if let action = editingAction {
+                        actionsManager.delete(action)
+                    }
+                    showingActionEditor = false
+                    editingAction = nil
+                } : nil
             )
         }
     }

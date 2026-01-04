@@ -8,6 +8,17 @@
 import AppKit
 import SwiftUI
 
+/// Custom NSPanel that can become key window for keyboard input
+class KeyablePanel: NSPanel {
+    override var canBecomeKey: Bool {
+        return true
+    }
+    
+    override var canBecomeMain: Bool {
+        return false
+    }
+}
+
 /// Controller for the floating action picker panel
 final class ActionPickerPanelController {
     
@@ -20,6 +31,16 @@ final class ActionPickerPanelController {
     private var panel: NSPanel?
     private var onActionSelected: ((SpellAction) -> Void)?
     private var onDismiss: (() -> Void)?
+    
+    // Event monitors
+    private var localMouseMonitor: Any?
+    private var globalMouseMonitor: Any?
+    private var keyMonitor: Any?
+    private var appSwitchObserver: Any?
+    private var windowResignObserver: Any?
+    private var screenChangeObserver: Any?
+    private var spaceChangeObserver: Any?
+    private var screenPositionTimer: Timer?
     
     // MARK: - Initialization
     
@@ -36,9 +57,9 @@ final class ActionPickerPanelController {
         self.onActionSelected = onSelect
         self.onDismiss = onDismiss
         
-        // Create panel
-        let panel = NSPanel(
-            contentRect: NSRect(x: 0, y: 0, width: 250, height: 0),
+        // Create panel with custom subclass that can become key
+        let panel = KeyablePanel(
+            contentRect: NSRect(x: 0, y: 0, width: 280, height: 0),
             styleMask: [.borderless, .nonactivatingPanel],
             backing: .buffered,
             defer: false
@@ -47,9 +68,11 @@ final class ActionPickerPanelController {
         panel.level = .floating
         panel.backgroundColor = .clear
         panel.isOpaque = false
-        panel.hasShadow = true
+        panel.hasShadow = false // We'll use SwiftUI's shadow instead
         panel.isMovable = false
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+        panel.hidesOnDeactivate = false // Don't auto-hide, we control dismissal
+        panel.becomesKeyOnlyIfNeeded = true // Allow panel to become key for keyboard input
         
         // Create SwiftUI content
         let pickerView = ActionPickerView(
@@ -63,7 +86,12 @@ final class ActionPickerPanelController {
         )
         
         let hostingView = NSHostingView(rootView: pickerView)
-        hostingView.frame = NSRect(x: 0, y: 0, width: 250, height: CGFloat(actions.count * 36 + 16))
+        // Calculate height: each row is ~32px + 2px spacing, plus 12px padding top/bottom
+        let rowHeight: CGFloat = 32
+        let spacing: CGFloat = 2
+        let verticalPadding: CGFloat = 12
+        let totalHeight = CGFloat(actions.count) * rowHeight + CGFloat(actions.count - 1) * spacing + verticalPadding
+        hostingView.frame = NSRect(x: 0, y: 0, width: 280, height: totalHeight)
         
         panel.contentView = hostingView
         panel.setContentSize(hostingView.frame.size)
@@ -71,26 +99,25 @@ final class ActionPickerPanelController {
         // Position near mouse cursor
         let mouseLocation = NSEvent.mouseLocation
         panel.setFrameOrigin(NSPoint(
-            x: mouseLocation.x - 125,
-            y: mouseLocation.y - panel.frame.height - 10
+            x: mouseLocation.x - 140, // Center horizontally (280 / 2)
+            y: mouseLocation.y - panel.frame.height - 12 // 12px offset below cursor
         ))
         
         self.panel = panel
         
         panel.makeKeyAndOrderFront(nil)
         
-        // Set up event monitor to close on outside click or escape
-        NSEvent.addLocalMonitorForEvents(matching: [.keyDown]) { [weak self] event in
-            if event.keyCode == 53 { // Escape key
-                self?.dismiss()
-                return nil
-            }
-            return event
-        }
+        // Set up all event monitors
+        setupEventMonitors()
+        
+        // Poll to check if panel is still on an active screen
+        startScreenPositionMonitoring()
     }
     
     /// Hides the panel
     func dismiss() {
+        stopScreenPositionMonitoring()
+        removeEventMonitors()
         panel?.orderOut(nil)
         panel = nil
         onDismiss?()
@@ -98,7 +125,151 @@ final class ActionPickerPanelController {
     
     // MARK: - Private Methods
     
+    /// Start monitoring if panel is still visible on current screen
+    private func startScreenPositionMonitoring() {
+        screenPositionTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
+            guard let self = self, let panel = self.panel else { return }
+            
+            // Check if panel is still on a visible screen
+            let panelFrame = panel.frame
+            let screens = NSScreen.screens
+            
+            let isOnAnyScreen = screens.contains { screen in
+                screen.frame.intersects(panelFrame)
+            }
+            
+            if !isOnAnyScreen {
+                print("🎯 [ActionPickerPanel] Panel no longer on any screen, dismissing")
+                self.dismiss()
+            }
+        }
+    }
+    
+    /// Stop monitoring screen position
+    private func stopScreenPositionMonitoring() {
+        screenPositionTimer?.invalidate()
+        screenPositionTimer = nil
+    }
+    
+    /// Set up event monitors for auto-dismissal
+    private func setupEventMonitors() {
+        // Monitor for local clicks (inside our app)
+        localMouseMonitor = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { [weak self] event in
+            guard let self = self, let panel = self.panel else { return event }
+            
+            // Check if click is outside the panel
+            let mouseLocation = NSEvent.mouseLocation
+            if !panel.frame.contains(mouseLocation) {
+                print("🎯 [ActionPickerPanel] Click outside panel (local), dismissing")
+                self.dismiss()
+                return nil // Consume the event
+            }
+            return event
+        }
+        
+        // Monitor for global clicks (outside our app)
+        globalMouseMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { [weak self] _ in
+            print("🎯 [ActionPickerPanel] Click outside app (global), dismissing")
+            self?.dismiss()
+        }
+        
+        // Monitor for Escape key (use global monitor to catch it before SwiftUI)
+        keyMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown]) { [weak self] event in
+            print("🎯 [ActionPickerPanel] Key down detected: keyCode \(event.keyCode)")
+            if event.keyCode == 53 { // Escape key
+                print("🎯 [ActionPickerPanel] Escape pressed, dismissing")
+                self?.dismiss()
+                return nil // Consume the event
+            }
+            // Let other keys pass through to SwiftUI (arrows, enter)
+            return event
+        }
+        
+        // Monitor for app switching (Cmd+Tab, clicking other apps)
+        appSwitchObserver = NotificationCenter.default.addObserver(
+            forName: NSApplication.didResignActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            print("🎯 [ActionPickerPanel] App resigned active, dismissing")
+            self?.dismiss()
+        }
+        
+        // Monitor for window focus change (clicking another window in same app)
+        windowResignObserver = NotificationCenter.default.addObserver(
+            forName: NSWindow.didResignKeyNotification,
+            object: panel,
+            queue: .main
+        ) { [weak self] _ in
+            print("🎯 [ActionPickerPanel] Panel lost focus, dismissing")
+            self?.dismiss()
+        }
+        
+        // Monitor for screen changes (moving to another display/desktop)
+        screenChangeObserver = NSWorkspace.shared.notificationCenter.addObserver(
+            forName: NSWorkspace.activeSpaceDidChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            print("🎯 [ActionPickerPanel] Active space changed (moved to another screen/desktop), dismissing")
+            self?.dismiss()
+        }
+        
+        // Monitor for screen configuration changes
+        spaceChangeObserver = NotificationCenter.default.addObserver(
+            forName: NSApplication.didChangeScreenParametersNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            print("🎯 [ActionPickerPanel] Screen parameters changed, dismissing")
+            self?.dismiss()
+        }
+        
+        print("🎯 [ActionPickerPanel] Event monitors set up")
+    }
+    
+    /// Remove all event monitors
+    private func removeEventMonitors() {
+        if let monitor = localMouseMonitor {
+            NSEvent.removeMonitor(monitor)
+            localMouseMonitor = nil
+        }
+        
+        if let monitor = globalMouseMonitor {
+            NSEvent.removeMonitor(monitor)
+            globalMouseMonitor = nil
+        }
+        
+        if let monitor = keyMonitor {
+            NSEvent.removeMonitor(monitor)
+            keyMonitor = nil
+        }
+        
+        if let observer = appSwitchObserver {
+            NotificationCenter.default.removeObserver(observer)
+            appSwitchObserver = nil
+        }
+        
+        if let observer = windowResignObserver {
+            NotificationCenter.default.removeObserver(observer)
+            windowResignObserver = nil
+        }
+        
+        if let observer = screenChangeObserver {
+            NSWorkspace.shared.notificationCenter.removeObserver(observer)
+            screenChangeObserver = nil
+        }
+        
+        if let observer = spaceChangeObserver {
+            NotificationCenter.default.removeObserver(observer)
+            spaceChangeObserver = nil
+        }
+        
+        print("🎯 [ActionPickerPanel] Event monitors removed")
+    }
+    
     private func selectAction(_ action: SpellAction) {
+        removeEventMonitors()
         panel?.orderOut(nil)
         panel = nil
         onActionSelected?(action)

@@ -16,9 +16,10 @@ struct ActionPickerView: View {
     
     @State private var selectedIndex: Int = 0
     @State private var hoveredIndex: Int?
+    @FocusState private var isFocused: Bool
     
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 2) {
             ForEach(Array(actions.enumerated()), id: \.element.id) { index, action in
                 ActionPickerRow(
                     action: action,
@@ -38,31 +39,55 @@ struct ActionPickerView: View {
                 }
             }
         }
-        .padding(8)
-        .background(.ultraThinMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .padding(.vertical, 6)
+        .padding(.horizontal, 6)
+        .background {
+            // Beautiful macOS-style background
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .fill(.ultraThinMaterial)
+                .shadow(color: Color.black.opacity(0.3), radius: 20, x: 0, y: 8)
+                .shadow(color: Color.black.opacity(0.1), radius: 1, x: 0, y: 1)
+        }
+        .overlay {
+            // Subtle border
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .strokeBorder(Color.white.opacity(0.2), lineWidth: 1)
+        }
+        .focusable()
+        .focused($isFocused)
+        .onAppear {
+            // Auto-focus when view appears
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                isFocused = true
+                print("🎯 [ActionPickerView] Focus set to true")
+            }
+        }
         .onKeyPress(.upArrow) {
+            print("🎯 [ActionPickerView] Up arrow pressed")
             selectedIndex = max(0, selectedIndex - 1)
             return .handled
         }
         .onKeyPress(.downArrow) {
+            print("🎯 [ActionPickerView] Down arrow pressed")
             selectedIndex = min(actions.count - 1, selectedIndex + 1)
             return .handled
         }
         .onKeyPress(.return) {
+            print("🎯 [ActionPickerView] Return pressed")
             if selectedIndex < actions.count {
                 onSelect(actions[selectedIndex])
             }
             return .handled
         }
         .onKeyPress(.escape) {
+            print("🎯 [ActionPickerView] Escape pressed in SwiftUI")
             onDismiss()
             return .handled
         }
     }
 }
 
-/// A single row in the action picker
+/// A single row in the action picker - macOS menu style
 struct ActionPickerRow: View {
     
     let action: SpellAction
@@ -70,17 +95,39 @@ struct ActionPickerRow: View {
     let isHovered: Bool
     
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
+            // Icon on the left (from action.icon)
+            Image(systemName: action.icon)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundStyle(isSelected || isHovered ? .white : .secondary)
+                .frame(width: 16)
+            
+            // Action name
             Text(action.name)
+                .font(.system(size: 14, weight: .regular))
+                .foregroundStyle(isSelected || isHovered ? .white : .primary)
                 .lineLimit(1)
             
-            Spacer()
+            Spacer(minLength: 8)
+            
+            // Return icon hint (only on selected)
+            if isSelected {
+                Image(systemName: "return")
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.6))
+            }
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .background(isSelected || isHovered ? Color.accentColor.opacity(0.2) : Color.clear)
-        .cornerRadius(4)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 7)
+        .background {
+            if isSelected || isHovered {
+                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                    .fill(Color.accentColor)
+            }
+        }
         .contentShape(Rectangle())
+        .animation(.easeInOut(duration: 0.15), value: isSelected)
+        .animation(.easeInOut(duration: 0.1), value: isHovered)
     }
 }
 
@@ -94,7 +141,9 @@ struct ActionPickerRow: View {
         onSelect: { _ in },
         onDismiss: {}
     )
-    .frame(width: 250)
+    .frame(width: 280)
+    .padding(40)
+    .background(Color.gray.opacity(0.2))
 }
 
 

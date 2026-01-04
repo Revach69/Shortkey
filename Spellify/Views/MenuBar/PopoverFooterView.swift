@@ -26,7 +26,7 @@ struct PopoverFooterView: View {
                 .padding(.vertical, 8)
                 .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(HoverButtonStyle())
             
             // Quit button
             Button(action: quitApp) {
@@ -39,7 +39,7 @@ struct PopoverFooterView: View {
                 .padding(.vertical, 8)
                 .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(HoverButtonStyle())
         }
         .padding(.vertical, 4)
     }
