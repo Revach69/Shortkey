@@ -9,9 +9,14 @@ import SwiftUI
 
 @main
 struct SpellifyApp: App {
+    
+    // Use AppDelegate for menu bar functionality
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
     var body: some Scene {
-        WindowGroup {
-            ContentView()
+        // Empty Settings scene - we'll use a custom window for settings
+        Settings {
+            EmptyView()
         }
     }
 }

@@ -1,0 +1,66 @@
+# ============================================================================
+# TextTools .gitignore
+# ============================================================================
+
+# Build output
+build/
+DerivedData/
+
+# Xcode
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# CocoaPods (if used)
+Pods/
+*.xcworkspace
+
+# Carthage (if used)
+Carthage/Build/
+Carthage/Checkouts/
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# IDE settings (optional - some teams share these)
+.idea/
+*.swp
+*.swo
+*~
+
+# Archives & distribution
+*.ipa
+*.dSYM.zip
+*.dSYM
+*.app
+
+# Secrets (never commit these)
+*.p12
+*.mobileprovision
+*.pem
+Secrets/
+secrets/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+
+
+
