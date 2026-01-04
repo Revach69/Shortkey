@@ -130,6 +130,11 @@ final class SpellifyController {
     }
     
     private func showConfigurationAlert() {
+        guard let actionsManager = actionsManager,
+              let aiProviderManager = aiProviderManager else {
+            return
+        }
+        
         DispatchQueue.main.async {
             let alert = NSAlert()
             alert.messageText = "Spellify"
@@ -139,7 +144,10 @@ final class SpellifyController {
             alert.addButton(withTitle: "Cancel")
             
             if alert.runModal() == .alertFirstButtonReturn {
-                SettingsWindowController.shared.showWindow()
+                SettingsWindowController.shared.showWindow(
+                    actionsManager: actionsManager,
+                    aiProviderManager: aiProviderManager
+                )
             }
         }
     }
