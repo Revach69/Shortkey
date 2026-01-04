@@ -33,7 +33,7 @@ final class OpenAIProvider: AIModelProvider {
     
     init(
         session: URLSessionProtocol = URLSession.shared,
-        keychain: KeychainServiceProtocol = KeychainService()
+        keychain: KeychainServiceProtocol = KeychainService.shared
     ) {
         self.session = session
         self.keychain = keychain

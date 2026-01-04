@@ -11,13 +11,17 @@ import Security
 /// Service for securely storing and retrieving sensitive data in the Keychain
 final class KeychainService: KeychainServiceProtocol {
     
+    // MARK: - Singleton
+    
+    static let shared = KeychainService()
+    
     // MARK: - Properties
     
     private let service: String
     
     // MARK: - Initialization
     
-    init(service: String = "com.spellify.keychain") {
+    private init(service: String = "com.spellify.keychain") {
         self.service = service
     }
     
@@ -89,6 +93,23 @@ final class KeychainService: KeychainServiceProtocol {
         guard status == errSecSuccess || status == errSecItemNotFound else {
             throw KeychainError.deleteFailed(status: status)
         }
+    }
+    
+    // MARK: - Convenience Methods for API Keys
+    
+    /// Saves an API key for a specific provider
+    func saveAPIKey(_ apiKey: String, for provider: String) {
+        try? save(key: "apiKey-\(provider)", value: apiKey)
+    }
+    
+    /// Retrieves an API key for a specific provider
+    func getAPIKey(for provider: String) -> String? {
+        return try? retrieve(key: "apiKey-\(provider)")
+    }
+    
+    /// Deletes an API key for a specific provider
+    func deleteAPIKey(for provider: String) {
+        try? delete(key: "apiKey-\(provider)")
     }
 }
 

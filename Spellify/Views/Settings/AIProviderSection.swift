@@ -14,6 +14,8 @@ struct AIProviderSection: View {
     
     @State private var apiKey: String = ""
     @State private var isTesting: Bool = false
+    @State private var showingKeyInput: Bool = false
+    @State private var hasStoredKey: Bool = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -39,16 +41,75 @@ struct AIProviderSection: View {
             }
             
             // API Key input
-            HStack {
+            HStack(alignment: .top) {
                 Text(Strings.Settings.apiKey)
                     .frame(width: 80, alignment: .trailing)
+                    .padding(.top, 8)
                 
-                SecureTextField(text: $apiKey, placeholder: "sk-...")
-                
-                Button(Strings.Settings.test) {
-                    testConnection()
+                VStack(alignment: .leading, spacing: 8) {
+                    if hasStoredKey && !showingKeyInput {
+                        // Show masked key (read-only) with actions
+                        HStack {
+                            Text("sk-••••••••••••••••••••••••")
+                                .font(.system(.body, design: .monospaced))
+                                .foregroundStyle(.secondary)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Color.secondary.opacity(0.1))
+                                .cornerRadius(6)
+                            
+                            // Change button
+                            Button("Change") {
+                                showingKeyInput = true
+                                apiKey = ""
+                            }
+                            
+                            // Delete button
+                            Button("Delete") {
+                                removeAPIKey()
+                            }
+                            .foregroundStyle(.red)
+                        }
+                    } else {
+                        // Editable key input with Save/Cancel
+                        HStack {
+                            SecureTextField(text: $apiKey, placeholder: "sk-...")
+                            
+                            if hasStoredKey {
+                                // Cancel button (only shown when changing existing key)
+                                Button("Cancel") {
+                                    showingKeyInput = false
+                                    apiKey = ""
+                                }
+                            }
+                            
+                            // Save button
+                            Button("Save") {
+                                saveAPIKey()
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .disabled(apiKey.isEmpty)
+                        }
+                        
+                        // Test button below
+                        if hasStoredKey || !apiKey.isEmpty {
+                            Button(action: {
+                                testConnection()
+                            }) {
+                                HStack(spacing: 4) {
+                                    if isTesting {
+                                        ProgressView()
+                                            .scaleEffect(0.7)
+                                            .frame(width: 12, height: 12)
+                                    }
+                                    Text(isTesting ? "Testing..." : "Test Connection")
+                                }
+                            }
+                            .disabled(isTesting)
+                        }
+                    }
                 }
-                .disabled(apiKey.isEmpty || isTesting)
             }
             
             // Model picker
@@ -82,6 +143,9 @@ struct AIProviderSection: View {
                     .foregroundStyle(statusColor)
             }
         }
+        .onAppear {
+            checkForStoredKey()
+        }
     }
     
     // MARK: - Computed Properties
@@ -114,11 +178,54 @@ struct AIProviderSection: View {
     
     // MARK: - Actions
     
+    private func checkForStoredKey() {
+        // Check if there's a key in keychain
+        if let storedKey = KeychainService.shared.getAPIKey(for: "openai"), !storedKey.isEmpty {
+            hasStoredKey = true
+        } else {
+            hasStoredKey = false
+        }
+    }
+    
+    private func saveAPIKey() {
+        guard !apiKey.isEmpty else { return }
+        
+        // Save to keychain
+        KeychainService.shared.saveAPIKey(apiKey, for: "openai")
+        
+        // Update UI state
+        hasStoredKey = true
+        showingKeyInput = false
+        
+        // Configure provider
+        Task {
+            await aiProviderManager.configure(apiKey: apiKey)
+            apiKey = "" // Clear the text field
+        }
+    }
+    
+    private func removeAPIKey() {
+        // Remove from keychain
+        KeychainService.shared.deleteAPIKey(for: "openai")
+        hasStoredKey = false
+        showingKeyInput = false
+        apiKey = ""
+        
+        // Reset provider
+        Task {
+            await aiProviderManager.configure(apiKey: "")
+        }
+    }
+    
     private func testConnection() {
         isTesting = true
         
         Task {
-            await aiProviderManager.configure(apiKey: apiKey)
+            // If testing with a new key, save it first
+            if !apiKey.isEmpty {
+                await aiProviderManager.configure(apiKey: apiKey)
+            }
+            
             let _ = await aiProviderManager.testConnection()
             isTesting = false
         }
