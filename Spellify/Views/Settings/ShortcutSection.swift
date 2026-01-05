@@ -27,7 +27,7 @@ struct ShortcutSection: View {
             
             // Shortcut recorder
             HStack {
-                Text("")
+                Text(Strings.Common.shortcut)
                     .frame(width: 80, alignment: .trailing)
                 
                 ShortcutRecorderView(

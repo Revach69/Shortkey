@@ -53,3 +53,4 @@ Spellify is a lightweight utility that lives in your menu bar. With a simple key
 MIT License - see LICENSE file for details
 
 
+

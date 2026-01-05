@@ -74,19 +74,6 @@ struct ActionsListView: View {
     }
 }
 
-/// Button style with hover effect
-struct HoverButtonStyle: ButtonStyle {
-    @State private var isHovered = false
-    
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .background(isHovered || configuration.isPressed ? Color.accentColor.opacity(0.1) : Color.clear)
-            .onHover { hovering in
-                isHovered = hovering
-            }
-    }
-}
-
 #Preview {
     ActionsListView(
         showingActionEditor: .constant(false),

@@ -21,7 +21,7 @@ struct PreferencesSection: View {
             
             // Launch at login toggle
             HStack {
-                Text("")
+                Text(Strings.Common.launch)
                     .frame(width: 80, alignment: .trailing)
                 
                 Toggle(Strings.Settings.launchAtLogin, isOn: $launchAtLogin)

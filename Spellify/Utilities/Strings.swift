@@ -132,9 +132,17 @@ enum Strings {
             "Name",
             comment: "Action name label"
         )
+        static let icon = NSLocalizedString(
+            "Icon",
+            comment: "Action icon label"
+        )
         static let prompt = NSLocalizedString(
             "Prompt",
             comment: "Action prompt label"
+        )
+        static let promptHelper = NSLocalizedString(
+            "Tell the AI what to do with the selected text",
+            comment: "Prompt helper text"
         )
         static let namePlaceholder = NSLocalizedString(
             "e.g., Fix Grammar",
@@ -151,6 +159,55 @@ enum Strings {
         static let cancel = NSLocalizedString(
             "Cancel",
             comment: "Cancel button"
+        )
+        static let delete = NSLocalizedString(
+            "Delete",
+            comment: "Delete button"
+        )
+        static let browseSymbols = NSLocalizedString(
+            "Browse All Symbols...",
+            comment: "Browse SF Symbols link"
+        )
+    }
+    
+    // MARK: - Common
+    
+    enum Common {
+        static let change = NSLocalizedString(
+            "Change",
+            comment: "Change button"
+        )
+        static let delete = NSLocalizedString(
+            "Delete",
+            comment: "Delete button"
+        )
+        static let cancel = NSLocalizedString(
+            "Cancel",
+            comment: "Cancel button"
+        )
+        static let save = NSLocalizedString(
+            "Save",
+            comment: "Save button"
+        )
+        static let status = NSLocalizedString(
+            "Status",
+            comment: "Status label"
+        )
+        static let testConnection = NSLocalizedString(
+            "Test Connection",
+            comment: "Test connection button"
+        )
+        static let testing = NSLocalizedString(
+            "Testing...",
+            comment: "Testing status"
+        )
+        static let shortcut = NSLocalizedString(
+            "Shortcut",
+            comment: "Shortcut label"
+        )
+        static let launch = NSLocalizedString(
+            "Launch",
+            comment: "Launch label"
         )
     }
     

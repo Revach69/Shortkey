@@ -19,7 +19,7 @@ struct ProviderStatusView: View {
             Text(aiProviderManager.providerDisplayName)
                 .foregroundStyle(.primary)
             
-            Text("·")
+            Text(Constants.textSeparator)
                 .foregroundStyle(.secondary)
             
             Text(aiProviderManager.status.displayText)

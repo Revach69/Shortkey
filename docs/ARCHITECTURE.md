@@ -164,3 +164,4 @@ Hotkey pressed → SpellifyController.handleHotKeyPressed()
 - **Keychain** for secure API key storage
 
 
+

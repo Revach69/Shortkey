@@ -90,3 +90,4 @@ Currently supports OpenAI with an extensible architecture for future providers.
 - Launch at login toggle (uses SMAppService)
 
 
+
