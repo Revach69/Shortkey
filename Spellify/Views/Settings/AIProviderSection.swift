@@ -94,15 +94,23 @@ struct AIProviderSection: View {
     private func saveAPIKey() {
         guard !apiKey.isEmpty else { return }
         
-        KeychainService.shared.saveAPIKey(apiKey, for: "openai")
-        hasStoredKey = true
-        showingKeyInput = false
-        
-        // Automatically test connection after saving
-        Task {
-            await aiProviderManager.configure(apiKey: apiKey)
-            apiKey = ""
-            await aiProviderManager.testConnection()
+        do {
+            try KeychainService.shared.saveAPIKey(apiKey, for: "openai")
+            hasStoredKey = true
+            showingKeyInput = false
+            
+            // Automatically test connection after saving
+            Task {
+                await aiProviderManager.configure(apiKey: apiKey)
+                apiKey = ""
+                await aiProviderManager.testConnection()
+            }
+        } catch {
+            // Show error notification
+            NotificationManager.shared.showNotification(
+                title: "Failed to Save API Key",
+                message: "Unable to securely store your API key. Please try again."
+            )
         }
     }
     

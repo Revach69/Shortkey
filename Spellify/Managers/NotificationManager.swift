@@ -75,9 +75,7 @@ final class NotificationManager: ObservableObject {
     
     private func requestAuthorization() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, error in
-            if let error = error {
-                print("Notification authorization error: \(error)")
-            }
+            // Authorization completed
         }
     }
     
@@ -94,9 +92,7 @@ final class NotificationManager: ObservableObject {
         )
         
         UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("Failed to show notification: \(error)")
-            }
+            // Notification added
         }
     }
 }

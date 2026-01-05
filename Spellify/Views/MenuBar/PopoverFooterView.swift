@@ -45,18 +45,14 @@ struct PopoverFooterView: View {
     }
     
     private func openSettings() {
-        print("🔧 [PopoverFooter] Configure button clicked")
-        
         DispatchQueue.main.async {
             // Close popover
             if let appDelegate = NSApp.delegate as? AppDelegate {
-                print("🔧 [PopoverFooter] Closing popover")
                 appDelegate.closePopover()
             }
             
             // Small delay to let popover close
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                print("🔧 [PopoverFooter] Opening settings window...")
                 // Pass managers directly to settings
                 SettingsWindowController.shared.showWindow(
                     actionsManager: actionsManager,

@@ -59,28 +59,23 @@ struct ActionPickerView: View {
             // Auto-focus when view appears
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 isFocused = true
-                print("🎯 [ActionPickerView] Focus set to true")
             }
         }
         .onKeyPress(.upArrow) {
-            print("🎯 [ActionPickerView] Up arrow pressed")
             selectedIndex = max(0, selectedIndex - 1)
             return .handled
         }
         .onKeyPress(.downArrow) {
-            print("🎯 [ActionPickerView] Down arrow pressed")
             selectedIndex = min(actions.count - 1, selectedIndex + 1)
             return .handled
         }
         .onKeyPress(.return) {
-            print("🎯 [ActionPickerView] Return pressed")
             if selectedIndex < actions.count {
                 onSelect(actions[selectedIndex])
             }
             return .handled
         }
         .onKeyPress(.escape) {
-            print("🎯 [ActionPickerView] Escape pressed in SwiftUI")
             onDismiss()
             return .handled
         }

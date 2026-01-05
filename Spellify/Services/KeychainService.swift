@@ -98,8 +98,8 @@ final class KeychainService: KeychainServiceProtocol {
     // MARK: - Convenience Methods for API Keys
     
     /// Saves an API key for a specific provider
-    func saveAPIKey(_ apiKey: String, for provider: String) {
-        try? save(key: "apiKey-\(provider)", value: apiKey)
+    func saveAPIKey(_ apiKey: String, for provider: String) throws {
+        try save(key: "apiKey-\(provider)", value: apiKey)
     }
     
     /// Retrieves an API key for a specific provider

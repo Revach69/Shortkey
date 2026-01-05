@@ -42,11 +42,8 @@ final class OpenAIProvider: AIModelProvider {
     // MARK: - AIModelProvider Methods
     
     func configure(apiKey: String) async {
-        do {
-            try keychain.save(key: keychainKey, value: apiKey)
-        } catch {
-            print("Failed to save API key: \(error)")
-        }
+        // API key is already saved by AIProviderSection, just store locally
+        // The keychain save happens in KeychainService.saveAPIKey
     }
     
     func testConnection() async throws -> Bool {

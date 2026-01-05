@@ -68,7 +68,7 @@ final class HotKeyManager {
             },
             userInfo: Unmanaged.passUnretained(self).toOpaque()
         ) else {
-            print("Failed to create event tap. Check accessibility permissions.")
+            // Failed to create event tap - accessibility permissions required
             return
         }
         
@@ -133,8 +133,6 @@ final class HotKeyManager {
         
         // Update display in UserDefaults for the UI
         defaults.set(shortcutString, forKey: "shortcutDisplay")
-        
-        print("✅ [HotKeyManager] Shortcut updated to: \(shortcutString) (keyCode: \(parsedKeyCode), modifiers: \(parsedModifiers))")
     }
     
     // MARK: - Private Methods

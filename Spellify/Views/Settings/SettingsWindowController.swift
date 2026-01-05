@@ -26,17 +26,11 @@ final class SettingsWindowController {
     // MARK: - Public Methods
     
     func showWindow(actionsManager: ActionsManager, aiProviderManager: AIProviderManager) {
-        print("⚙️ [SettingsController] showWindow() called with managers")
-        
         if let window = window {
-            print("⚙️ [SettingsController] Window exists, bringing to front")
             window.makeKeyAndOrderFront(nil)
             NSApp.activate(ignoringOtherApps: true)
-            print("⚙️ [SettingsController] Window activated")
             return
         }
-        
-        print("⚙️ [SettingsController] Creating new window...")
         
         let settingsView = SettingsView()
             .environmentObject(actionsManager)
@@ -53,10 +47,8 @@ final class SettingsWindowController {
         
         self.window = window
         
-        print("⚙️ [SettingsController] Window created, showing...")
         window.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
-        print("⚙️ [SettingsController] Window should be visible now!")
     }
     
     func closeWindow() {

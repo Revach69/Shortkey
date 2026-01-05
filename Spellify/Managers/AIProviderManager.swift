@@ -98,7 +98,6 @@ final class AIProviderManager: ObservableObject {
             }
         } catch {
             // Keep using existing models if fetch fails
-            print("Failed to fetch models: \(error)")
         }
     }
     

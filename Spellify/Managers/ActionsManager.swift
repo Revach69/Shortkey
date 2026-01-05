@@ -84,8 +84,7 @@ final class ActionsManager: ObservableObject {
             let data = try JSONEncoder().encode(actions)
             defaults.set(data, forKey: storageKey)
         } catch {
-            // Log error in production
-            print("Failed to save actions: \(error)")
+            // Failed to save actions
         }
     }
 }

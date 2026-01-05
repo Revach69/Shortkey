@@ -139,7 +139,6 @@ final class ActionPickerPanelController {
             }
             
             if !isOnAnyScreen {
-                print("🎯 [ActionPickerPanel] Panel no longer on any screen, dismissing")
                 self.dismiss()
             }
         }
@@ -160,7 +159,6 @@ final class ActionPickerPanelController {
             // Check if click is outside the panel
             let mouseLocation = NSEvent.mouseLocation
             if !panel.frame.contains(mouseLocation) {
-                print("🎯 [ActionPickerPanel] Click outside panel (local), dismissing")
                 self.dismiss()
                 return nil // Consume the event
             }
@@ -169,15 +167,12 @@ final class ActionPickerPanelController {
         
         // Monitor for global clicks (outside our app)
         globalMouseMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { [weak self] _ in
-            print("🎯 [ActionPickerPanel] Click outside app (global), dismissing")
             self?.dismiss()
         }
         
         // Monitor for Escape key (use global monitor to catch it before SwiftUI)
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown]) { [weak self] event in
-            print("🎯 [ActionPickerPanel] Key down detected: keyCode \(event.keyCode)")
             if event.keyCode == 53 { // Escape key
-                print("🎯 [ActionPickerPanel] Escape pressed, dismissing")
                 self?.dismiss()
                 return nil // Consume the event
             }
@@ -191,7 +186,6 @@ final class ActionPickerPanelController {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            print("🎯 [ActionPickerPanel] App resigned active, dismissing")
             self?.dismiss()
         }
         
@@ -201,7 +195,6 @@ final class ActionPickerPanelController {
             object: panel,
             queue: .main
         ) { [weak self] _ in
-            print("🎯 [ActionPickerPanel] Panel lost focus, dismissing")
             self?.dismiss()
         }
         
@@ -211,7 +204,6 @@ final class ActionPickerPanelController {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            print("🎯 [ActionPickerPanel] Active space changed (moved to another screen/desktop), dismissing")
             self?.dismiss()
         }
         
@@ -221,11 +213,8 @@ final class ActionPickerPanelController {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            print("🎯 [ActionPickerPanel] Screen parameters changed, dismissing")
             self?.dismiss()
         }
-        
-        print("🎯 [ActionPickerPanel] Event monitors set up")
     }
     
     /// Remove all event monitors
@@ -264,8 +253,6 @@ final class ActionPickerPanelController {
             NotificationCenter.default.removeObserver(observer)
             spaceChangeObserver = nil
         }
-        
-        print("🎯 [ActionPickerPanel] Event monitors removed")
     }
     
     private func selectAction(_ action: SpellAction) {
