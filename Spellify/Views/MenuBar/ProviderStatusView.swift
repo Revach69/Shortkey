@@ -11,6 +11,7 @@ import SwiftUI
 struct ProviderStatusView: View {
     
     @EnvironmentObject var aiProviderManager: AIProviderManager
+    @State private var isTesting: Bool = false
     
     var body: some View {
         HStack(spacing: 8) {
@@ -27,6 +28,28 @@ struct ProviderStatusView: View {
                 .lineLimit(1)
             
             Spacer()
+            
+            // Refresh/Test connection button
+            Button(action: {
+                Task {
+                    isTesting = true
+                    let _ = await aiProviderManager.testConnection()
+                    isTesting = false
+                }
+            }) {
+                if isTesting {
+                    ProgressView()
+                        .scaleEffect(0.6)
+                        .frame(width: 14, height: 14)
+                } else {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.system(size: 14))
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .buttonStyle(.plain)
+            .help(Strings.Common.testConnection)
+            .disabled(isTesting)
         }
         .font(.callout)
         .padding(.horizontal, 16)

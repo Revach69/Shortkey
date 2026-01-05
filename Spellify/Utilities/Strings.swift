@@ -26,8 +26,8 @@ enum Strings {
             comment: "Add action button"
         )
         static let configure = NSLocalizedString(
-            "Configure...",
-            comment: "Configure menu item"
+            "Settings...",
+            comment: "Settings menu item"
         )
         static let quit = NSLocalizedString(
             "Quit Spellify",
