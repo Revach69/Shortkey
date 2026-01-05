@@ -109,8 +109,8 @@ final class SpellifyController {
         aiProviderManager: AIProviderManager
     ) {
         Task {
-            // Show processing notification
-            notificationManager.showProcessing()
+            // Show processing notification with action name
+            notificationManager.showProcessing(actionName: action.name)
             
             do {
                 // Transform text

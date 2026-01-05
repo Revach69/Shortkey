@@ -24,10 +24,10 @@ final class NotificationManager: ObservableObject {
     // MARK: - Public Methods
     
     /// Shows a notification that processing has started
-    func showProcessing() {
+    func showProcessing(actionName: String) {
         showNotification(
             title: "Spellify",
-            body: Strings.Notifications.processing
+            body: "\(actionName)..."
         )
     }
     
