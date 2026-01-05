@@ -7,7 +7,6 @@
 
 import SwiftUI
 import AppKit
-import OSLog
 
 /// Button-style shortcut recorder that matches macOS System Settings design
 /// Displays current shortcut as a button; clicking opens a popover for recording
@@ -147,12 +146,10 @@ private struct ShortcutRecorderInputView: NSViewRepresentable {
         }
         
         func shortcutRecorderDidUpdateShortcut(_ shortcut: String) {
-            Logger.settings.debug("🎹 [ShortcutRecorder] Coordinator received shortcut: \(shortcut)")
             parent.shortcutDisplay = shortcut
         }
         
         func shortcutRecorderDidChangeRecordingState(_ isRecording: Bool) {
-            Logger.settings.debug("🎹 [ShortcutRecorder] Recording state changed: \(isRecording)")
             parent.isRecording = isRecording
         }
     }
@@ -179,9 +176,6 @@ class ShortcutRecorderNSView: NSView {
             needsDisplay = true
             if isRecording {
                 window?.makeFirstResponder(self)
-                Logger.settings.debug("🎹 [ShortcutRecorder] Started recording")
-            } else {
-                Logger.settings.debug("🎹 [ShortcutRecorder] Stopped recording")
             }
         }
     }
@@ -192,7 +186,6 @@ class ShortcutRecorderNSView: NSView {
     
     override func viewDidMoveToWindow() {
         super.viewDidMoveToWindow()
-        Logger.settings.debug("🎹 [ShortcutRecorder] View moved to window")
         
         // Auto-focus when appearing
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -252,8 +245,6 @@ class ShortcutRecorderNSView: NSView {
             return
         }
         
-        Logger.settings.debug("🎹 [ShortcutRecorder] Key down - keyCode: \(event.keyCode), modifiers: \(event.modifierFlags.rawValue)")
-        
         // Get modifier flags
         let modifiers = event.modifierFlags
         
@@ -278,27 +269,19 @@ class ShortcutRecorderNSView: NSView {
             parts.append(characters)
         }
         
-        Logger.settings.debug("🎹 [ShortcutRecorder] Parsed shortcut parts: \(parts)")
-        
         // Require at least one modifier + one key
         if parts.count >= 2 {
             let shortcut = parts.joined()
-            Logger.settings.debug("🎹 [ShortcutRecorder] Valid shortcut recorded: \(shortcut)")
             
             shortcutDisplay = shortcut
             delegate?.shortcutRecorderDidUpdateShortcut(shortcut)
             
             needsDisplay = true
-        } else {
-            Logger.settings.debug("🎹 [ShortcutRecorder] Invalid shortcut (need at least 1 modifier + 1 key)")
         }
     }
     
     override func flagsChanged(with event: NSEvent) {
         // Handle modifier keys being pressed/released during recording
-        if isRecording {
-            Logger.settings.debug("🎹 [ShortcutRecorder] Flags changed: \(event.modifierFlags.rawValue)")
-        }
     }
     
     override var intrinsicContentSize: NSSize {
