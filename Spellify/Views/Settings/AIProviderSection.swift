@@ -55,7 +55,7 @@ struct AIProviderSection: View {
                     status: aiProviderManager.status,
                     onTest: {
                         Task {
-                            await aiProviderManager.testConnection()
+                            let _ = await aiProviderManager.testConnection()
                         }
                     }
                 )
@@ -103,13 +103,12 @@ struct AIProviderSection: View {
             Task {
                 await aiProviderManager.configure(apiKey: apiKey)
                 apiKey = ""
-                await aiProviderManager.testConnection()
+                let _ = await aiProviderManager.testConnection()
             }
         } catch {
             // Show error notification
-            NotificationManager.shared.showNotification(
-                title: "Failed to Save API Key",
-                message: "Unable to securely store your API key. Please try again."
+            NotificationManager.shared.showError(
+                "Unable to securely store your API key. Please try again."
             )
         }
     }

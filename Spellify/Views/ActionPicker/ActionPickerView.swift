@@ -45,8 +45,8 @@ struct ActionPickerView: View {
             // Beautiful macOS-style background
             RoundedRectangle(cornerRadius: 10, style: .continuous)
                 .fill(.ultraThinMaterial)
-                .shadow(color: Color.black.opacity(0.3), radius: 20, x: 0, y: 8)
-                .shadow(color: Color.black.opacity(0.1), radius: 1, x: 0, y: 1)
+                .shadow(color: Color.black.opacity(0.2), radius: 12, x: 0, y: 4)
+                .shadow(color: Color.black.opacity(0.08), radius: 1, x: 0, y: 1)
         }
         .overlay {
             // Subtle border
@@ -94,30 +94,23 @@ struct ActionPickerRow: View {
             // Icon on the left (from action.icon)
             Image(systemName: action.icon)
                 .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(isSelected || isHovered ? .white : .secondary)
+                .foregroundStyle(.secondary)
                 .frame(width: 16)
             
             // Action name
             Text(action.name)
                 .font(.system(size: 14, weight: .regular))
-                .foregroundStyle(isSelected || isHovered ? .white : .primary)
+                .foregroundStyle(.primary)
                 .lineLimit(1)
             
             Spacer(minLength: 8)
-            
-            // Return icon hint (only on selected)
-            if isSelected {
-                Image(systemName: "return")
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.6))
-            }
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 7)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
         .background {
             if isSelected || isHovered {
                 RoundedRectangle(cornerRadius: 6, style: .continuous)
-                    .fill(Color.accentColor)
+                    .fill(Color.accentColor.opacity(0.1))
             }
         }
         .contentShape(Rectangle())
