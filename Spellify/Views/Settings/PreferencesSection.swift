@@ -8,30 +8,23 @@
 import SwiftUI
 import ServiceManagement
 
-/// Settings section for general preferences
+/// General preferences section using native "Inset Grouped" Form/Section pattern
 struct PreferencesSection: View {
     
     @State private var launchAtLogin: Bool = false
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            // Header
-            Text(Strings.Settings.preferences)
-                .font(.headline)
-            
-            // Launch at login toggle
-            HStack {
-                Text(Strings.Common.launch)
-                    .frame(width: 80, alignment: .trailing)
-                
-                Toggle(Strings.Settings.launchAtLogin, isOn: $launchAtLogin)
-                    .toggleStyle(.checkbox)
+        Section {
+            SettingsRow(label: Strings.Settings.launchAtLogin) {
+                Toggle("", isOn: $launchAtLogin)
+                    .toggleStyle(.switch)
+                    .labelsHidden()
                     .onChange(of: launchAtLogin) { _, newValue in
                         updateLaunchAtLogin(newValue)
                     }
-                
-                Spacer()
             }
+        } header: {
+            Text(Strings.Settings.preferences)
         }
         .onAppear {
             loadLaunchAtLoginState()
@@ -56,17 +49,18 @@ struct PreferencesSection: View {
                 }
             } catch {
                 print("Failed to update launch at login: \(error)")
-                // Revert the toggle if the operation failed
-                launchAtLogin = !enabled
+                withAnimation {
+                    launchAtLogin = !enabled
+                }
             }
         }
     }
 }
 
 #Preview {
-    PreferencesSection()
-        .padding()
-        .frame(width: 500)
+    Form {
+        PreferencesSection()
+    }
+    .formStyle(.grouped)
+    .frame(width: 500)
 }
-
-

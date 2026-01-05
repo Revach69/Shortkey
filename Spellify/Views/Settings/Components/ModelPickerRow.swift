@@ -17,7 +17,10 @@ struct ModelPickerRow: View {
     var body: some View {
         HStack {
             Text(Strings.Settings.model)
-                .frame(width: 80, alignment: .trailing)
+                .font(.system(size: 13))
+                .foregroundStyle(.primary)
+            
+            Spacer()
             
             Picker("", selection: Binding(
                 get: { selectedModel },
@@ -31,7 +34,6 @@ struct ModelPickerRow: View {
                 }
             }
             .labelsHidden()
-            .frame(maxWidth: 200)
         }
     }
 }

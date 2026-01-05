@@ -35,8 +35,8 @@ enum Constants {
     /// Settings window height
     static let settingsHeight: CGFloat = 400
     
-    /// Masked API key display
-    static let maskedAPIKey = "sk-••••••••••••••••••••••••"
+    /// Masked API key display (generic, provider-agnostic)
+    static let maskedAPIKey = "••••••••••••••••••••"
     
     /// Visual separator for text
     static let textSeparator = "·"

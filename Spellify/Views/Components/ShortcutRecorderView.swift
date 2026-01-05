@@ -9,8 +9,115 @@ import SwiftUI
 import AppKit
 import OSLog
 
-/// Native NSView-based shortcut recorder that actually works
-struct ShortcutRecorderView: NSViewRepresentable {
+/// Button-style shortcut recorder that matches macOS System Settings design
+/// Displays current shortcut as a button; clicking opens a popover for recording
+struct ShortcutRecorderView: View {
+    
+    @Binding var shortcutDisplay: String
+    @Binding var isRecording: Bool
+    
+    @State private var showingPopover = false
+    @State private var tempShortcut = ""
+    
+    var body: some View {
+        Button(action: {
+            tempShortcut = ""
+            showingPopover = true
+        }) {
+            Text(shortcutDisplay)
+                .font(.system(.body, design: .monospaced))
+                .foregroundStyle(.primary)
+                .frame(minWidth: 100)
+                .frame(height: 28)
+                .padding(.horizontal, 12)
+                .background(Color(NSColor.controlBackgroundColor))
+                .cornerRadius(5)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 5)
+                        .stroke(Color(NSColor.separatorColor), lineWidth: 0.5)
+                )
+        }
+        .buttonStyle(.plain)
+        .popover(isPresented: $showingPopover, arrowEdge: .bottom) {
+            ShortcutRecorderPopoverView(
+                currentShortcut: shortcutDisplay,
+                tempShortcut: $tempShortcut,
+                isRecording: $isRecording,
+                onSave: { newShortcut in
+                    shortcutDisplay = newShortcut
+                    HotKeyManager.shared.updateShortcut(newShortcut)
+                    showingPopover = false
+                    isRecording = false
+                },
+                onCancel: {
+                    showingPopover = false
+                    isRecording = false
+                    tempShortcut = ""
+                },
+                onClear: {
+                    tempShortcut = ""
+                }
+            )
+        }
+    }
+}
+
+/// Popover content for recording keyboard shortcuts
+private struct ShortcutRecorderPopoverView: View {
+    
+    let currentShortcut: String
+    @Binding var tempShortcut: String
+    @Binding var isRecording: Bool
+    
+    let onSave: (String) -> Void
+    let onCancel: () -> Void
+    let onClear: () -> Void
+    
+    var body: some View {
+        VStack(spacing: 16) {
+            Text(Strings.Settings.pressShortcut)
+                .font(.system(size: 13))
+                .foregroundStyle(.secondary)
+            
+            ShortcutRecorderInputView(
+                shortcutDisplay: $tempShortcut,
+                isRecording: $isRecording
+            )
+            .frame(height: 40)
+            
+            HStack(spacing: 12) {
+                Button(Strings.Common.clear) {
+                    onClear()
+                }
+                .disabled(tempShortcut.isEmpty)
+                
+                Spacer()
+                
+                Button(Strings.Common.cancel) {
+                    onCancel()
+                }
+                .keyboardShortcut(.escape, modifiers: [])
+                
+                Button(Strings.Common.done) {
+                    if !tempShortcut.isEmpty {
+                        onSave(tempShortcut)
+                    }
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(tempShortcut.isEmpty)
+                .keyboardShortcut(.return, modifiers: [])
+            }
+        }
+        .padding(20)
+        .frame(width: 340)
+        .onAppear {
+            isRecording = true
+        }
+    }
+}
+
+/// NSViewRepresentable wrapper for the native shortcut recorder input
+private struct ShortcutRecorderInputView: NSViewRepresentable {
     
     @Binding var shortcutDisplay: String
     @Binding var isRecording: Bool
@@ -33,19 +140,15 @@ struct ShortcutRecorderView: NSViewRepresentable {
     }
     
     class Coordinator: NSObject, ShortcutRecorderNSViewDelegate {
-        let parent: ShortcutRecorderView
+        let parent: ShortcutRecorderInputView
         
-        init(_ parent: ShortcutRecorderView) {
+        init(_ parent: ShortcutRecorderInputView) {
             self.parent = parent
         }
         
         func shortcutRecorderDidUpdateShortcut(_ shortcut: String) {
             Logger.settings.debug("🎹 [ShortcutRecorder] Coordinator received shortcut: \(shortcut)")
             parent.shortcutDisplay = shortcut
-            parent.isRecording = false
-            
-            // Update HotKeyManager with the new shortcut
-            HotKeyManager.shared.updateShortcut(shortcut)
         }
         
         func shortcutRecorderDidChangeRecordingState(_ isRecording: Bool) {
@@ -65,7 +168,7 @@ class ShortcutRecorderNSView: NSView {
     
     weak var delegate: ShortcutRecorderNSViewDelegate?
     
-    var shortcutDisplay: String = "⌘⇧S" {
+    var shortcutDisplay: String = "" {
         didSet {
             needsDisplay = true
         }
@@ -83,8 +186,6 @@ class ShortcutRecorderNSView: NSView {
         }
     }
     
-    private var eventMonitor: Any?
-    
     override var acceptsFirstResponder: Bool {
         return true
     }
@@ -92,31 +193,34 @@ class ShortcutRecorderNSView: NSView {
     override func viewDidMoveToWindow() {
         super.viewDidMoveToWindow()
         Logger.settings.debug("🎹 [ShortcutRecorder] View moved to window")
+        
+        // Auto-focus when appearing
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.window?.makeFirstResponder(self)
+        }
     }
     
     override func draw(_ dirtyRect: NSRect) {
         super.draw(dirtyRect)
         
         // Draw background
-        let backgroundColor: NSColor = isRecording ? 
-            NSColor.controlAccentColor.withAlphaComponent(0.1) : 
-            NSColor.controlBackgroundColor
-        backgroundColor.setFill()
-        let bgPath = NSBezierPath(roundedRect: bounds, xRadius: 6, yRadius: 6)
+        NSColor.textBackgroundColor.setFill()
+        let bgPath = NSBezierPath(roundedRect: bounds, xRadius: 5, yRadius: 5)
         bgPath.fill()
         
-        // Draw border if recording
-        if isRecording {
-            NSColor.controlAccentColor.setStroke()
-            let borderPath = NSBezierPath(roundedRect: bounds.insetBy(dx: 1, dy: 1), xRadius: 6, yRadius: 6)
-            borderPath.lineWidth = 2
-            borderPath.stroke()
-        }
+        // Draw border (focus ring when recording)
+        let borderColor: NSColor = isRecording ? .controlAccentColor : .separatorColor
+        let borderWidth: CGFloat = isRecording ? 3 : 1
+        
+        borderColor.setStroke()
+        let borderPath = NSBezierPath(roundedRect: bounds.insetBy(dx: borderWidth/2, dy: borderWidth/2), xRadius: 5, yRadius: 5)
+        borderPath.lineWidth = borderWidth
+        borderPath.stroke()
         
         // Draw text
-        let text = isRecording ? "Press shortcut..." : shortcutDisplay
-        let textColor: NSColor = isRecording ? .secondaryLabelColor : .labelColor
-        let font: NSFont = isRecording ? .systemFont(ofSize: 13) : .monospacedSystemFont(ofSize: 13, weight: .regular)
+        let text = shortcutDisplay.isEmpty ? "⌘⇧?" : shortcutDisplay
+        let textColor: NSColor = shortcutDisplay.isEmpty ? .secondaryLabelColor : .labelColor
+        let font: NSFont = .monospacedSystemFont(ofSize: 16, weight: .regular)
         
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
@@ -140,13 +244,6 @@ class ShortcutRecorderNSView: NSView {
         )
         
         attributedString.draw(in: centeredRect)
-    }
-    
-    override func mouseDown(with event: NSEvent) {
-        Logger.settings.debug("🎹 [ShortcutRecorder] Mouse down")
-        isRecording = !isRecording
-        delegate?.shortcutRecorderDidChangeRecordingState(isRecording)
-        needsDisplay = true
     }
     
     override func keyDown(with event: NSEvent) {
@@ -189,10 +286,7 @@ class ShortcutRecorderNSView: NSView {
             Logger.settings.debug("🎹 [ShortcutRecorder] Valid shortcut recorded: \(shortcut)")
             
             shortcutDisplay = shortcut
-            isRecording = false
-            
             delegate?.shortcutRecorderDidUpdateShortcut(shortcut)
-            delegate?.shortcutRecorderDidChangeRecordingState(false)
             
             needsDisplay = true
         } else {
@@ -208,6 +302,22 @@ class ShortcutRecorderNSView: NSView {
     }
     
     override var intrinsicContentSize: NSSize {
-        return NSSize(width: 120, height: 28)
+        return NSSize(width: 200, height: 40)
     }
+}
+
+#Preview {
+    VStack(spacing: 20) {
+        ShortcutRecorderView(
+            shortcutDisplay: .constant("⌘⇧S"),
+            isRecording: .constant(false)
+        )
+        
+        ShortcutRecorderView(
+            shortcutDisplay: .constant("⌃⌥⌘T"),
+            isRecording: .constant(false)
+        )
+    }
+    .padding()
+    .frame(width: 400)
 }

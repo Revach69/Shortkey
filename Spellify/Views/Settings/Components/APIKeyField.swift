@@ -7,80 +7,61 @@
 
 import SwiftUI
 
-/// API key input field with save/change/delete/test actions
+/// Inline compact API key management with clean text button styling
 struct APIKeyField: View {
     
     @Binding var apiKey: String
     @Binding var hasStoredKey: Bool
     @Binding var showingKeyInput: Bool
-    @Binding var isTesting: Bool
     
     let onSave: () -> Void
     let onDelete: () -> Void
-    let onTest: () -> Void
     
     var body: some View {
-        HStack(alignment: .top) {
-            Text(Strings.Settings.apiKey)
-                .frame(width: 80, alignment: .trailing)
-                .padding(.top, 8)
-            
-            VStack(alignment: .leading, spacing: 8) {
-                if hasStoredKey && !showingKeyInput {
-                    // Show masked key (read-only) with actions
-                    HStack {
-                        Text(Constants.maskedAPIKey)
-                            .font(.system(.body, design: .monospaced))
-                            .foregroundStyle(.secondary)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 6)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(Color.secondary.opacity(0.1))
-                            .cornerRadius(6)
-                        
-                        Button(Strings.Common.change) {
-                            showingKeyInput = true
+        SettingsRow(label: Strings.Settings.apiKey) {
+            if hasStoredKey && !showingKeyInput {
+                // View state: masked key + clean text buttons
+                HStack(spacing: 8) {
+                    Text(Constants.maskedAPIKey)
+                        .font(.system(.body, design: .monospaced))
+                        .foregroundStyle(.secondary)
+                    
+                    // Edit button (clean text, no border)
+                    Button(Strings.Common.edit) {
+                        showingKeyInput = true
+                        apiKey = ""
+                    }
+                    .controlSize(.regular)
+                    
+                    // Remove button (clean text, no border, red)
+                    Button(Strings.Common.disconnect) {
+                        onDelete()
+                    }
+                    .controlSize(.regular)
+                    .foregroundStyle(.red)
+                }
+            } else {
+                // Input state: input field + buttons
+                HStack(spacing: 8) {
+                    SecureTextField(text: $apiKey, placeholder: "")
+                        .frame(height: 22)
+                    
+                    if hasStoredKey {
+                        // Cancel button (clean text, no border)
+                        Button(Strings.Common.cancel) {
+                            showingKeyInput = false
                             apiKey = ""
                         }
-                        
-                        Button(Strings.Common.delete) {
-                            onDelete()
-                        }
-                        .foregroundStyle(.red)
-                    }
-                } else {
-                    // Editable key input with Save/Cancel
-                    HStack {
-                        SecureTextField(text: $apiKey, placeholder: "sk-...")
-                        
-                        if hasStoredKey {
-                            Button(Strings.Common.cancel) {
-                                showingKeyInput = false
-                                apiKey = ""
-                            }
-                        }
-                        
-                        Button(Strings.Common.save) {
-                            onSave()
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .disabled(apiKey.isEmpty)
+                        .controlSize(.regular)
                     }
                     
-                    // Test button below
-                    if hasStoredKey || !apiKey.isEmpty {
-                        Button(action: onTest) {
-                            HStack(spacing: 4) {
-                                if isTesting {
-                                    ProgressView()
-                                        .scaleEffect(0.7)
-                                        .frame(width: 12, height: 12)
-                                }
-                                Text(isTesting ? Strings.Common.testing : Strings.Common.testConnection)
-                            }
-                        }
-                        .disabled(isTesting)
+                    // Save button (prominent style)
+                    Button(Strings.Common.save) {
+                        onSave()
                     }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.regular)
+                    .disabled(apiKey.isEmpty)
                 }
             }
         }
@@ -88,30 +69,40 @@ struct APIKeyField: View {
 }
 
 #Preview {
-    VStack {
-        APIKeyField(
-            apiKey: .constant(""),
-            hasStoredKey: .constant(false),
-            showingKeyInput: .constant(true),
-            isTesting: .constant(false),
-            onSave: {},
-            onDelete: {},
-            onTest: {}
-        )
-        
-        Divider()
-        
-        APIKeyField(
-            apiKey: .constant(""),
-            hasStoredKey: .constant(true),
-            showingKeyInput: .constant(false),
-            isTesting: .constant(false),
-            onSave: {},
-            onDelete: {},
-            onTest: {}
-        )
+    Form {
+        Section("API Key States") {
+            // Empty state (inline input)
+            APIKeyField(
+                apiKey: .constant(""),
+                hasStoredKey: .constant(false),
+                showingKeyInput: .constant(false),
+                onSave: {},
+                onDelete: {}
+            )
+            
+            Divider()
+            
+            // View state (with stored key)
+            APIKeyField(
+                apiKey: .constant(""),
+                hasStoredKey: .constant(true),
+                showingKeyInput: .constant(false),
+                onSave: {},
+                onDelete: {}
+            )
+            
+            Divider()
+            
+            // Edit state (changing key)
+            APIKeyField(
+                apiKey: .constant("test-key"),
+                hasStoredKey: .constant(true),
+                showingKeyInput: .constant(true),
+                onSave: {},
+                onDelete: {}
+            )
+        }
     }
-    .padding()
+    .formStyle(.grouped)
     .frame(width: 500)
 }
-

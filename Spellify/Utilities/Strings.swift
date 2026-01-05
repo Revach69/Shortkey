@@ -115,6 +115,30 @@ enum Strings {
             "Launch at login",
             comment: "Launch at login toggle"
         )
+        static let pressShortcut = NSLocalizedString(
+            "Press your desired shortcut",
+            comment: "Instruction text in shortcut recorder popover"
+        )
+        static let clearShortcut = NSLocalizedString(
+            "Clear",
+            comment: "Clear shortcut button"
+        )
+        static let editShortcut = NSLocalizedString(
+            "Edit Shortcut...",
+            comment: "Edit shortcut button label"
+        )
+        static let provider = NSLocalizedString(
+            "Provider",
+            comment: "AI provider label"
+        )
+        static let aiProvider = NSLocalizedString(
+            "AI Provider",
+            comment: "AI Provider section title"
+        )
+        static let aiProviderDescription = NSLocalizedString(
+            "Connect to an AI provider to transform your text.",
+            comment: "AI Provider section description"
+        )
     }
     
     // MARK: - Action Editor
@@ -209,6 +233,26 @@ enum Strings {
             "Launch",
             comment: "Launch label"
         )
+        static let clear = NSLocalizedString(
+            "Clear",
+            comment: "Clear button"
+        )
+        static let edit = NSLocalizedString(
+            "Edit",
+            comment: "Edit button"
+        )
+        static let done = NSLocalizedString(
+            "Done",
+            comment: "Done button"
+        )
+        static let remove = NSLocalizedString(
+            "Remove",
+            comment: "Remove button"
+        )
+        static let disconnect = NSLocalizedString(
+            "Disconnect",
+            comment: "Disconnect button"
+        )
     }
     
     // MARK: - Errors
@@ -220,5 +264,3 @@ enum Strings {
         )
     }
 }
-
-

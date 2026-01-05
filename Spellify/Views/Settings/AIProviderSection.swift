@@ -7,37 +7,35 @@
 
 import SwiftUI
 
-/// Settings section for AI provider configuration (coordinator view)
+/// AI Provider settings section with inline button design
 struct AIProviderSection: View {
     
     // MARK: - Properties
     
     @EnvironmentObject var aiProviderManager: AIProviderManager
     
+    @State private var selectedProvider: String = "OpenAI"
     @State private var apiKey: String = ""
-    @State private var isTesting: Bool = false
     @State private var showingKeyInput: Bool = false
     @State private var hasStoredKey: Bool = false
     
     // MARK: - Body
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            // Header
-            AIProviderHeader()
+        Section {
+            // Provider picker row
+            ProviderPickerRow(selectedProvider: $selectedProvider)
             
-            // API Key input
+            // API Key row with inline buttons
             APIKeyField(
                 apiKey: $apiKey,
                 hasStoredKey: $hasStoredKey,
                 showingKeyInput: $showingKeyInput,
-                isTesting: $isTesting,
                 onSave: saveAPIKey,
-                onDelete: removeAPIKey,
-                onTest: testConnection
+                onDelete: removeAPIKey
             )
             
-            // Model picker
+            // Model picker row (only when connected)
             if !aiProviderManager.availableModels.isEmpty {
                 ModelPickerRow(
                     selectedModel: Binding(
@@ -51,8 +49,34 @@ struct AIProviderSection: View {
                 )
             }
             
-            // Connection status
-            ConnectionStatusRow(status: aiProviderManager.status)
+            // Connection status row (with refresh button)
+            if hasStoredKey {
+                ConnectionStatusRow(
+                    status: aiProviderManager.status,
+                    onTest: {
+                        Task {
+                            await aiProviderManager.testConnection()
+                        }
+                    }
+                )
+            }
+            
+        } header: {
+            // Section header with subtitle and link
+            VStack(alignment: .leading, spacing: 4) {
+                Text(Strings.Settings.aiProvider)
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(.primary)
+                
+                HStack(spacing: 4) {
+                    Text(Strings.Settings.aiProviderDescription)
+                        .font(.system(size: 11))
+                        .foregroundStyle(.secondary)
+                    
+                    Link(Strings.Settings.getAPIKey, destination: Constants.openAIKeyURL)
+                        .font(.system(size: 11))
+                }
+            }
         }
         .onAppear(perform: checkForStoredKey)
     }
@@ -70,44 +94,26 @@ struct AIProviderSection: View {
     private func saveAPIKey() {
         guard !apiKey.isEmpty else { return }
         
-        // Save to keychain
         KeychainService.shared.saveAPIKey(apiKey, for: "openai")
-        
-        // Update UI state
         hasStoredKey = true
         showingKeyInput = false
         
-        // Configure provider
+        // Automatically test connection after saving
         Task {
             await aiProviderManager.configure(apiKey: apiKey)
-            apiKey = "" // Clear the text field
+            apiKey = ""
+            await aiProviderManager.testConnection()
         }
     }
     
     private func removeAPIKey() {
-        // Remove from keychain
         KeychainService.shared.deleteAPIKey(for: "openai")
         hasStoredKey = false
         showingKeyInput = false
         apiKey = ""
         
-        // Reset provider
         Task {
             await aiProviderManager.configure(apiKey: "")
-        }
-    }
-    
-    private func testConnection() {
-        isTesting = true
-        
-        Task {
-            // If testing with a new key, save it first
-            if !apiKey.isEmpty {
-                await aiProviderManager.configure(apiKey: apiKey)
-            }
-            
-            let _ = await aiProviderManager.testConnection()
-            isTesting = false
         }
     }
 }
@@ -115,8 +121,10 @@ struct AIProviderSection: View {
 // MARK: - Preview
 
 #Preview {
-    AIProviderSection()
-        .environmentObject(AIProviderManager())
-        .padding()
-        .frame(width: 500)
+    Form {
+        AIProviderSection()
+            .environmentObject(AIProviderManager())
+    }
+    .formStyle(.grouped)
+    .frame(width: 500)
 }

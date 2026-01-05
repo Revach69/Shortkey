@@ -7,26 +7,27 @@
 
 import SwiftUI
 
-/// Main settings view container
+/// Main settings view container using native macOS "Inset Grouped" style
+/// 
+/// **What is "Inset Grouped"?**
+/// - Native Form + Section layout with system-provided grouped appearance
+/// - Rounded section backgrounds with subtle insets
+/// - System-managed spacing, colors, and separators
+/// - No custom borders, shadows, or card containers
+/// - Matches macOS System Settings visual style
 struct SettingsView: View {
     
     @EnvironmentObject var aiProviderManager: AIProviderManager
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                AIProviderSection()
-                
-                Divider()
-                
-                ShortcutSection()
-                
-                Divider()
-                
-                PreferencesSection()
-            }
-            .padding(20)
+        Form {
+            AIProviderSection()
+            
+            ShortcutSection()
+            
+            PreferencesSection()
         }
+        .formStyle(.grouped)
         .frame(minWidth: Constants.settingsWidth, minHeight: Constants.settingsHeight)
     }
 }
@@ -35,5 +36,3 @@ struct SettingsView: View {
     SettingsView()
         .environmentObject(AIProviderManager())
 }
-
-

@@ -7,10 +7,11 @@
 
 import SwiftUI
 
-/// Connection status display row
+/// Connection status display row with optional refresh/test button
 struct ConnectionStatusRow: View {
     
     let status: ConnectionStatus
+    var onTest: (() -> Void)? = nil
     
     private var statusText: String {
         switch status {
@@ -39,26 +40,46 @@ struct ConnectionStatusRow: View {
     }
     
     var body: some View {
-        HStack {
+        HStack(spacing: 8) {
             Text(Strings.Common.status)
-                .frame(width: 80, alignment: .trailing)
+                .font(.system(size: 13))
+                .foregroundStyle(.primary)
+            
+            Spacer()
             
             StatusIndicator(status: status)
             
             Text(statusText)
-                .font(.callout)
+                .font(.system(size: 13))
                 .foregroundStyle(statusColor)
+            
+            // Optional refresh/test button
+            if let onTest = onTest {
+                Button(action: onTest) {
+                    if case .connecting = status {
+                        ProgressView()
+                            .scaleEffect(0.6)
+                            .frame(width: 16, height: 16)
+                    } else {
+                        Image(systemName: "arrow.clockwise")
+                            .font(.system(size: 13))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .buttonStyle(.plain)
+                .disabled(status == .connecting)
+                .help(Strings.Common.testConnection)
+            }
         }
     }
 }
 
 #Preview {
-    VStack {
-        ConnectionStatusRow(status: .connected(model: "gpt-4o"))
-        ConnectionStatusRow(status: .connecting)
+    VStack(spacing: 12) {
+        ConnectionStatusRow(status: .connected(model: "gpt-4o"), onTest: {})
+        ConnectionStatusRow(status: .connecting, onTest: {})
         ConnectionStatusRow(status: .notConfigured)
-        ConnectionStatusRow(status: .error(message: "Invalid API key"))
+        ConnectionStatusRow(status: .error(message: "Invalid API key"), onTest: {})
     }
     .padding()
 }
-
