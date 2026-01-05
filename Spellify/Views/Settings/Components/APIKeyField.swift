@@ -18,7 +18,23 @@ struct APIKeyField: View {
     let onDelete: () -> Void
     
     var body: some View {
-        SettingsRow(label: Strings.Settings.apiKey) {
+        SettingsRow {
+            // Custom label with help icon
+            HStack(spacing: 4) {
+                Text(Strings.Settings.apiKey)
+                    .foregroundStyle(.primary)
+                
+                Button(action: {
+                    NSWorkspace.shared.open(Constants.openAIKeyURL)
+                }) {
+                    Image(systemName: "questionmark.circle")
+                        .font(.system(size: 11))
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+                .help(Strings.Settings.getAPIKey)
+            }
+        } trailingContent: {
             if hasStoredKey && !showingKeyInput {
                 // View state: masked key + clean text buttons
                 HStack(spacing: 8) {

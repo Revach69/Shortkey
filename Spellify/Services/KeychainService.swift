@@ -99,17 +99,17 @@ final class KeychainService: KeychainServiceProtocol {
     
     /// Saves an API key for a specific provider
     func saveAPIKey(_ apiKey: String, for provider: String) throws {
-        try save(key: "apiKey-\(provider)", value: apiKey)
+        try save(key: "\(provider)-api-key", value: apiKey)
     }
     
     /// Retrieves an API key for a specific provider
     func getAPIKey(for provider: String) -> String? {
-        return try? retrieve(key: "apiKey-\(provider)")
+        return try? retrieve(key: "\(provider)-api-key")
     }
     
     /// Deletes an API key for a specific provider
     func deleteAPIKey(for provider: String) {
-        try? delete(key: "apiKey-\(provider)")
+        try? delete(key: "\(provider)-api-key")
     }
 }
 

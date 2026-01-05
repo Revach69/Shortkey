@@ -9,23 +9,29 @@ import SwiftUI
 
 /// A standard settings row with leading label and trailing content
 /// Represents the macOS System Settings "Inset Grouped" row pattern:
-/// - Leading: Label text
+/// - Leading: Label text or custom view
 /// - Trailing: Control/value (toggle, picker, button, etc.)
 /// - Consistent alignment and spacing
-struct SettingsRow<TrailingContent: View>: View {
+struct SettingsRow<LeadingContent: View, TrailingContent: View>: View {
     
-    let label: String
+    let leadingContent: LeadingContent
     let trailingContent: TrailingContent
     
-    init(label: String, @ViewBuilder trailingContent: () -> TrailingContent) {
-        self.label = label
+    // Simple string label initializer
+    init(label: String, @ViewBuilder trailingContent: () -> TrailingContent) where LeadingContent == Text {
+        self.leadingContent = Text(label).foregroundStyle(.primary)
+        self.trailingContent = trailingContent()
+    }
+    
+    // Custom label view initializer
+    init(@ViewBuilder leadingContent: () -> LeadingContent, @ViewBuilder trailingContent: () -> TrailingContent) {
+        self.leadingContent = leadingContent()
         self.trailingContent = trailingContent()
     }
     
     var body: some View {
         HStack {
-            Text(label)
-                .foregroundStyle(.primary)
+            leadingContent
             
             Spacer()
             

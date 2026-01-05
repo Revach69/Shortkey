@@ -25,7 +25,7 @@ final class OpenAIProvider: AIModelProvider {
     
     private let session: URLSessionProtocol
     private let keychain: KeychainServiceProtocol
-    private let keychainKey = "openai-api-key"
+    private let keychainKey = "openai-api-key" // Must match KeychainService.saveAPIKey format
     private let baseURL = "https://api.openai.com/v1"
     private let timeout: TimeInterval = 10.0
     
@@ -42,8 +42,11 @@ final class OpenAIProvider: AIModelProvider {
     // MARK: - AIModelProvider Methods
     
     func configure(apiKey: String) async {
-        // API key is already saved by AIProviderSection, just store locally
-        // The keychain save happens in KeychainService.saveAPIKey
+        // Update connection status based on API key presence
+        if apiKey.isEmpty {
+            connectionStatus = .notConfigured
+        }
+        // Note: API key is saved to keychain by AIProviderSection before calling this
     }
     
     func testConnection() async throws -> Bool {

@@ -11,45 +11,45 @@ import SwiftUI
 struct ProviderStatusView: View {
     
     @EnvironmentObject var aiProviderManager: AIProviderManager
-    @State private var isTesting: Bool = false
+    
+    private var hasStoredKey: Bool {
+        switch aiProviderManager.status {
+        case .notConfigured:
+            return false
+        case .connected, .connecting, .error:
+            return true
+        }
+    }
     
     var body: some View {
         HStack(spacing: 8) {
-            StatusIndicator(status: aiProviderManager.status)
-            
-            Text(aiProviderManager.providerDisplayName)
-                .foregroundStyle(.primary)
-            
-            Text(Constants.textSeparator)
-                .foregroundStyle(.secondary)
-            
-            Text(aiProviderManager.status.displayText)
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
-            
-            Spacer()
-            
-            // Refresh/Test connection button
-            Button(action: {
-                Task {
-                    isTesting = true
-                    let _ = await aiProviderManager.testConnection()
-                    isTesting = false
-                }
-            }) {
-                if isTesting {
-                    ProgressView()
-                        .scaleEffect(0.6)
-                        .frame(width: 14, height: 14)
-                } else {
-                    Image(systemName: "arrow.clockwise")
-                        .font(.system(size: 14))
+            // Left: Provider [• Model]
+            HStack(spacing: 0) {
+                Text(aiProviderManager.providerDisplayName)
+                    .foregroundStyle(.primary)
+                
+                // Show model only when not "Not configured"
+                if case .notConfigured = aiProviderManager.status {
+                    // No model shown
+                } else if case .connected(let model) = aiProviderManager.status {
+                    Text(" " + Constants.textSeparator + " " + model)
                         .foregroundStyle(.secondary)
                 }
             }
-            .buttonStyle(.plain)
-            .help(Strings.Common.testConnection)
-            .disabled(isTesting)
+            
+            Spacer()
+            
+            // Right: Connection status component
+            ConnectionStatusView(
+                status: aiProviderManager.status,
+                fontSize: 14,
+                hasStoredKey: hasStoredKey,
+                onTest: {
+                    Task {
+                        let _ = await aiProviderManager.testConnection()
+                    }
+                }
+            )
         }
         .font(.callout)
         .padding(.horizontal, 16)

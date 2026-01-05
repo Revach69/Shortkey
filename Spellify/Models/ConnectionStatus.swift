@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 /// Represents the connection status of an AI provider
 enum ConnectionStatus: Equatable {
@@ -29,10 +30,24 @@ enum ConnectionStatus: Equatable {
             return "Not configured"
         case .connecting:
             return "Connecting..."
-        case .connected(let model):
-            return model
+        case .connected:
+            return "Connected"
         case .error(let message):
             return message
+        }
+    }
+    
+    /// Color for status indicator and text
+    var statusColor: Color {
+        switch self {
+        case .connected:
+            return .green
+        case .connecting:
+            return .orange
+        case .notConfigured:
+            return .yellow
+        case .error:
+            return .red
         }
     }
 }

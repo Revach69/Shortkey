@@ -23,7 +23,7 @@ struct AIProviderSection: View {
     
     var body: some View {
         Section {
-            // Provider picker row
+            // Provider picker (no inline status anymore)
             ProviderPickerRow(selectedProvider: $selectedProvider)
             
             // API Key row with inline buttons
@@ -49,33 +49,26 @@ struct AIProviderSection: View {
                 )
             }
             
-            // Connection status row (with refresh button)
-            if hasStoredKey {
-                ConnectionStatusRow(
+        } header: {
+            // Header with status on the right
+            HStack {
+                Text(Strings.Settings.aiProvider)
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(.primary)
+                
+                Spacer()
+                
+                // Connection status component
+                ConnectionStatusView(
                     status: aiProviderManager.status,
+                    fontSize: 13,
+                    hasStoredKey: hasStoredKey,
                     onTest: {
                         Task {
                             let _ = await aiProviderManager.testConnection()
                         }
                     }
                 )
-            }
-            
-        } header: {
-            // Section header with subtitle and link
-            VStack(alignment: .leading, spacing: 4) {
-                Text(Strings.Settings.aiProvider)
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(.primary)
-                
-                HStack(spacing: 4) {
-                    Text(Strings.Settings.aiProviderDescription)
-                        .font(.system(size: 11))
-                        .foregroundStyle(.secondary)
-                    
-                    Link(Strings.Settings.getAPIKey, destination: Constants.openAIKeyURL)
-                        .font(.system(size: 11))
-                }
             }
         }
         .onAppear(perform: checkForStoredKey)

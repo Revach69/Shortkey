@@ -115,6 +115,12 @@ final class AIProviderManager: ObservableObject {
     @MainActor
     func configure(apiKey: String) async {
         await provider.configure(apiKey: apiKey)
+        
+        // Reset state when disconnecting (empty API key)
+        if apiKey.isEmpty {
+            status = .notConfigured
+            availableModels = []
+        }
     }
     
     /// Transforms text using the selected action
