@@ -29,8 +29,12 @@ enum Strings {
             "Settings...",
             comment: "Settings menu item"
         )
+        static let about = NSLocalizedString(
+            "About",
+            comment: "About menu item"
+        )
         static let quit = NSLocalizedString(
-            "Quit Spellify",
+            "Quit",
             comment: "Quit menu item"
         )
     }

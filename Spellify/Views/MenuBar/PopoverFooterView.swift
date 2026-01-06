@@ -7,15 +7,16 @@
 
 import SwiftUI
 
-/// Footer with Configure and Quit options
+/// Footer with Settings, About, and Quit options
 struct PopoverFooterView: View {
     
     @EnvironmentObject var actionsManager: ActionsManager
     @EnvironmentObject var aiProviderManager: AIProviderManager
+    @Binding var showingAbout: Bool
     
     var body: some View {
         VStack(spacing: 0) {
-            // Configure button
+            // Settings button
             Button(action: openSettings) {
                 HStack {
                     Text(Strings.Popover.configure)
@@ -23,7 +24,22 @@ struct PopoverFooterView: View {
                     Spacer()
                 }
                 .padding(.horizontal, 16)
-                .padding(.vertical, 8)
+                .padding(.vertical, 6)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(HoverButtonStyle())
+            
+            // About button
+            Button(action: {
+                showingAbout = true
+            }) {
+                HStack {
+                    Text(Strings.Popover.about)
+                        .foregroundStyle(.primary)
+                    Spacer()
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 6)
                 .contentShape(Rectangle())
             }
             .buttonStyle(HoverButtonStyle())
@@ -36,7 +52,7 @@ struct PopoverFooterView: View {
                     Spacer()
                 }
                 .padding(.horizontal, 16)
-                .padding(.vertical, 8)
+                .padding(.vertical, 6)
                 .contentShape(Rectangle())
             }
             .buttonStyle(HoverButtonStyle())
@@ -68,7 +84,7 @@ struct PopoverFooterView: View {
 }
 
 #Preview {
-    PopoverFooterView()
+    PopoverFooterView(showingAbout: .constant(false))
         .environmentObject(ActionsManager())
         .environmentObject(AIProviderManager())
         .frame(width: 300)

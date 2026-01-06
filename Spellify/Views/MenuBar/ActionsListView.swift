@@ -44,7 +44,7 @@ struct ActionsListView: View {
                         Spacer()
                     }
                     .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
+                    .padding(.vertical, 6)
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(HoverButtonStyle())
@@ -62,7 +62,7 @@ struct ActionsListView: View {
                     Spacer()
                 }
                 .padding(.horizontal, 16)
-                .padding(.vertical, 8)
+                .padding(.vertical, 6)
                 .contentShape(Rectangle())
             }
             .buttonStyle(HoverButtonStyle())

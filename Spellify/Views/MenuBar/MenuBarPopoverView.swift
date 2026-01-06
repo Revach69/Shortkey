@@ -16,6 +16,7 @@ struct MenuBarPopoverView: View {
     @State private var showingActionEditor = false
     @State private var editingAction: SpellAction?
     @State private var actionEditorMode: ActionEditorMode?
+    @State private var showingAbout = false
     
     enum ActionEditorMode: Identifiable {
         case add
@@ -50,7 +51,7 @@ struct MenuBarPopoverView: View {
             
             Divider()
             
-            PopoverFooterView()
+            PopoverFooterView(showingAbout: $showingAbout)
         }
         .frame(width: Constants.popoverWidth)
         .sheet(item: $actionEditorMode) { mode in
@@ -74,6 +75,11 @@ struct MenuBarPopoverView: View {
                     actionEditorMode = nil
                 } : nil
             )
+        }
+        .sheet(isPresented: $showingAbout) {
+            AboutSheet(onClose: {
+                showingAbout = false
+            })
         }
     }
 }

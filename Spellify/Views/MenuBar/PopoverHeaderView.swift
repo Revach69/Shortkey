@@ -19,9 +19,7 @@ struct PopoverHeaderView: View {
             
             Spacer()
             
-            Text(shortcutDisplay)
-                .font(.system(.body, design: .monospaced))
-                .foregroundStyle(.secondary)
+            ShortcutDisplayView(shortcut: shortcutDisplay)
         }
         .padding(.horizontal, 16)
         .padding(.top, 12)
