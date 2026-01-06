@@ -22,74 +22,51 @@ struct ShortcutEditorSheet: View {
     // MARK: - Body
     
     var body: some View {
-        VStack(spacing: 0) {
-            // Title
+        SettingsModalContainer(
+            title: "Edit Keyboard Shortcut",
+            width: 400,
+            height: 220
+        ) {
+            // Instruction text
             HStack {
-                Text("Edit Keyboard Shortcut")
-                    .font(.system(size: 16, weight: .semibold))
+                Text("Press your desired shortcut")
+                    .font(.system(size: 13))
+                    .foregroundStyle(.secondary)
                 
                 Spacer()
             }
-            .padding(.horizontal, 20)
-            .padding(.top, 20)
-            .padding(.bottom, 16)
             
-            Divider()
-            
-            // Content
-            VStack(spacing: 12) {
-                // Instruction text
-                HStack {
-                    Text("Press your desired shortcut")
-                        .font(.system(size: 13))
-                        .foregroundStyle(.secondary)
-                    
-                    Spacer()
-                }
-                
-                // Recording input field
-                ShortcutRecorderInputView(
-                    shortcutDisplay: $tempShortcut,
-                    isRecording: $isRecording
-                )
-                .frame(height: 50)
+            // Recording input field
+            ShortcutRecorderInputView(
+                shortcutDisplay: $tempShortcut,
+                isRecording: $isRecording
+            )
+            .frame(height: 50)
+        } footer: {
+            // Clear button (left side)
+            Button(Strings.Common.clear) {
+                onClear()
             }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 20)
+            .disabled(tempShortcut.isEmpty)
             
-            Divider()
+            Spacer()
             
-            // Footer buttons
-            HStack {
-                // Clear button (left side)
-                Button(Strings.Common.clear) {
-                    onClear()
-                }
-                .disabled(tempShortcut.isEmpty)
-                
-                Spacer()
-                
-                // Cancel button
-                Button(Strings.Common.cancel) {
-                    onCancel()
-                }
-                .keyboardShortcut(.cancelAction)
-                
-                // Save button
-                Button(Strings.Common.save) {
-                    if !tempShortcut.isEmpty {
-                        onSave(tempShortcut)
-                    }
-                }
-                .buttonStyle(.borderedProminent)
-                .keyboardShortcut(.defaultAction)
-                .disabled(tempShortcut.isEmpty)
+            // Cancel button
+            Button(Strings.Common.cancel) {
+                onCancel()
             }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 16)
+            .keyboardShortcut(.cancelAction)
+            
+            // Save button
+            Button(Strings.Common.save) {
+                if !tempShortcut.isEmpty {
+                    onSave(tempShortcut)
+                }
+            }
+            .buttonStyle(.borderedProminent)
+            .keyboardShortcut(.defaultAction)
+            .disabled(tempShortcut.isEmpty)
         }
-        .frame(width: 400, height: 210)
-        .background(Color(NSColor.windowBackgroundColor))
         .onAppear {
             isRecording = true
         }

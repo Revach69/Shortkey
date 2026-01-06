@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Combine
 
 /// Name input field for action editor
 struct ActionNameField: View {
@@ -14,33 +13,13 @@ struct ActionNameField: View {
     @Binding var name: String
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            // Label with character counter
-            HStack {
-                Text(Strings.ActionEditor.name)
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(.secondary)
-                
-                Spacer()
-                
-                Text("\(name.count)/\(Constants.maxNameLength)")
-                    .font(.system(size: 11, design: .monospaced))
-                    .foregroundStyle(.secondary)
-            }
-            
-            TextField(Strings.ActionEditor.name, text: $name, prompt: Text(Strings.ActionEditor.namePlaceholder))
-                .textFieldStyle(.plain)
-                .font(.system(size: 14))
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .background(Color.secondary.opacity(0.1))
-                .cornerRadius(6)
-                .onReceive(Just(name)) { _ in
-                    if name.count > Constants.maxNameLength {
-                        name = String(name.prefix(Constants.maxNameLength))
-                    }
-                }
-        }
+        InputFormField(
+            label: Strings.ActionEditor.name,
+            text: $name,
+            placeholder: Strings.ActionEditor.namePlaceholder,
+            maxLength: Constants.maxNameLength,
+            showCounter: true
+        )
     }
 }
 

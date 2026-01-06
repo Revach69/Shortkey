@@ -18,80 +18,47 @@ struct APIKeyEntrySheet: View {
     let onSave: () -> Void
     let onCancel: () -> Void
     
-    @FocusState private var isInputFocused: Bool
     
     // MARK: - Body
     
     var body: some View {
-        VStack(spacing: 0) {
-            // Title
+        SettingsModalContainer(
+            title: "\(providerName) API Key",
+            width: 400,
+            height: 220
+        ) {
+            // Secure input field with label
+            InputFormField(
+                label: "Enter your key",
+                text: $apiKey,
+                placeholder: "sk-...",
+                isSecure: true
+            )
+            
+            // Get API key link (help text below)
             HStack {
-                Text("\(providerName) API Key")
-                    .font(.system(size: 16, weight: .semibold))
+                Link(destination: apiKeyURL) {
+                    Text(Strings.Settings.getAPIKey)
+                        .font(.system(size: 12))
+                        .foregroundStyle(.secondary)
+                }
                 
                 Spacer()
             }
-            .padding(.horizontal, 20)
-            .padding(.top, 20)
-            .padding(.bottom, 16)
+        } footer: {
+            Spacer()
             
-            Divider()
-            
-            // Content
-            VStack(spacing: 16) {
-                // Native secure input field
-                NativeSecureTextField(
-                    text: $apiKey,
-                    placeholder: "sk-..."
-                )
-                .frame(height: 22)
-                .focused($isInputFocused)
-                
-                // Get API key link
-                HStack {
-                    Link(destination: apiKeyURL) {
-                        HStack(spacing: 4) {
-                            Text(Strings.Settings.getAPIKey)
-                                .font(.system(size: 13))
-                            Image(systemName: "arrow.forward")
-                                .font(.system(size: 11))
-                        }
-                    }
-                    
-                    Spacer()
-                }
+            Button(Strings.Common.cancel) {
+                onCancel()
             }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 20)
+            .keyboardShortcut(.cancelAction)
             
-            Divider()
-            
-            // Footer buttons
-            HStack {
-                Spacer()
-                
-                Button(Strings.Common.cancel) {
-                    onCancel()
-                }
-                .keyboardShortcut(.cancelAction)
-                
-                Button(Strings.Settings.saveAndTest) {
-                    onSave()
-                }
-                .buttonStyle(.borderedProminent)
-                .keyboardShortcut(.defaultAction)
-                .disabled(apiKey.trimmingCharacters(in: .whitespaces).isEmpty)
+            Button(Strings.Settings.saveAndTest) {
+                onSave()
             }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 16)
-        }
-        .frame(width: 400, height: 180)
-        .background(Color(NSColor.windowBackgroundColor))
-        .onAppear {
-            // Auto-focus the input field
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                isInputFocused = true
-            }
+            .buttonStyle(.borderedProminent)
+            .keyboardShortcut(.defaultAction)
+            .disabled(apiKey.trimmingCharacters(in: .whitespaces).isEmpty)
         }
     }
 }

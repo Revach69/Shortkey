@@ -25,14 +25,16 @@ struct AboutSheet: View {
     // MARK: - Body
     
     var body: some View {
-        VStack(spacing: 0) {
-            // Content
+        SettingsModalContainer(
+            title: "About",
+            width: 320,
+            height: 280
+        ) {
             VStack(spacing: 16) {
                 // App Icon
                 Image(systemName: "wand.and.stars")
                     .font(.system(size: 64))
                     .foregroundStyle(.blue)
-                    .padding(.top, 30)
                 
                 // App Name
                 Text("Spellify")
@@ -49,26 +51,16 @@ struct AboutSheet: View {
                     .foregroundStyle(.secondary)
                     .padding(.top, 8)
             }
-            .padding(.bottom, 30)
+        } footer: {
+            Spacer()
             
-            Divider()
-            
-            // Close button
-            HStack {
-                Spacer()
-                
-                Button("OK") {
-                    onClose()
-                }
-                .keyboardShortcut(.defaultAction)
-                .buttonStyle(.borderedProminent)
-                .controlSize(.regular)
+            Button("Close") {
+                onClose()
             }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 16)
+            .keyboardShortcut(.defaultAction)
+            .buttonStyle(.borderedProminent)
+            .controlSize(.regular)
         }
-        .frame(width: 320, height: 280)
-        .background(Color(NSColor.windowBackgroundColor))
     }
 }
 
