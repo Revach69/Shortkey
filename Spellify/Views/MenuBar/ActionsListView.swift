@@ -12,8 +12,7 @@ struct ActionsListView: View {
     
     @EnvironmentObject var actionsManager: ActionsManager
     
-    @Binding var showingActionEditor: Bool
-    @Binding var editingAction: SpellAction?
+    @Binding var actionEditorMode: MenuBarPopoverView.ActionEditorMode?
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -28,8 +27,7 @@ struct ActionsListView: View {
             // Actions list
             ForEach(actionsManager.actions) { action in
                 Button(action: {
-                    editingAction = action
-                    showingActionEditor = true
+                    actionEditorMode = .edit(action)
                 }) {
                     HStack(spacing: 12) {
                         // Icon
@@ -54,8 +52,7 @@ struct ActionsListView: View {
             
             // Add action button
             Button(action: {
-                editingAction = nil
-                showingActionEditor = true
+                actionEditorMode = .add
             }) {
                 HStack {
                     Image(systemName: "plus")
@@ -76,8 +73,7 @@ struct ActionsListView: View {
 
 #Preview {
     ActionsListView(
-        showingActionEditor: .constant(false),
-        editingAction: .constant(nil)
+        actionEditorMode: .constant(nil)
     )
     .environmentObject(ActionsManager())
     .frame(width: 300)

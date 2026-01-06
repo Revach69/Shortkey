@@ -15,6 +15,26 @@ struct MenuBarPopoverView: View {
     
     @State private var showingActionEditor = false
     @State private var editingAction: SpellAction?
+    @State private var actionEditorMode: ActionEditorMode?
+    
+    enum ActionEditorMode: Identifiable {
+        case add
+        case edit(SpellAction)
+        
+        var id: String {
+            switch self {
+            case .add: return "add"
+            case .edit(let action): return action.id.uuidString
+            }
+        }
+        
+        var action: SpellAction? {
+            switch self {
+            case .add: return nil
+            case .edit(let action): return action
+            }
+        }
+    }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -25,8 +45,7 @@ struct MenuBarPopoverView: View {
             Divider()
             
             ActionsListView(
-                showingActionEditor: $showingActionEditor,
-                editingAction: $editingAction
+                actionEditorMode: $actionEditorMode
             )
             
             Divider()
@@ -34,28 +53,25 @@ struct MenuBarPopoverView: View {
             PopoverFooterView()
         }
         .frame(width: Constants.popoverWidth)
-        .sheet(isPresented: $showingActionEditor) {
+        .sheet(item: $actionEditorMode) { mode in
             ActionEditorSheet(
-                action: editingAction,
+                action: mode.action,
                 onSave: { action in
-                    if editingAction != nil {
+                    if case .edit = mode {
                         actionsManager.update(action)
                     } else {
                         actionsManager.add(action)
                     }
-                    showingActionEditor = false
-                    editingAction = nil
+                    actionEditorMode = nil
                 },
                 onCancel: {
-                    showingActionEditor = false
-                    editingAction = nil
+                    actionEditorMode = nil
                 },
-                onDelete: editingAction != nil ? {
-                    if let action = editingAction {
+                onDelete: mode.action != nil ? {
+                    if let action = mode.action {
                         actionsManager.delete(action)
                     }
-                    showingActionEditor = false
-                    editingAction = nil
+                    actionEditorMode = nil
                 } : nil
             )
         }
