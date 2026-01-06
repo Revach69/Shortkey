@@ -23,6 +23,10 @@ final class AIProviderManager: ObservableObject {
     private let defaults: UserDefaults
     private let selectedModelKey = "spellify.selectedModel"
     
+    // Reusable encoder/decoder for performance
+    private static let encoder = JSONEncoder()
+    private static let decoder = JSONDecoder()
+    
     // MARK: - Constants
     
     static let maxTextLength = 10_000
@@ -170,14 +174,14 @@ final class AIProviderManager: ObservableObject {
     
     private func loadSelectedModel() {
         guard let data = defaults.data(forKey: selectedModelKey),
-              let model = try? JSONDecoder().decode(AIModel.self, from: data) else {
+              let model = try? Self.decoder.decode(AIModel.self, from: data) else {
             return
         }
         selectedModel = model
     }
     
     private func saveSelectedModel() {
-        guard let data = try? JSONEncoder().encode(selectedModel) else { return }
+        guard let data = try? Self.encoder.encode(selectedModel) else { return }
         defaults.set(data, forKey: selectedModelKey)
     }
 }

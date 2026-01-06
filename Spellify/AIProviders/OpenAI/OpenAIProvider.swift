@@ -29,6 +29,10 @@ final class OpenAIProvider: AIModelProvider {
     private let baseURL = "https://api.openai.com/v1"
     private let timeout: TimeInterval = 10.0
     
+    // Reusable encoder/decoder for performance
+    private static let encoder = JSONEncoder()
+    private static let decoder = JSONDecoder()
+    
     // MARK: - Initialization
     
     init(
@@ -94,7 +98,7 @@ final class OpenAIProvider: AIModelProvider {
             throw OpenAIError.invalidResponse
         }
         
-        let modelsResponse = try JSONDecoder().decode(OpenAIModelsResponse.self, from: data)
+        let modelsResponse = try Self.decoder.decode(OpenAIModelsResponse.self, from: data)
         
         // Filter to only chat models
         let chatModels = modelsResponse.data
@@ -119,7 +123,7 @@ final class OpenAIProvider: AIModelProvider {
             temperature: 0.3
         )
         
-        let bodyData = try JSONEncoder().encode(requestBody)
+        let bodyData = try Self.encoder.encode(requestBody)
         
         var request = try buildRequest(
             endpoint: "/chat/completions",
@@ -142,7 +146,7 @@ final class OpenAIProvider: AIModelProvider {
             throw OpenAIError.httpError(statusCode: httpResponse.statusCode)
         }
         
-        let chatResponse = try JSONDecoder().decode(OpenAIChatResponse.self, from: data)
+        let chatResponse = try Self.decoder.decode(OpenAIChatResponse.self, from: data)
         
         guard let content = chatResponse.choices.first?.message.content else {
             throw OpenAIError.noContent

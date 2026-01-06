@@ -19,6 +19,11 @@ final class ActionsManager: ObservableObject {
     
     private let defaults: UserDefaults
     private let storageKey = "spellify.actions"
+    private var saveWorkItem: DispatchWorkItem?
+    
+    // Reusable encoder/decoder for performance
+    private static let encoder = JSONEncoder()
+    private static let decoder = JSONDecoder()
     
     // MARK: - Initialization
     
@@ -71,7 +76,7 @@ final class ActionsManager: ObservableObject {
         }
         
         do {
-            actions = try JSONDecoder().decode([SpellAction].self, from: data)
+            actions = try Self.decoder.decode([SpellAction].self, from: data)
         } catch {
             // Corrupted data - reset to defaults
             actions = SpellAction.defaults
@@ -80,12 +85,22 @@ final class ActionsManager: ObservableObject {
     }
     
     private func saveActions() {
-        do {
-            let data = try JSONEncoder().encode(actions)
-            defaults.set(data, forKey: storageKey)
-        } catch {
-            // Failed to save actions
+        // Cancel any pending save
+        saveWorkItem?.cancel()
+        
+        // Debounce saves to avoid excessive writes (batch operations within 0.1s)
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self = self else { return }
+            do {
+                let data = try Self.encoder.encode(self.actions)
+                self.defaults.set(data, forKey: self.storageKey)
+            } catch {
+                // Failed to save actions
+            }
         }
+        
+        saveWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: workItem)
     }
 }
 

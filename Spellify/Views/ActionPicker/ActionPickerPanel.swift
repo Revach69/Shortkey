@@ -40,7 +40,6 @@ final class ActionPickerPanelController {
     private var windowResignObserver: Any?
     private var screenChangeObserver: Any?
     private var spaceChangeObserver: Any?
-    private var screenPositionTimer: Timer?
     
     // MARK: - Initialization
     
@@ -109,14 +108,10 @@ final class ActionPickerPanelController {
         
         // Set up all event monitors
         setupEventMonitors()
-        
-        // Poll to check if panel is still on an active screen
-        startScreenPositionMonitoring()
     }
     
     /// Hides the panel
     func dismiss() {
-        stopScreenPositionMonitoring()
         removeEventMonitors()
         panel?.orderOut(nil)
         panel = nil
@@ -124,31 +119,6 @@ final class ActionPickerPanelController {
     }
     
     // MARK: - Private Methods
-    
-    /// Start monitoring if panel is still visible on current screen
-    private func startScreenPositionMonitoring() {
-        screenPositionTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
-            guard let self = self, let panel = self.panel else { return }
-            
-            // Check if panel is still on a visible screen
-            let panelFrame = panel.frame
-            let screens = NSScreen.screens
-            
-            let isOnAnyScreen = screens.contains { screen in
-                screen.frame.intersects(panelFrame)
-            }
-            
-            if !isOnAnyScreen {
-                self.dismiss()
-            }
-        }
-    }
-    
-    /// Stop monitoring screen position
-    private func stopScreenPositionMonitoring() {
-        screenPositionTimer?.invalidate()
-        screenPositionTimer = nil
-    }
     
     /// Set up event monitors for auto-dismissal
     private func setupEventMonitors() {
