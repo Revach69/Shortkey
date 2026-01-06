@@ -35,8 +35,8 @@ protocol AIModelProvider: AnyObject {
     /// Fetches available models from the provider
     func fetchAvailableModels() async throws -> [AIModel]
     
-    /// Transforms text using the specified prompt and model
-    func transform(text: String, prompt: String, model: String) async throws -> String
+    /// Transforms text using the specified description and model
+    func transform(text: String, description: String, model: String) async throws -> String
 }
 
 // MARK: - URLSession Protocol for Testing

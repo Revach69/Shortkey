@@ -110,7 +110,7 @@ final class OpenAIProvider: AIModelProvider {
         return chatModels
     }
     
-    func transform(text: String, prompt: String, model: String) async throws -> String {
+    func transform(text: String, description: String, model: String) async throws -> String {
         guard let apiKey = try keychain.retrieve(key: keychainKey) else {
             throw OpenAIError.noAPIKey
         }
@@ -118,7 +118,7 @@ final class OpenAIProvider: AIModelProvider {
         let requestBody = OpenAIChatRequest(
             model: model,
             messages: [
-                OpenAIChatMessage(role: "system", content: buildSystemPrompt(for: prompt)),
+                OpenAIChatMessage(role: "system", content: buildSystemPrompt(for: description)),
                 OpenAIChatMessage(role: "user", content: text)
             ],
             temperature: 0.3

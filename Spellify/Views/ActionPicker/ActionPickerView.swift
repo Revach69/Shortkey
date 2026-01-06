@@ -122,9 +122,9 @@ struct ActionPickerRow: View {
 #Preview {
     ActionPickerView(
         actions: [
-            SpellAction(name: "Fix Grammar", prompt: ""),
-            SpellAction(name: "Translate to Spanish", prompt: ""),
-            SpellAction(name: "Make Shorter", prompt: "")
+            SpellAction(name: "Fix Grammar", description: ""),
+            SpellAction(name: "Translate to Spanish", description: ""),
+            SpellAction(name: "Make Shorter", description: "")
         ],
         onSelect: { _ in },
         onDismiss: {}

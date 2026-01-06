@@ -160,7 +160,7 @@ final class AIProviderManager: ObservableObject {
         
         return try await provider.transform(
             text: text,
-            prompt: action.prompt,
+            description: action.description,
             model: selectedModel.id
         )
     }

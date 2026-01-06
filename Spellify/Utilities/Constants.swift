@@ -59,8 +59,8 @@ enum Constants {
     /// Maximum action name length (characters)
     static let maxNameLength = 50
     
-    /// Maximum prompt length (characters)
-    static let maxPromptLength = 500
+    /// Maximum description length (characters)
+    static let maxDescriptionLength = 500
     
     /// Curated SF Symbol icons for actions
     static let availableSFSymbols = [

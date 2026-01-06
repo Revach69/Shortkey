@@ -18,7 +18,7 @@ struct ActionEditorSheet: View {
     let onDelete: (() -> Void)?
     
     @State private var name: String = ""
-    @State private var prompt: String = ""
+    @State private var description: String = ""
     @State private var icon: String = "wand.and.stars"
     
     // MARK: - Computed Properties
@@ -29,7 +29,7 @@ struct ActionEditorSheet: View {
     
     private var isValid: Bool {
         !name.trimmingCharacters(in: .whitespaces).isEmpty &&
-        !prompt.trimmingCharacters(in: .whitespaces).isEmpty
+        !description.trimmingCharacters(in: .whitespaces).isEmpty
     }
     
     // MARK: - Body
@@ -49,8 +49,8 @@ struct ActionEditorSheet: View {
                     ActionNameField(name: $name)
                 }
                 
-                // Prompt
-                ActionPromptEditor(prompt: $prompt)
+                // Description
+                ActionDescriptionEditor(description: $description)
             }
             .padding(.horizontal, 20)
             .padding(.top, 20)
@@ -77,7 +77,7 @@ struct ActionEditorSheet: View {
     private func loadActionData() {
         guard let action = action else { return }
         name = action.name
-        prompt = action.prompt
+        description = action.description
         icon = action.icon
     }
     
@@ -85,7 +85,7 @@ struct ActionEditorSheet: View {
         let newAction = SpellAction(
             id: action?.id ?? UUID(),
             name: name.trimmingCharacters(in: .whitespaces),
-            prompt: prompt.trimmingCharacters(in: .whitespaces),
+            description: description.trimmingCharacters(in: .whitespaces),
             icon: icon
         )
         onSave(newAction)
@@ -107,7 +107,7 @@ struct ActionEditorSheet: View {
     ActionEditorSheet(
         action: SpellAction(
             name: "Fix Grammar",
-            prompt: "Fix any grammar errors",
+            description: "Fix any grammar errors",
             icon: "text.badge.checkmark"
         ),
         onSave: { _ in },

@@ -176,21 +176,21 @@ enum Strings {
             "Icon",
             comment: "Action icon label"
         )
-        static let prompt = NSLocalizedString(
-            "Prompt",
-            comment: "Action prompt label"
+        static let description = NSLocalizedString(
+            "Description",
+            comment: "Action description label"
         )
-        static let promptHelper = NSLocalizedString(
+        static let descriptionHelper = NSLocalizedString(
             "Tell the AI what to do with the selected text",
-            comment: "Prompt helper text"
+            comment: "Description helper text"
         )
         static let namePlaceholder = NSLocalizedString(
             "e.g., Fix Grammar",
             comment: "Action name placeholder"
         )
-        static let promptPlaceholder = NSLocalizedString(
+        static let descriptionPlaceholder = NSLocalizedString(
             "e.g., Fix any grammar and spelling errors...",
-            comment: "Action prompt placeholder"
+            comment: "Action description placeholder"
         )
         static let save = NSLocalizedString(
             "Save",

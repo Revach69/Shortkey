@@ -71,12 +71,12 @@ struct ActionRowView: View {
 #Preview {
     VStack(spacing: 0) {
         ActionRowView(
-            action: SpellAction(name: "Fix Grammar", prompt: "Fix grammar", icon: "text.badge.checkmark"),
+            action: SpellAction(name: "Fix Grammar", description: "Fix grammar", icon: "text.badge.checkmark"),
             onEdit: {},
             onDelete: {}
         )
         ActionRowView(
-            action: SpellAction(name: "Translate to Spanish", prompt: "Translate", icon: "globe"),
+            action: SpellAction(name: "Translate to Spanish", description: "Translate", icon: "globe"),
             onEdit: {},
             onDelete: {}
         )
