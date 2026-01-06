@@ -12,6 +12,15 @@ struct ActionPromptEditor: View {
     
     @Binding var prompt: String
     
+    private var limitedPrompt: Binding<String> {
+        Binding(
+            get: { prompt },
+            set: { newValue in
+                prompt = String(newValue.prefix(Constants.maxPromptLength))
+            }
+        )
+    }
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             VStack(alignment: .leading, spacing: 4) {
@@ -32,7 +41,7 @@ struct ActionPromptEditor: View {
                 }
             }
             
-            TextEditor(text: $prompt)
+            TextEditor(text: limitedPrompt)
                 .font(.system(size: 14))
                 .frame(minHeight: 120)
                 .scrollContentBackground(.hidden)
@@ -42,11 +51,6 @@ struct ActionPromptEditor: View {
                     RoundedRectangle(cornerRadius: 6)
                         .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
                 )
-                .onChange(of: prompt) { oldValue, newValue in
-                    if newValue.count > Constants.maxPromptLength {
-                        prompt = String(newValue.prefix(Constants.maxPromptLength))
-                    }
-                }
         }
     }
 }

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 /// Name input field for action editor
 struct ActionNameField: View {
@@ -34,9 +35,9 @@ struct ActionNameField: View {
                 .padding(.vertical, 8)
                 .background(Color.secondary.opacity(0.1))
                 .cornerRadius(6)
-                .onChange(of: name) { oldValue, newValue in
-                    if newValue.count > Constants.maxNameLength {
-                        name = String(newValue.prefix(Constants.maxNameLength))
+                .onReceive(Just(name)) { _ in
+                    if name.count > Constants.maxNameLength {
+                        name = String(name.prefix(Constants.maxNameLength))
                     }
                 }
         }

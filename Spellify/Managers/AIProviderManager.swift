@@ -27,6 +27,25 @@ final class AIProviderManager: ObservableObject {
     
     static let maxTextLength = 10_000
     
+    // MARK: - Helpers
+    
+    /// Convert system errors to short, friendly messages
+    private func friendlyErrorMessage(from error: Error) -> String {
+        let errorDescription = error.localizedDescription.lowercased()
+        
+        if errorDescription.contains("internet") || errorDescription.contains("offline") {
+            return "No internet connection"
+        } else if errorDescription.contains("timeout") || errorDescription.contains("timed out") {
+            return "Connection timeout"
+        } else if errorDescription.contains("could not connect") || errorDescription.contains("unreachable") {
+            return "Cannot reach server"
+        } else if errorDescription.contains("unauthorized") || errorDescription.contains("401") {
+            return "Invalid API key"
+        } else {
+            return "Connection failed"
+        }
+    }
+    
     // MARK: - Initialization
     
     init(
@@ -59,7 +78,7 @@ final class AIProviderManager: ObservableObject {
                 status = .error(message: "Invalid API key")
             }
         } catch {
-            status = .error(message: error.localizedDescription)
+            status = .error(message: friendlyErrorMessage(from: error))
         }
     }
     
@@ -79,7 +98,7 @@ final class AIProviderManager: ObservableObject {
                 return false
             }
         } catch {
-            status = .error(message: error.localizedDescription)
+            status = .error(message: friendlyErrorMessage(from: error))
             return false
         }
     }
