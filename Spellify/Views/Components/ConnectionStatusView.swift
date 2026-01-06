@@ -28,24 +28,27 @@ struct ConnectionStatusView: View {
                 .font(.system(size: fontSize))
                 .foregroundStyle(.secondary)
             
-            // Refresh button (only when key is stored and not "Not configured")
-            if hasStoredKey, case .notConfigured = status {
-                // No refresh button for not configured state
-            } else if hasStoredKey, let onTest = onTest {
-                Button(action: onTest) {
-                    if case .connecting = status {
-                        ProgressView()
-                            .scaleEffect(0.6)
-                            .frame(width: 16, height: 16)
-                    } else {
-                        Image(systemName: "arrow.clockwise")
-                            .font(.system(size: fontSize))
-                            .foregroundStyle(.secondary)
+            // Refresh button (only for error and connecting states)
+            if hasStoredKey, let onTest = onTest {
+                switch status {
+                case .error, .connecting:
+                    Button(action: onTest) {
+                        if case .connecting = status {
+                            ProgressView()
+                                .scaleEffect(0.6)
+                                .frame(width: 16, height: 16)
+                        } else {
+                            Image(systemName: "arrow.clockwise")
+                                .font(.system(size: fontSize))
+                                .foregroundStyle(.secondary)
+                        }
                     }
+                    .buttonStyle(.plain)
+                    .disabled(status == .connecting)
+                    .help(Strings.Common.testConnection)
+                case .notConfigured, .connected:
+                    EmptyView()
                 }
-                .buttonStyle(.plain)
-                .disabled(status == .connecting)
-                .help(Strings.Common.testConnection)
             }
         }
     }
