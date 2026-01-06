@@ -17,6 +17,9 @@ protocol AIModelProvider: AnyObject {
     /// Human-readable display name
     var displayName: String { get }
     
+    /// URL for obtaining an API key from the provider
+    var apiKeyURL: URL { get }
+    
     /// Whether the provider has been configured with an API key
     var isConfigured: Bool { get }
     

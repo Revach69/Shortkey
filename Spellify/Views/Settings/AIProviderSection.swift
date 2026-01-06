@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// AI Provider settings section with inline button design
+/// AI Provider settings section with modal-based API key entry
 struct AIProviderSection: View {
     
     // MARK: - Properties
@@ -16,23 +16,28 @@ struct AIProviderSection: View {
     
     @State private var selectedProvider: String = "OpenAI"
     @State private var apiKey: String = ""
-    @State private var showingKeyInput: Bool = false
     @State private var hasStoredKey: Bool = false
+    @State private var showingAPIKeyModal: Bool = false
     
     // MARK: - Body
     
     var body: some View {
         Section {
-            // Provider picker (no inline status anymore)
+            // Provider picker
             ProviderPickerRow(selectedProvider: $selectedProvider)
             
-            // API Key row with inline buttons
+            // API Key row with buttons (no inline input)
             APIKeyField(
-                apiKey: $apiKey,
                 hasStoredKey: $hasStoredKey,
-                showingKeyInput: $showingKeyInput,
-                onSave: saveAPIKey,
-                onDelete: removeAPIKey
+                onAdd: {
+                    apiKey = ""
+                    showingAPIKeyModal = true
+                },
+                onEdit: {
+                    apiKey = ""
+                    showingAPIKeyModal = true
+                },
+                onDisconnect: removeAPIKey
             )
             
             // Model picker row (only when connected)
@@ -40,7 +45,7 @@ struct AIProviderSection: View {
                 ModelPickerRow(
                     selectedModel: Binding(
                         get: { aiProviderManager.selectedModel },
-                        set: { _ in } // Model selection handled by callback
+                        set: { _ in }
                     ),
                     availableModels: aiProviderManager.availableModels,
                     onModelSelected: { model in
@@ -72,9 +77,26 @@ struct AIProviderSection: View {
             }
         }
         .onAppear(perform: checkForStoredKey)
+        .sheet(isPresented: $showingAPIKeyModal) {
+            APIKeyEntrySheet(
+                providerName: aiProviderManager.providerDisplayName,
+                apiKeyURL: getProviderAPIKeyURL(),
+                apiKey: $apiKey,
+                onSave: saveAPIKey,
+                onCancel: {
+                    showingAPIKeyModal = false
+                    apiKey = ""
+                }
+            )
+        }
     }
     
     // MARK: - Actions
+    
+    private func getProviderAPIKeyURL() -> URL {
+        // For now, always OpenAI. When we add more providers, get from aiProviderManager.provider
+        URL(string: "https://platform.openai.com/api-keys")!
+    }
     
     private func checkForStoredKey() {
         if let storedKey = KeychainService.shared.getAPIKey(for: "openai"), !storedKey.isEmpty {
@@ -90,7 +112,7 @@ struct AIProviderSection: View {
         do {
             try KeychainService.shared.saveAPIKey(apiKey, for: "openai")
             hasStoredKey = true
-            showingKeyInput = false
+            showingAPIKeyModal = false
             
             // Automatically test connection after saving
             Task {
@@ -109,7 +131,6 @@ struct AIProviderSection: View {
     private func removeAPIKey() {
         KeychainService.shared.deleteAPIKey(for: "openai")
         hasStoredKey = false
-        showingKeyInput = false
         apiKey = ""
         
         Task {

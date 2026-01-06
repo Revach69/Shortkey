@@ -139,6 +139,18 @@ enum Strings {
             "Connect to an AI provider to transform your text.",
             comment: "AI Provider section description"
         )
+        static let addAPIKey = NSLocalizedString(
+            "+ Add API Key...",
+            comment: "Add API key button"
+        )
+        static let saveAndTest = NSLocalizedString(
+            "Save & Test",
+            comment: "Save and test API key button"
+        )
+        static let edit = NSLocalizedString(
+            "Edit",
+            comment: "Edit button"
+        )
     }
     
     // MARK: - Action Editor

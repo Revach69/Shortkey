@@ -14,6 +14,7 @@ final class OpenAIProvider: AIModelProvider {
     
     let id = "openai"
     let displayName = "OpenAI"
+    let apiKeyURL = URL(string: "https://platform.openai.com/api-keys")!
     
     var isConfigured: Bool {
         (try? keychain.retrieve(key: keychainKey)) != nil
