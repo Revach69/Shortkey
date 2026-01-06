@@ -8,19 +8,36 @@
 import SwiftUI
 
 /// Reusable connection status display component
-/// Shows: ● Status Text [↻]
+/// 
+/// Displays AI provider connection status with:
+/// - Colored status dot (yellow/green/orange/red)
+/// - Status text (secondary color)
+/// - Optional refresh button (only for error states)
+///
+/// Usage:
+/// ```swift
+/// ConnectionStatusView(
+///     status: .connected(model: "gpt-4o"),
+///     fontSize: 13,
+///     hasStoredKey: true,
+///     onTest: { await testConnection() }
+/// )
+/// ```
 struct ConnectionStatusView: View {
+    
+    // MARK: - Properties
     
     let status: ConnectionStatus
     let fontSize: CGFloat
     let hasStoredKey: Bool
     var onTest: (() -> Void)?
     
+    // MARK: - Body
+    
     var body: some View {
         HStack(spacing: 6) {
-            // Status dot
-            Circle()
-                .fill(status.statusColor)
+            // Status dot (reusable component)
+            StatusIndicator(status: status)
                 .frame(width: 6, height: 6)
             
             // Status text

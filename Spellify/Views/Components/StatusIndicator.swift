@@ -8,27 +8,15 @@
 import SwiftUI
 
 /// A colored dot indicating connection status
+/// Reusable component that delegates color logic to ConnectionStatus model
 struct StatusIndicator: View {
     
     let status: ConnectionStatus
     
     var body: some View {
         Circle()
-            .fill(color)
+            .fill(status.statusColor)
             .frame(width: 8, height: 8)
-    }
-    
-    private var color: Color {
-        switch status {
-        case .connected:
-            return .green
-        case .connecting:
-            return .orange
-        case .notConfigured:
-            return .yellow
-        case .error:
-            return .red
-        }
     }
 }
 

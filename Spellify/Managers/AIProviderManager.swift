@@ -34,15 +34,15 @@ final class AIProviderManager: ObservableObject {
         let errorDescription = error.localizedDescription.lowercased()
         
         if errorDescription.contains("internet") || errorDescription.contains("offline") {
-            return "No internet connection"
+            return Strings.Common.noInternet
         } else if errorDescription.contains("timeout") || errorDescription.contains("timed out") {
-            return "Connection timeout"
+            return Strings.Common.connectionTimeout
         } else if errorDescription.contains("could not connect") || errorDescription.contains("unreachable") {
-            return "Cannot reach server"
+            return Strings.Common.cannotReachServer
         } else if errorDescription.contains("unauthorized") || errorDescription.contains("401") {
-            return "Invalid API key"
+            return Strings.Common.invalidAPIKey
         } else {
-            return "Connection failed"
+            return Strings.Common.connectionFailed
         }
     }
     
@@ -75,7 +75,7 @@ final class AIProviderManager: ObservableObject {
                 await fetchModels()
                 status = .connected(model: selectedModel.name)
             } else {
-                status = .error(message: "Invalid API key")
+                status = .error(message: Strings.Common.invalidAPIKey)
             }
         } catch {
             status = .error(message: friendlyErrorMessage(from: error))
@@ -94,7 +94,7 @@ final class AIProviderManager: ObservableObject {
                 status = .connected(model: selectedModel.name)
                 return true
             } else {
-                status = .error(message: "Invalid API key")
+                status = .error(message: Strings.Common.invalidAPIKey)
                 return false
             }
         } catch {

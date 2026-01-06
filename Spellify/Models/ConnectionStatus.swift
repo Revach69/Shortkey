@@ -9,11 +9,19 @@ import Foundation
 import SwiftUI
 
 /// Represents the connection status of an AI provider
+///
+/// Cases:
+/// - `notConfigured`: No API key configured (yellow)
+/// - `connecting`: Testing connection (orange)
+/// - `connected(model)`: Successfully connected with model name (green)
+/// - `error(message)`: Connection failed with error message (red)
 enum ConnectionStatus: Equatable {
     case notConfigured
     case connecting
     case connected(model: String)
     case error(message: String)
+    
+    // MARK: - Computed Properties
     
     /// Whether the provider is ready to process requests
     var isReady: Bool {
@@ -23,7 +31,7 @@ enum ConnectionStatus: Equatable {
         return false
     }
     
-    /// Human-readable status text
+    /// Human-readable status text for display
     var displayText: String {
         switch self {
         case .notConfigured:
@@ -37,7 +45,7 @@ enum ConnectionStatus: Equatable {
         }
     }
     
-    /// Color for status indicator and text
+    /// Color for status indicator dot
     var statusColor: Color {
         switch self {
         case .connected:

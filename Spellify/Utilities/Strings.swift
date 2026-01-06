@@ -225,6 +225,29 @@ enum Strings {
             "Testing...",
             comment: "Testing status"
         )
+        
+        // MARK: - Error Messages
+        
+        static let noInternet = NSLocalizedString(
+            "No internet connection",
+            comment: "No internet error"
+        )
+        static let connectionTimeout = NSLocalizedString(
+            "Connection timeout",
+            comment: "Timeout error"
+        )
+        static let cannotReachServer = NSLocalizedString(
+            "Cannot reach server",
+            comment: "Server unreachable error"
+        )
+        static let invalidAPIKey = NSLocalizedString(
+            "Invalid API key",
+            comment: "Invalid API key error"
+        )
+        static let connectionFailed = NSLocalizedString(
+            "Connection failed",
+            comment: "Generic connection error"
+        )
         static let shortcut = NSLocalizedString(
             "Shortcut",
             comment: "Shortcut label"
