@@ -12,10 +12,6 @@ struct ActionPromptEditor: View {
     
     @Binding var prompt: String
     
-    private var isOverLimit: Bool {
-        prompt.count > Constants.maxPromptLength
-    }
-    
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             VStack(alignment: .leading, spacing: 4) {
@@ -32,7 +28,7 @@ struct ActionPromptEditor: View {
                     
                     Text("\(prompt.count)/\(Constants.maxPromptLength)")
                         .font(.system(size: 11, design: .monospaced))
-                        .foregroundStyle(isOverLimit ? .red : .secondary)
+                        .foregroundStyle(.secondary)
                 }
             }
             
@@ -44,11 +40,13 @@ struct ActionPromptEditor: View {
                 .background(Color.secondary.opacity(0.05))
                 .overlay(
                     RoundedRectangle(cornerRadius: 6)
-                        .stroke(
-                            isOverLimit ? Color.red.opacity(0.5) : Color.secondary.opacity(0.2),
-                            lineWidth: 1
-                        )
+                        .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
                 )
+                .onChange(of: prompt) { oldValue, newValue in
+                    if newValue.count > Constants.maxPromptLength {
+                        prompt = String(newValue.prefix(Constants.maxPromptLength))
+                    }
+                }
         }
     }
 }

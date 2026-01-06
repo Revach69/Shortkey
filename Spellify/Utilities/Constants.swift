@@ -56,6 +56,9 @@ enum Constants {
     
     // MARK: - Action Editor
     
+    /// Maximum action name length (characters)
+    static let maxNameLength = 50
+    
     /// Maximum prompt length (characters)
     static let maxPromptLength = 500
     

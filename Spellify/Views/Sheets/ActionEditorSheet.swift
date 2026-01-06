@@ -29,8 +29,7 @@ struct ActionEditorSheet: View {
     
     private var isValid: Bool {
         !name.trimmingCharacters(in: .whitespaces).isEmpty &&
-        !prompt.trimmingCharacters(in: .whitespaces).isEmpty &&
-        prompt.count <= Constants.maxPromptLength
+        !prompt.trimmingCharacters(in: .whitespaces).isEmpty
     }
     
     // MARK: - Body
