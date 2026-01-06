@@ -15,13 +15,7 @@ struct ModelPickerRow: View {
     let onModelSelected: (AIModel) -> Void
     
     var body: some View {
-        HStack {
-            Text(Strings.Settings.model)
-                .font(.system(size: 13))
-                .foregroundStyle(.primary)
-            
-            Spacer()
-            
+        SettingsRow(label: Strings.Settings.model) {
             Picker("", selection: Binding(
                 get: { selectedModel },
                 set: { newModel in
@@ -34,6 +28,7 @@ struct ModelPickerRow: View {
                 }
             }
             .labelsHidden()
+            .fixedSize()
         }
     }
 }

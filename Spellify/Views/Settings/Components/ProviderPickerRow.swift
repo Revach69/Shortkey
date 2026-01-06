@@ -23,7 +23,7 @@ struct ProviderPickerRow: View {
                 }
             }
             .labelsHidden()
-            .frame(width: 120)
+            .fixedSize()
         }
     }
 }
