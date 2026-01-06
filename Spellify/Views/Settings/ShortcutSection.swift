@@ -12,13 +12,15 @@ struct ShortcutSection: View {
     
     @AppStorage("shortcutDisplay") private var shortcutDisplay = "⌘⇧S"
     @State private var isRecording = false
+    @State private var showingShortcutSheet = false
     
     var body: some View {
         Section {
             SettingsRow(label: Strings.Common.shortcut) {
                 ShortcutRecorderView(
                     shortcutDisplay: $shortcutDisplay,
-                    isRecording: $isRecording
+                    isRecording: $isRecording,
+                    showingSheet: $showingShortcutSheet
                 )
             }
         } header: {
