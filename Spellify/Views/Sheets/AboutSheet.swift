@@ -44,7 +44,7 @@ struct AboutSheet: View {
                     .foregroundStyle(.secondary)
                 
                 // Copyright
-                Text("© 2026 Dror Levi")
+                Text("© 2026 Dror Lapidot")
                     .font(.system(size: 11))
                     .foregroundStyle(.secondary)
                     .padding(.top, 8)
