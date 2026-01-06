@@ -16,23 +16,7 @@ struct APIKeyField: View {
     let onDisconnect: () -> Void
     
     var body: some View {
-        SettingsRow {
-            // Label with help icon
-            HStack(spacing: 4) {
-                Text(Strings.Settings.apiKey)
-                    .foregroundStyle(.primary)
-                
-                Button(action: {
-                    NSWorkspace.shared.open(Constants.openAIKeyURL)
-                }) {
-                    Image(systemName: "questionmark.circle")
-                        .font(.system(size: 11))
-                        .foregroundStyle(.secondary)
-                }
-                .buttonStyle(.plain)
-                .help(Strings.Settings.getAPIKey)
-            }
-        } trailingContent: {
+        SettingsRow(label: Strings.Settings.apiKey) {
             if hasStoredKey {
                 // Has key state: masked key + Edit + Disconnect buttons
                 HStack(spacing: 8) {
