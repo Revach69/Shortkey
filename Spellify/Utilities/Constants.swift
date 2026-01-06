@@ -75,7 +75,11 @@ enum Constants {
         "textformat.alt", "character.textbox",
         // Language & Translation
         "globe", "globe.americas", "globe.europe.africa", "globe.asia.australia",
-        "character.book.closed", "book", "book.closed",
+        "globe.central.south.asia", "translate",
+        "character.bubble", "character.bubble.fill", 
+        "a.square", "a.square.fill",
+        "character.book.closed", "book", "book.closed", "book.pages",
+        "flag", "flag.fill", "flag.2.crossed", "flag.2.crossed.fill",
         // Arrows & Transform
         "arrow.triangle.2.circlepath", "arrow.clockwise", "arrow.counterclockwise",
         "arrow.up.arrow.down", "arrow.left.arrow.right", "arrow.turn.up.right",
