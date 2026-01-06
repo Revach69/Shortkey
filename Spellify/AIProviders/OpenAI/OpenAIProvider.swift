@@ -118,7 +118,7 @@ final class OpenAIProvider: AIModelProvider {
         let requestBody = OpenAIChatRequest(
             model: model,
             messages: [
-                OpenAIChatMessage(role: "system", content: prompt),
+                OpenAIChatMessage(role: "system", content: buildSystemPrompt(for: prompt)),
                 OpenAIChatMessage(role: "user", content: text)
             ],
             temperature: 0.3
@@ -157,6 +157,24 @@ final class OpenAIProvider: AIModelProvider {
     }
     
     // MARK: - Private Methods
+    
+    /// Builds a comprehensive system prompt with safety guardrails
+    private func buildSystemPrompt(for actionDescription: String) -> String {
+        """
+        \(actionDescription)
+        
+        Critical Instructions:
+        - Follow the action description precisely, nothing more
+        - Preserve the original language and tone unless explicitly instructed otherwise
+        - Maintain the exact meaning and intent of the original text
+        - Keep all proper nouns, names, and technical terms unchanged
+        - Do NOT add explanations, commentary, or introductory phrases
+        - Do NOT modify content beyond what the action describes
+        - Output ONLY the transformed text itself
+        
+        If the requested action is unclear or inappropriate, output the original text unchanged.
+        """
+    }
     
     private func buildRequest(endpoint: String, method: String, apiKey: String) throws -> URLRequest {
         guard let url = URL(string: baseURL + endpoint) else {
