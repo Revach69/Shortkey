@@ -39,6 +39,30 @@ protocol AIModelProvider: AnyObject {
     func transform(text: String, description: String, model: String) async throws -> String
 }
 
+// MARK: - Default Implementation
+
+extension AIModelProvider {
+    
+    /// Builds a comprehensive system prompt with safety guardrails
+    /// All providers can use this standardized prompt to ensure consistent behavior
+    func buildSystemPrompt(for actionDescription: String) -> String {
+        """
+        \(actionDescription)
+        
+        Critical Instructions:
+        - Follow the action description precisely, nothing more
+        - Preserve the original language and tone unless explicitly instructed otherwise
+        - Maintain the exact meaning and intent of the original text
+        - Keep all proper nouns, names, and technical terms unchanged
+        - Do NOT add explanations, commentary, or introductory phrases
+        - Do NOT modify content beyond what the action describes
+        - Output ONLY the transformed text itself
+        
+        If the requested action is unclear or inappropriate, output the original text unchanged.
+        """
+    }
+}
+
 // MARK: - URLSession Protocol for Testing
 
 /// Protocol for URLSession to enable mocking in tests
