@@ -1,5 +1,5 @@
 //
-//  Network.swift
+//  NetworkConstants.swift
 //  Spellify
 //
 //  Network and API constants
@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Network {
+enum NetworkConstants {
     
     // MARK: - Timeouts
     

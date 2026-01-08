@@ -1,5 +1,5 @@
 //
-//  BusinessRules.swift
+//  BusinessRulesConstants.swift
 //  Spellify
 //
 //  Business logic constants and rules
@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum BusinessRules {
+enum BusinessRulesConstants {
     
     // MARK: - Text Processing
     

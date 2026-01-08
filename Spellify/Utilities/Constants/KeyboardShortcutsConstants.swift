@@ -1,5 +1,5 @@
 //
-//  KeyboardShortcuts.swift
+//  KeyboardShortcutsConstants.swift
 //  Spellify
 //
 //  Default keyboard shortcut constants
@@ -8,7 +8,7 @@
 import Foundation
 import Carbon.HIToolbox
 
-enum KeyboardShortcuts {
+enum KeyboardShortcutsConstants {
     
     // MARK: - Default Shortcut
     

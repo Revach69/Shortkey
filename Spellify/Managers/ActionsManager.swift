@@ -43,14 +43,14 @@ final class ActionsManager: ObservableObject {
     
     var canAddAction: Bool {
         subscriptionManager.hasAccess(to: .unlimitedActions) ||
-        actions.count < BusinessRules.freeActionsLimit
+        actions.count < BusinessRulesConstants.freeActionsLimit
     }
     
     var remainingFreeActions: Int {
         guard !subscriptionManager.hasAccess(to: .unlimitedActions) else {
             return .max
         }
-        return max(0, BusinessRules.freeActionsLimit - actions.count)
+        return max(0, BusinessRulesConstants.freeActionsLimit - actions.count)
     }
     
     // MARK: - CRUD Operations

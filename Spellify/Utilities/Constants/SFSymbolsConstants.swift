@@ -1,5 +1,5 @@
 //
-//  SFSymbols.swift
+//  SFSymbolsConstants.swift
 //  Spellify
 //
 //  Curated SF Symbol icons for actions
@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum SFSymbols {
+enum SFSymbolsConstants {
     
     /// Curated SF Symbol names available for action icons
     static let available = [

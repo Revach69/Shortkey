@@ -74,7 +74,7 @@ final class SpellifyController {
             return
         }
         
-        guard selectedText.count <= BusinessRules.maxTextLength else {
+        guard selectedText.count <= BusinessRulesConstants.maxTextLength else {
             notificationManager.showTextTooLong()
             return
         }

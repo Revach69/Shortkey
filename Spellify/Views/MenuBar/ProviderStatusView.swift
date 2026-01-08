@@ -29,7 +29,7 @@ struct ProviderStatusView: View {
                 
                 if case .notConfigured = aiProviderManager.status {
                 } else if case .connected(let model) = aiProviderManager.status {
-                    Text(" " + Layout.textSeparator + " " + model)
+                    Text(" " + LayoutConstants.textSeparator + " " + model)
                         .foregroundStyle(.secondary)
                 }
             }

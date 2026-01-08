@@ -1,5 +1,5 @@
 //
-//  Layout.swift
+//  LayoutConstants.swift
 //  Spellify
 //
 //  UI layout constants and dimensions
@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Layout {
+enum LayoutConstants {
     
     // MARK: - Popover
     
