@@ -13,12 +13,11 @@ struct APIKeyField: View {
     @Binding var hasStoredKey: Bool
     let onAdd: () -> Void
     let onEdit: () -> Void
-    let onDisconnect: () -> Void
     
     var body: some View {
         SettingsRow(label: Strings.Settings.apiKey) {
             if hasStoredKey {
-                // Has key state: masked key + Edit + Disconnect buttons
+                // Has key state: masked key + Edit button
                 HStack(spacing: 8) {
                     Text(Constants.maskedAPIKey)
                         .font(.system(.body, design: .monospaced))
@@ -29,13 +28,6 @@ struct APIKeyField: View {
                         onEdit()
                     }
                     .controlSize(.regular)
-                    
-                    // Disconnect button
-                    Button(Strings.Common.disconnect) {
-                        onDisconnect()
-                    }
-                    .controlSize(.regular)
-                    .foregroundStyle(.red)
                 }
             } else {
                 // Empty state: Add API Key button
@@ -57,8 +49,7 @@ struct APIKeyField: View {
             APIKeyField(
                 hasStoredKey: .constant(false),
                 onAdd: {},
-                onEdit: {},
-                onDisconnect: {}
+                onEdit: {}
             )
             
             Divider()
@@ -67,8 +58,7 @@ struct APIKeyField: View {
             APIKeyField(
                 hasStoredKey: .constant(true),
                 onAdd: {},
-                onEdit: {},
-                onDisconnect: {}
+                onEdit: {}
             )
         }
     }

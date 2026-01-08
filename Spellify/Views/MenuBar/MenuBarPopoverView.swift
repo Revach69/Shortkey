@@ -12,6 +12,7 @@ struct MenuBarPopoverView: View {
     
     @EnvironmentObject var actionsManager: ActionsManager
     @EnvironmentObject var aiProviderManager: AIProviderManager
+    @EnvironmentObject var subscriptionManager: SubscriptionManager
     
     @State private var showingActionEditor = false
     @State private var editingAction: SpellAction?
@@ -86,8 +87,9 @@ struct MenuBarPopoverView: View {
 
 #Preview {
     MenuBarPopoverView()
-        .environmentObject(ActionsManager())
+        .environmentObject(ActionsManager(subscriptionManager: .shared))
         .environmentObject(AIProviderManager())
+        .environmentObject(SubscriptionManager.shared)
 }
 
 

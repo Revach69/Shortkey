@@ -6,9 +6,9 @@
 //
 
 import OSLog
+import os.log
 
-/// Centralized logging for the app
-extension Logger {
+enum AppLogger {
     private static let subsystem = Bundle.main.bundleIdentifier ?? "com.spellify.app"
     
     static let general = Logger(subsystem: subsystem, category: "general")
@@ -17,6 +17,15 @@ extension Logger {
     static let hotkey = Logger(subsystem: subsystem, category: "hotkey")
     static let ai = Logger(subsystem: subsystem, category: "ai")
     static let accessibility = Logger(subsystem: subsystem, category: "accessibility")
+    static let subscription = Logger(subsystem: subsystem, category: "subscription")
+    
+    static func log(_ message: String) {
+        general.info("\(message)")
+    }
+    
+    static func error(_ message: String) {
+        general.error("\(message)")
+    }
 }
 
 

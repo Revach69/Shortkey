@@ -31,6 +31,7 @@ struct ConnectionStatusView: View {
     let fontSize: CGFloat
     let hasStoredKey: Bool
     var onTest: (() -> Void)?
+    var onDisconnect: (() -> Void)?
     
     // MARK: - Body
     
@@ -66,6 +67,14 @@ struct ConnectionStatusView: View {
                 case .notConfigured, .connected:
                     EmptyView()
                 }
+            }
+            
+            // Disconnect button (only when connected)
+            if case .connected = status, let onDisconnect = onDisconnect {
+                Button(Strings.Common.disconnect) {
+                    onDisconnect()
+                }
+                .foregroundStyle(.red)
             }
         }
     }

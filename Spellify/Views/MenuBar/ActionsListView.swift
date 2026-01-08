@@ -11,8 +11,11 @@ import SwiftUI
 struct ActionsListView: View {
     
     @EnvironmentObject var actionsManager: ActionsManager
+    @EnvironmentObject var subscriptionManager: SubscriptionManager
     
     @Binding var actionEditorMode: MenuBarPopoverView.ActionEditorMode?
+    
+    @State private var showPaywall = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -52,13 +55,20 @@ struct ActionsListView: View {
             
             // Add action button
             Button(action: {
-                actionEditorMode = .add
+                // Check if user can add more actions
+                if actionsManager.canAddAction {
+                    actionEditorMode = .add
+                } else {
+                    // Show paywall
+                    showPaywall = true
+                }
             }) {
                 HStack {
                     Image(systemName: "plus")
                         .foregroundStyle(.secondary)
                     Text(Strings.Popover.addAction)
                         .foregroundStyle(.primary)
+                    
                     Spacer()
                 }
                 .padding(.horizontal, 16)
@@ -68,6 +78,10 @@ struct ActionsListView: View {
             .buttonStyle(HoverButtonStyle())
             .padding(.bottom, 4)
         }
+        .sheet(isPresented: $showPaywall) {
+            PaywallSheet()
+                .environmentObject(subscriptionManager)
+        }
     }
 }
 
@@ -75,7 +89,8 @@ struct ActionsListView: View {
     ActionsListView(
         actionEditorMode: .constant(nil)
     )
-    .environmentObject(ActionsManager())
+    .environmentObject(ActionsManager(subscriptionManager: .shared))
+    .environmentObject(SubscriptionManager.shared)
     .frame(width: 300)
 }
 

@@ -23,6 +23,21 @@ struct AIProviderSection: View {
     
     var body: some View {
         Section {
+            // Status row
+            SettingsRow(label: Strings.Common.status) {
+                ConnectionStatusView(
+                    status: aiProviderManager.status,
+                    fontSize: 13,
+                    hasStoredKey: hasStoredKey,
+                    onTest: {
+                        Task {
+                            let _ = await aiProviderManager.testConnection()
+                        }
+                    },
+                    onDisconnect: removeAPIKey
+                )
+            }
+            
             // Provider picker
             ProviderPickerRow(selectedProvider: $selectedProvider)
             
@@ -36,8 +51,7 @@ struct AIProviderSection: View {
                 onEdit: {
                     apiKey = ""
                     showingAPIKeyModal = true
-                },
-                onDisconnect: removeAPIKey
+                }
             )
             
             // Model picker row (only when connected)
@@ -55,26 +69,7 @@ struct AIProviderSection: View {
             }
             
         } header: {
-            // Header with status on the right
-            HStack {
-                Text(Strings.Settings.aiProvider)
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(.primary)
-                
-                Spacer()
-                
-                // Connection status component
-                ConnectionStatusView(
-                    status: aiProviderManager.status,
-                    fontSize: 13,
-                    hasStoredKey: hasStoredKey,
-                    onTest: {
-                        Task {
-                            let _ = await aiProviderManager.testConnection()
-                        }
-                    }
-                )
-            }
+            Text(Strings.Settings.aiProvider)
         }
         .onAppear(perform: checkForStoredKey)
         .sheet(isPresented: $showingAPIKeyModal) {

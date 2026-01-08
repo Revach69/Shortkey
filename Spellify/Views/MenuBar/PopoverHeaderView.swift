@@ -10,12 +10,19 @@ import SwiftUI
 /// Header view showing app name and keyboard shortcut
 struct PopoverHeaderView: View {
     
+    @EnvironmentObject var subscriptionManager: SubscriptionManager
     @AppStorage("shortcutDisplay") private var shortcutDisplay = "⌘⇧S"
     
     var body: some View {
         HStack {
-            Text(Strings.Popover.title)
-                .font(.headline)
+            HStack(spacing: 6) {
+                Text(Strings.Popover.title)
+                    .font(.headline)
+                
+                if subscriptionManager.isProUser {
+                    ProBadge()
+                }
+            }
             
             Spacer()
             
@@ -29,6 +36,7 @@ struct PopoverHeaderView: View {
 
 #Preview {
     PopoverHeaderView()
+        .environmentObject(SubscriptionManager.shared)
         .frame(width: 300)
 }
 

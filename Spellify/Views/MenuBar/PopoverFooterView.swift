@@ -12,6 +12,7 @@ struct PopoverFooterView: View {
     
     @EnvironmentObject var actionsManager: ActionsManager
     @EnvironmentObject var aiProviderManager: AIProviderManager
+    @EnvironmentObject var subscriptionManager: SubscriptionManager
     @Binding var showingAbout: Bool
     
     var body: some View {
@@ -72,7 +73,8 @@ struct PopoverFooterView: View {
                 // Pass managers directly to settings
                 SettingsWindowController.shared.showWindow(
                     actionsManager: actionsManager,
-                    aiProviderManager: aiProviderManager
+                    aiProviderManager: aiProviderManager,
+                    subscriptionManager: subscriptionManager
                 )
             }
         }
@@ -85,7 +87,8 @@ struct PopoverFooterView: View {
 
 #Preview {
     PopoverFooterView(showingAbout: .constant(false))
-        .environmentObject(ActionsManager())
+        .environmentObject(ActionsManager(subscriptionManager: .shared))
+        .environmentObject(SubscriptionManager.shared)
         .environmentObject(AIProviderManager())
         .frame(width: 300)
 }

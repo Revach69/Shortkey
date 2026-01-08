@@ -33,7 +33,12 @@
 - ✅ Follow **Apple HIG**
 - ✅ Add **SwiftUI previews**
 - ✅ Use **proper MARK sections**
-- ✅ Add **documentation comments**
+
+### Comments & Documentation
+- ✅ Comments explain **WHY**, never **WHAT**
+- ❌ **NEVER add trivial comments** that repeat the code
+- ✅ Only comment when explaining non-obvious logic or decisions
+- ✅ Clear naming is better than comments
 
 ---
 
@@ -63,14 +68,16 @@ Button("Delete")
 // ❌ BAD: Magic numbers
 .padding(17)
 
+// ❌ BAD: Trivial comments (repeating what code does)
+/// Can user add more actions?
+var canAddAction: Bool { ... }
+
+/// Updates an existing action
+func update(_ action: SpellAction) { ... }
+
 // ❌ BAD: Large files (> 200 lines)
 struct HugeView: View {
     // 300+ lines
-}
-
-// ❌ BAD: Missing documentation
-struct MyView: View {
-    // What does this do?
 }
 ```
 
@@ -86,15 +93,20 @@ Button(Strings.Common.delete)
 // ✅ GOOD: Use constants
 .padding(Constants.standardPadding)
 
+// ✅ GOOD: Clear naming (no comment needed!)
+var canAddAction: Bool { ... }
+func update(_ action: SpellAction) { ... }
+
+// ✅ GOOD: Comments explain WHY, not WHAT
+// Debounce saves to avoid excessive writes
+DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: workItem)
+
+// All Pro features require subscription (policy decision)
+return isProUser
+
 // ✅ GOOD: Small, focused components
 struct HeaderView: View {
     // 40 lines max
-}
-
-// ✅ GOOD: Clear documentation
-/// Displays the action editor header with title
-struct HeaderView: View {
-    // Implementation
 }
 ```
 
@@ -150,6 +162,7 @@ Views/Sheets/
 - **Keep it simple** and focused
 - **No hardcoded strings** ever
 - **Small components** always
+- **Comments explain WHY, not WHAT** - clear naming beats comments
 
 ---
 

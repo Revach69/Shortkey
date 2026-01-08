@@ -155,6 +155,50 @@ enum Strings {
             "Edit",
             comment: "Edit button"
         )
+        
+        enum Subscription {
+            static let title = NSLocalizedString(
+                "settings.subscription.title",
+                value: "Subscription",
+                comment: "Subscription section title"
+            )
+            
+            static let plan = NSLocalizedString(
+                "settings.subscription.plan",
+                value: "Plan",
+                comment: "Subscription plan label"
+            )
+            
+            static let proUser = NSLocalizedString(
+                "settings.subscription.pro_user",
+                value: "Pro",
+                comment: "Pro user status"
+            )
+            
+            static let freeUser = NSLocalizedString(
+                "settings.subscription.free_user",
+                value: "Free",
+                comment: "Free user status"
+            )
+            
+            static let upgradeToPro = NSLocalizedString(
+                "settings.subscription.upgrade",
+                value: "Upgrade to Pro",
+                comment: "Upgrade button"
+            )
+            
+            static let manageSubscription = NSLocalizedString(
+                "settings.subscription.manage",
+                value: "Manage Subscription",
+                comment: "Manage subscription button"
+            )
+            
+            static let restorePurchases = NSLocalizedString(
+                "settings.subscription.restore",
+                value: "Restore Purchases",
+                comment: "Restore purchases button"
+            )
+        }
     }
     
     // MARK: - Action Editor
@@ -294,12 +338,128 @@ enum Strings {
         )
     }
     
+    // MARK: - Pro Features
+    
+    enum ProFeatures {
+        static let unlimitedActions = NSLocalizedString(
+            "pro_feature.unlimited_actions",
+            value: "Unlimited Actions",
+            comment: "Pro feature name"
+        )
+        
+        static let unlimitedActionsDescription = NSLocalizedString(
+            "pro_feature.unlimited_actions.description",
+            value: "Create as many custom actions as you need",
+            comment: "Pro feature description"
+        )
+    }
+    
+    // MARK: - Subscription
+    
+    enum Subscription {
+        static let unlockPro = NSLocalizedString(
+            "subscription.unlock_pro",
+            value: "Unlock Spellify Pro",
+            comment: "Paywall title"
+        )
+        
+        static let unlockProDescription = NSLocalizedString(
+            "subscription.unlock_pro.description",
+            value: "Create unlimited actions and get access to all Pro features",
+            comment: "Paywall description"
+        )
+        
+        static let limitReached = NSLocalizedString(
+            "subscription.limit_reached",
+            value: "You've reached the free limit of %d actions",
+            comment: "Free limit message (uses Constants.freeActionsLimit)"
+        )
+        
+        static let upgradeToPro = NSLocalizedString(
+            "subscription.upgrade",
+            value: "Upgrade to Pro",
+            comment: "Upgrade button"
+        )
+        
+        static let subscribeButton = NSLocalizedString(
+            "subscription.subscribe_button",
+            value: "Subscribe for %@/month",
+            comment: "Subscribe button with price"
+        )
+        
+        static let processing = NSLocalizedString(
+            "subscription.processing",
+            value: "Processing...",
+            comment: "Processing state"
+        )
+        
+        static let restorePurchases = NSLocalizedString(
+            "subscription.restore",
+            value: "Restore Purchases",
+            comment: "Restore button"
+        )
+        
+        static let terms = NSLocalizedString(
+            "subscription.terms",
+            value: "Subscription renews automatically. Cancel anytime in System Settings.",
+            comment: "Terms text"
+        )
+        
+        static let loading = NSLocalizedString(
+            "subscription.loading",
+            value: "Loading...",
+            comment: "Loading state"
+        )
+        
+        static let noPurchasesFound = NSLocalizedString(
+            "subscription.no_purchases",
+            value: "No purchases found to restore",
+            comment: "No purchases to restore message"
+        )
+    }
+    
     // MARK: - Errors
     
     enum Errors {
         static let configureAPIKey = NSLocalizedString(
             "Please configure your API key in Settings",
             comment: "API key not configured error"
+        )
+        
+        static let failedVerification = NSLocalizedString(
+            "error.failed_verification",
+            value: "Transaction verification failed",
+            comment: "Verification error"
+        )
+        
+        static let purchaseFailed = NSLocalizedString(
+            "error.purchase_failed",
+            value: "Purchase failed",
+            comment: "Purchase error"
+        )
+        
+        static let productNotFound = NSLocalizedString(
+            "error.product_not_found",
+            value: "Product not found",
+            comment: "Product not found error"
+        )
+        
+        static let networkError = NSLocalizedString(
+            "error.network",
+            value: "Network error occurred",
+            comment: "Network error"
+        )
+        
+        static let errorTitle = NSLocalizedString(
+            "error.title",
+            value: "Error",
+            comment: "Error alert title"
+        )
+        
+        static let ok = NSLocalizedString(
+            "error.ok",
+            value: "OK",
+            comment: "OK button"
         )
     }
 }

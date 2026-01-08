@@ -25,7 +25,11 @@ final class SettingsWindowController {
     
     // MARK: - Public Methods
     
-    func showWindow(actionsManager: ActionsManager, aiProviderManager: AIProviderManager) {
+    func showWindow(
+        actionsManager: ActionsManager,
+        aiProviderManager: AIProviderManager,
+        subscriptionManager: SubscriptionManager
+    ) {
         if let window = window {
             window.makeKeyAndOrderFront(nil)
             NSApp.activate(ignoringOtherApps: true)
@@ -35,6 +39,7 @@ final class SettingsWindowController {
         let settingsView = SettingsView()
             .environmentObject(actionsManager)
             .environmentObject(aiProviderManager)
+            .environmentObject(subscriptionManager)
         
         let hostingController = NSHostingController(rootView: settingsView)
         

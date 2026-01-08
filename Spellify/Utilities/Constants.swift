@@ -30,10 +30,10 @@ enum Constants {
     static let popoverHeight: CGFloat = 400
     
     /// Settings window width
-    static let settingsWidth: CGFloat = 500
+    static let settingsWidth: CGFloat = 450
     
     /// Settings window height
-    static let settingsHeight: CGFloat = 400
+    static let settingsHeight: CGFloat = 550
     
     /// Masked API key display (generic, provider-agnostic)
     static let maskedAPIKey = "••••••••••••••••••••"
@@ -53,6 +53,11 @@ enum Constants {
     
     /// Default keyboard shortcut modifiers (Cmd + Shift)
     static let defaultShortcutModifiers: UInt32 = UInt32(cmdKey | shiftKey)
+    
+    // MARK: - Subscription & Pro Features
+    
+    /// Maximum number of actions for free tier users
+    static let freeActionsLimit = 3
     
     // MARK: - Action Editor
     

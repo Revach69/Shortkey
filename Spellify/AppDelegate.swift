@@ -9,6 +9,7 @@ import AppKit
 import SwiftUI
 
 /// Main application delegate that manages the menu bar status item and popover
+@MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     
     // MARK: - Properties
@@ -19,7 +20,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     
     // MARK: - Managers (will be injected into views)
     
-    let actionsManager = ActionsManager()
+    let subscriptionManager = SubscriptionManager.shared
+    lazy var actionsManager = ActionsManager(subscriptionManager: subscriptionManager)
     let aiProviderManager = AIProviderManager()
     let notificationManager = NotificationManager()
     
@@ -69,6 +71,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         popover?.animates = true
         
         let popoverView = MenuBarPopoverView()
+            .environmentObject(subscriptionManager)
             .environmentObject(actionsManager)
             .environmentObject(aiProviderManager)
         

@@ -18,10 +18,14 @@ import SwiftUI
 struct SettingsView: View {
     
     @EnvironmentObject var aiProviderManager: AIProviderManager
+    @EnvironmentObject var subscriptionManager: SubscriptionManager
+    @EnvironmentObject var actionsManager: ActionsManager
     
     var body: some View {
         Form {
             AIProviderSection()
+            
+            SubscriptionSection()
             
             ShortcutSection()
             
@@ -35,4 +39,6 @@ struct SettingsView: View {
 #Preview {
     SettingsView()
         .environmentObject(AIProviderManager())
+        .environmentObject(SubscriptionManager.shared)
+        .environmentObject(ActionsManager(subscriptionManager: .shared))
 }

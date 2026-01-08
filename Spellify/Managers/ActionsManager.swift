@@ -7,8 +7,10 @@
 
 import Foundation
 import Combine
+import OSLog
 
 /// Manages CRUD operations for spell actions with UserDefaults persistence
+@MainActor
 final class ActionsManager: ObservableObject {
     
     // MARK: - Published Properties
@@ -18,6 +20,7 @@ final class ActionsManager: ObservableObject {
     // MARK: - Private Properties
     
     private let defaults: UserDefaults
+    private let subscriptionManager: SubscriptionManager
     private let storageKey = "spellify.actions"
     private var saveWorkItem: DispatchWorkItem?
     
@@ -27,39 +30,60 @@ final class ActionsManager: ObservableObject {
     
     // MARK: - Initialization
     
-    init(defaults: UserDefaults = .standard) {
+    init(
+        defaults: UserDefaults = .standard,
+        subscriptionManager: SubscriptionManager
+    ) {
         self.defaults = defaults
+        self.subscriptionManager = subscriptionManager
         loadActions()
+    }
+    
+    // MARK: - Pro Features Access
+    
+    var canAddAction: Bool {
+        subscriptionManager.hasAccess(to: .unlimitedActions) ||
+        actions.count < Constants.freeActionsLimit
+    }
+    
+    var remainingFreeActions: Int {
+        guard !subscriptionManager.hasAccess(to: .unlimitedActions) else {
+            return .max
+        }
+        return max(0, Constants.freeActionsLimit - actions.count)
     }
     
     // MARK: - CRUD Operations
     
-    /// Adds a new action
-    func add(_ action: SpellAction) {
+    @discardableResult
+    func add(_ action: SpellAction) -> Bool {
+        guard canAddAction else {
+            AppLogger.log("❌ Cannot add action: limit reached")
+            return false
+        }
+        
         actions.append(action)
         saveActions()
+        AppLogger.log("✅ Action added, total: \(actions.count)")
+        return true
     }
     
-    /// Updates an existing action
     func update(_ action: SpellAction) {
         guard let index = actions.firstIndex(where: { $0.id == action.id }) else { return }
         actions[index] = action
         saveActions()
     }
     
-    /// Deletes an action
     func delete(_ action: SpellAction) {
         actions.removeAll { $0.id == action.id }
         saveActions()
     }
     
-    /// Deletes action at specific offsets (for SwiftUI lists)
     func delete(at offsets: IndexSet) {
         actions.remove(atOffsets: offsets)
         saveActions()
     }
     
-    /// Moves actions (for reordering)
     func move(from source: IndexSet, to destination: Int) {
         actions.move(fromOffsets: source, toOffset: destination)
         saveActions()
@@ -78,6 +102,7 @@ final class ActionsManager: ObservableObject {
         do {
             actions = try Self.decoder.decode([SpellAction].self, from: data)
         } catch {
+            AppLogger.error("Failed to decode actions: \(error)")
             // Corrupted data - reset to defaults
             actions = SpellAction.defaults
             saveActions()
