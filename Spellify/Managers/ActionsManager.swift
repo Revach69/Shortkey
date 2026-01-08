@@ -22,7 +22,7 @@ final class ActionsManager: ObservableObject {
     private let defaults: UserDefaults
     private let subscriptionManager: SubscriptionManager
     private let storageKey = "spellify.actions"
-    private var saveWorkItem: DispatchWorkItem?
+    private let saveDebouncer = Debouncer(duration: .milliseconds(100))
     
     // Reusable encoder/decoder for performance
     private static let encoder = JSONEncoder()
@@ -110,21 +110,23 @@ final class ActionsManager: ObservableObject {
     }
     
     private func saveActions() {
-        saveWorkItem?.cancel()
-        
-        // Debounce saves to avoid excessive writes (batch operations within 0.1s)
-        let workItem = DispatchWorkItem { [weak self] in
-            guard let self = self else { return }
-            do {
-                let data = try Self.encoder.encode(self.actions)
-                self.defaults.set(data, forKey: self.storageKey)
-            } catch {
-                AppLogger.error("Failed to encode actions")
+        // Debounce saves to avoid excessive writes (batch operations within 100ms)
+        Task {
+            await saveDebouncer.debounce { [weak self] in
+                guard let self = self else { return }
+                await self.performSave()
             }
         }
-        
-        saveWorkItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: workItem)
+    }
+    
+    private func performSave() async {
+        do {
+            let data = try Self.encoder.encode(self.actions)
+            self.defaults.set(data, forKey: self.storageKey)
+            AppLogger.log("Actions saved (\(self.actions.count) items)")
+        } catch {
+            AppLogger.error("Failed to encode actions: \(error)")
+        }
     }
 }
 
