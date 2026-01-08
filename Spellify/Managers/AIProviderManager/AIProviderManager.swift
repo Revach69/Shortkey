@@ -2,13 +2,12 @@
 //  AIProviderManager.swift
 //  Spellify
 //
-//  Created by Spellify Team on 04/01/2026.
+//  Manages the active AI provider and its connection state
 //
 
 import Foundation
 import Combine
 
-/// Manages the active AI provider and its connection state
 @MainActor
 final class AIProviderManager: ObservableObject {
     
@@ -31,24 +30,6 @@ final class AIProviderManager: ObservableObject {
     // MARK: - Constants
     
     static let maxTextLength = 10_000
-    
-    // MARK: - Helpers
-    
-    private func friendlyErrorMessage(from error: Error) -> String {
-        let errorDescription = error.localizedDescription.lowercased()
-        
-        if errorDescription.contains("internet") || errorDescription.contains("offline") {
-            return Strings.Common.noInternet
-        } else if errorDescription.contains("timeout") || errorDescription.contains("timed out") {
-            return Strings.Common.connectionTimeout
-        } else if errorDescription.contains("could not connect") || errorDescription.contains("unreachable") {
-            return Strings.Common.cannotReachServer
-        } else if errorDescription.contains("unauthorized") || errorDescription.contains("401") {
-            return Strings.Common.invalidAPIKey
-        } else {
-            return Strings.Common.connectionFailed
-        }
-    }
     
     // MARK: - Initialization
     
@@ -80,7 +61,7 @@ final class AIProviderManager: ObservableObject {
                 status = .error(message: Strings.Common.invalidAPIKey)
             }
         } catch {
-            status = .error(message: friendlyErrorMessage(from: error))
+            status = .error(message: ErrorMessageFormatter.friendlyMessage(from: error))
         }
     }
     
@@ -98,7 +79,7 @@ final class AIProviderManager: ObservableObject {
                 return false
             }
         } catch {
-            status = .error(message: friendlyErrorMessage(from: error))
+            status = .error(message: ErrorMessageFormatter.friendlyMessage(from: error))
             return false
         }
     }
@@ -170,7 +151,6 @@ final class AIProviderManager: ObservableObject {
             AppLogger.log("Loaded saved model: \(selectedModel.name)")
         } catch {
             AppLogger.error("Failed to decode saved model: \(error). Using default model.")
-            // Keep using default model
         }
     }
     
@@ -184,40 +164,3 @@ final class AIProviderManager: ObservableObject {
         }
     }
 }
-
-// MARK: - Errors
-
-enum SpellifyError: LocalizedError, Equatable {
-    case textTooLong
-    case providerNotConfigured
-    case noTextSelected
-    case transformFailed(underlying: Error)
-    
-    var errorDescription: String? {
-        switch self {
-        case .textTooLong:
-            return "Text too long"
-        case .providerNotConfigured:
-            return "AI provider not configured"
-        case .noTextSelected:
-            return "No text selected"
-        case .transformFailed(let error):
-            return "Transform failed: \(error.localizedDescription)"
-        }
-    }
-    
-    static func == (lhs: SpellifyError, rhs: SpellifyError) -> Bool {
-        switch (lhs, rhs) {
-        case (.textTooLong, .textTooLong),
-             (.providerNotConfigured, .providerNotConfigured),
-             (.noTextSelected, .noTextSelected):
-            return true
-        case (.transformFailed, .transformFailed):
-            // Consider all transformFailed errors equal for testing purposes
-            return true
-        default:
-            return false
-        }
-    }
-}
-
