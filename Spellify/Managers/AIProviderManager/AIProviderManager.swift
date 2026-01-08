@@ -120,11 +120,11 @@ final class AIProviderManager: ObservableObject {
     
     func transform(text: String, action: SpellAction) async throws -> String {
         guard text.count <= Self.maxTextLength else {
-            throw SpellifyError.textTooLong
+            throw TextTransformError.textTooLong
         }
         
         guard status.isReady else {
-            throw SpellifyError.providerNotConfigured
+            throw TextTransformError.providerNotConfigured
         }
         
         return try await provider.transform(

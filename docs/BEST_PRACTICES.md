@@ -188,7 +188,7 @@ let query: [String: Any] = [
 ### Typed Errors
 
 ```swift
-enum SpellifyError: LocalizedError {
+enum TextTransformError: LocalizedError {
     case textTooLong
     case providerNotConfigured
     case noTextSelected

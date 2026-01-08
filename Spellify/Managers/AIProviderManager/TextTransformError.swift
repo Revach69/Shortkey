@@ -1,13 +1,13 @@
 //
-//  SpellifyError.swift
+//  TextTransformError.swift
 //  Spellify
 //
-//  Error types for Spellify operations
+//  Error types for AI text transformation operations
 //
 
 import Foundation
 
-enum SpellifyError: LocalizedError, Equatable {
+enum TextTransformError: LocalizedError, Equatable {
     case textTooLong
     case providerNotConfigured
     case noTextSelected
@@ -26,7 +26,7 @@ enum SpellifyError: LocalizedError, Equatable {
         }
     }
     
-    static func == (lhs: SpellifyError, rhs: SpellifyError) -> Bool {
+    static func == (lhs: TextTransformError, rhs: TextTransformError) -> Bool {
         switch (lhs, rhs) {
         case (.textTooLong, .textTooLong),
              (.providerNotConfigured, .providerNotConfigured),
