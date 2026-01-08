@@ -17,7 +17,6 @@ struct PopoverFooterView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // Settings button
             Button(action: openSettings) {
                 HStack {
                     Text(Strings.Popover.configure)
@@ -30,7 +29,6 @@ struct PopoverFooterView: View {
             }
             .buttonStyle(HoverButtonStyle())
             
-            // About button
             Button(action: {
                 showingAbout = true
             }) {
@@ -45,7 +43,6 @@ struct PopoverFooterView: View {
             }
             .buttonStyle(HoverButtonStyle())
             
-            // Quit button
             Button(action: quitApp) {
                 HStack {
                     Text(Strings.Popover.quit)
@@ -63,14 +60,12 @@ struct PopoverFooterView: View {
     
     private func openSettings() {
         DispatchQueue.main.async {
-            // Close popover
             if let appDelegate = NSApp.delegate as? AppDelegate {
                 appDelegate.closePopover()
             }
             
             // Small delay to let popover close
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                // Pass managers directly to settings
                 SettingsWindowController.shared.showWindow(
                     actionsManager: actionsManager,
                     aiProviderManager: aiProviderManager,

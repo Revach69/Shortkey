@@ -35,14 +35,12 @@ struct ActionEditorFooter: View {
             
             Spacer()
             
-            // Cancel button (secondary)
             Button(action: onCancel) {
                 Text(Strings.ActionEditor.cancel)
                     .frame(minWidth: 70)
             }
             .keyboardShortcut(.escape, modifiers: [])
             
-            // Save button (primary, prominent)
             Button(action: onSave) {
                 Text(Strings.ActionEditor.save)
                     .frame(minWidth: 70)

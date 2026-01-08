@@ -23,7 +23,6 @@ enum ConnectionStatus: Equatable {
     
     // MARK: - Computed Properties
     
-    /// Whether the provider is ready to process requests
     var isReady: Bool {
         if case .connected = self {
             return true
@@ -31,7 +30,6 @@ enum ConnectionStatus: Equatable {
         return false
     }
     
-    /// Human-readable status text for display
     var displayText: String {
         switch self {
         case .notConfigured:
@@ -45,7 +43,6 @@ enum ConnectionStatus: Equatable {
         }
     }
     
-    /// Color for status indicator dot
     var statusColor: Color {
         switch self {
         case .connected:

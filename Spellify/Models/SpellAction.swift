@@ -26,7 +26,6 @@ struct SpellAction: Identifiable, Codable, Equatable {
 
 extension SpellAction {
     
-    /// Default actions created on first launch
     static let defaults: [SpellAction] = [
         SpellAction(
             name: "Fix Grammar",

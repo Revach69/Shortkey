@@ -20,10 +20,8 @@ struct ShortcutRecorderView: View {
     
     var body: some View {
         HStack(spacing: 8) {
-            // Keyboard key display
             ShortcutDisplayView(shortcut: shortcutDisplay)
             
-            // Edit button
             Button(Strings.Settings.edit) {
                 tempShortcut = ""
                 showingSheet = true
@@ -135,7 +133,6 @@ class ShortcutRecorderNSView: NSView {
     override func draw(_ dirtyRect: NSRect) {
         super.draw(dirtyRect)
         
-        // Draw background
         NSColor.textBackgroundColor.setFill()
         let bgPath = NSBezierPath(roundedRect: bounds, xRadius: 5, yRadius: 5)
         bgPath.fill()
@@ -149,7 +146,6 @@ class ShortcutRecorderNSView: NSView {
         borderPath.lineWidth = borderWidth
         borderPath.stroke()
         
-        // Draw text
         let text = shortcutDisplay.isEmpty ? "⌘⇧?" : shortcutDisplay
         let textColor: NSColor = shortcutDisplay.isEmpty ? .secondaryLabelColor : .labelColor
         let font: NSFont = .monospacedSystemFont(ofSize: 16, weight: .regular)
@@ -184,10 +180,7 @@ class ShortcutRecorderNSView: NSView {
             return
         }
         
-        // Get modifier flags
         let modifiers = event.modifierFlags
-        
-        // Build shortcut string
         var parts: [String] = []
         
         if modifiers.contains(.control) {
@@ -203,7 +196,6 @@ class ShortcutRecorderNSView: NSView {
             parts.append("⌘")
         }
         
-        // Get the key character
         if let characters = event.charactersIgnoringModifiers?.uppercased(), !characters.isEmpty {
             parts.append(characters)
         }

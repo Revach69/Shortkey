@@ -28,7 +28,6 @@ final class SpellifyController {
     
     // MARK: - Configuration
     
-    /// Configures the controller with managers
     func configure(
         actionsManager: ActionsManager,
         aiProviderManager: AIProviderManager
@@ -39,26 +38,22 @@ final class SpellifyController {
     
     // MARK: - Public Methods
     
-    /// Called when the global hotkey is pressed
     func handleHotKeyPressed() {
         guard let aiProviderManager = aiProviderManager,
               let actionsManager = actionsManager else {
             return
         }
         
-        // Check accessibility permissions
         guard accessibilityService.hasAccessibilityPermissions else {
             accessibilityService.requestAccessibilityPermissions()
             return
         }
         
-        // Check if AI provider is configured
         guard aiProviderManager.status.isReady else {
             notificationManager.showAPIKeyNotConfigured()
             return
         }
         
-        // Get selected text
         Task {
             await processSelectedText(
                 actions: actionsManager.actions,
@@ -73,19 +68,16 @@ final class SpellifyController {
         actions: [SpellAction],
         aiProviderManager: AIProviderManager
     ) async {
-        // Get selected text
         guard let selectedText = await accessibilityService.getSelectedText() else {
             notificationManager.showNoSelection()
             return
         }
         
-        // Check text length
         guard selectedText.count <= Constants.maxTextLength else {
             notificationManager.showTextTooLong()
             return
         }
         
-        // Show action picker
         await MainActor.run {
             ActionPickerPanelController.shared.show(
                 actions: actions,
@@ -96,9 +88,7 @@ final class SpellifyController {
                         aiProviderManager: aiProviderManager
                     )
                 },
-                onDismiss: {
-                    // User cancelled
-                }
+                onDismiss: {}
             )
         }
     }
@@ -109,21 +99,13 @@ final class SpellifyController {
         aiProviderManager: AIProviderManager
     ) {
         Task {
-            // Show processing notification with action name
             notificationManager.showProcessing(actionName: action.name)
             
             do {
-                // Transform text
                 let result = try await aiProviderManager.transform(text: text, action: action)
-                
-                // Replace selected text with result
                 await accessibilityService.replaceSelectedText(with: result)
-                
-                // Show success notification
                 notificationManager.showSuccess()
-                
             } catch {
-                // Show error notification
                 notificationManager.showError(error.localizedDescription)
             }
         }

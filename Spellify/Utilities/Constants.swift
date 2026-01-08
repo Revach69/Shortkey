@@ -38,7 +38,6 @@ enum Constants {
     /// Masked API key display (generic, provider-agnostic)
     static let maskedAPIKey = "••••••••••••••••••••"
     
-    /// Visual separator for text
     static let textSeparator = "·"
     
     // MARK: - URLs

@@ -36,20 +36,16 @@ struct ActionEditorSheet: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // Header
             ActionEditorHeader(isEditing: isEditing)
             
             Divider()
             
-            // Form
             VStack(spacing: 20) {
-                // Icon and Name on same line
                 HStack(alignment: .top, spacing: 12) {
                     ActionIconPicker(selectedIcon: $icon)
                     ActionNameField(name: $name)
                 }
                 
-                // Description
                 ActionDescriptionEditor(description: $description)
             }
             .padding(.horizontal, 20)
@@ -58,7 +54,6 @@ struct ActionEditorSheet: View {
             
             Divider()
             
-            // Footer
             ActionEditorFooter(
                 isEditing: isEditing,
                 isValid: isValid,

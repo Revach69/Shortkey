@@ -41,11 +41,8 @@ final class HotKeyManager {
     
     // MARK: - Public Methods
     
-    /// Starts listening for the global hotkey
     func start(callback: @escaping () -> Void) {
         self.callback = callback
-        
-        // Create event tap
         let eventMask = (1 << CGEventType.keyDown.rawValue)
         
         guard let tap = CGEvent.tapCreate(
@@ -82,7 +79,6 @@ final class HotKeyManager {
         CGEvent.tapEnable(tap: tap, enable: true)
     }
     
-    /// Stops listening for the global hotkey
     func stop() {
         if let tap = eventTap {
             CGEvent.tapEnable(tap: tap, enable: false)
@@ -97,15 +93,12 @@ final class HotKeyManager {
         callback = nil
     }
     
-    /// Updates the keyboard shortcut
     func updateShortcut(keyCode: Int, modifiers: Int) {
         self.keyCode = keyCode
         self.modifiers = modifiers
     }
     
-    /// Updates the keyboard shortcut from a display string (e.g., "⌘⇧S")
     func updateShortcut(_ shortcutString: String) {
-        // Parse the shortcut string
         var parsedModifiers = 0
         var keyCharacter = ""
         
@@ -124,10 +117,7 @@ final class HotKeyManager {
             }
         }
         
-        // Convert key character to key code
         let parsedKeyCode = keyCodeForCharacter(keyCharacter)
-        
-        // Update stored values
         self.keyCode = parsedKeyCode
         self.modifiers = parsedModifiers
         
@@ -137,11 +127,8 @@ final class HotKeyManager {
     
     // MARK: - Private Methods
     
-    /// Converts a character to its corresponding key code
     private func keyCodeForCharacter(_ character: String) -> Int {
         let char = character.uppercased()
-        
-        // Common keys mapping
         let keyMap: [String: Int] = [
             "A": kVK_ANSI_A,
             "B": kVK_ANSI_B,
@@ -181,19 +168,17 @@ final class HotKeyManager {
             "9": kVK_ANSI_9
         ]
         
-        return keyMap[char] ?? kVK_ANSI_S // Default to S
+        return keyMap[char] ?? kVK_ANSI_S
     }
     
     private func handleEvent(_ event: CGEvent) -> Bool {
         let eventKeyCode = event.getIntegerValueField(.keyboardEventKeycode)
         let eventFlags = event.flags
         
-        // Check if the pressed key matches our shortcut
         guard Int(eventKeyCode) == keyCode else {
             return false
         }
         
-        // Check modifiers
         let hasCommand = eventFlags.contains(.maskCommand)
         let hasShift = eventFlags.contains(.maskShift)
         let hasOption = eventFlags.contains(.maskAlternate)

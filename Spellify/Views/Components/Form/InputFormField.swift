@@ -60,7 +60,6 @@ struct InputFormField: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            // Label with optional character counter
             HStack {
                 Text(label)
                     .font(.system(size: 13, weight: .medium))
@@ -75,7 +74,6 @@ struct InputFormField: View {
                 }
             }
             
-            // Input field
             Group {
                 if isSecure {
                     SecureField(placeholder, text: $text)

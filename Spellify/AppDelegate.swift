@@ -34,12 +34,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         setupHotKey()
         setupSpellifyController()
         
-        // Request accessibility permissions if needed
         if !AccessibilityService.shared.hasAccessibilityPermissions {
             AccessibilityService.shared.requestAccessibilityPermissions()
         }
         
-        // Validate AI provider on launch
         Task {
             await aiProviderManager.validateOnLaunch()
         }
@@ -119,7 +117,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         SpellifyController.shared.handleHotKeyPressed()
     }
     
-    /// Shows the popover programmatically (used by other parts of the app)
     func showPopover() {
         guard let button = statusItem?.button, let popover = popover else { return }
         if !popover.isShown {
@@ -128,7 +125,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    /// Closes the popover programmatically
     func closePopover() {
         popover?.performClose(nil)
     }

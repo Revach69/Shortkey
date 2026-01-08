@@ -27,7 +27,6 @@ struct APIKeyEntrySheet: View {
             width: 400,
             height: 220
         ) {
-            // Secure input field with label
             InputFormField(
                 label: "Enter your key",
                 text: $apiKey,
@@ -35,7 +34,6 @@ struct APIKeyEntrySheet: View {
                 isSecure: true
             )
             
-            // Get API key link (help text below)
             HStack {
                 Link(destination: apiKeyURL) {
                     Text(Strings.Settings.getAPIKey)

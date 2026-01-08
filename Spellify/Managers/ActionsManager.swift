@@ -110,7 +110,6 @@ final class ActionsManager: ObservableObject {
     }
     
     private func saveActions() {
-        // Cancel any pending save
         saveWorkItem?.cancel()
         
         // Debounce saves to avoid excessive writes (batch operations within 0.1s)
@@ -120,7 +119,7 @@ final class ActionsManager: ObservableObject {
                 let data = try Self.encoder.encode(self.actions)
                 self.defaults.set(data, forKey: self.storageKey)
             } catch {
-                // Failed to save actions
+                AppLogger.error("Failed to encode actions")
             }
         }
         

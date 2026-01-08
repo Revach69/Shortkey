@@ -27,7 +27,6 @@ final class KeychainService: KeychainServiceProtocol {
     
     // MARK: - Public Methods
     
-    /// Saves a value to the Keychain
     func save(key: String, value: String) throws {
         guard let data = value.data(using: .utf8) else {
             throw KeychainError.encodingFailed
@@ -51,7 +50,6 @@ final class KeychainService: KeychainServiceProtocol {
         }
     }
     
-    /// Retrieves a value from the Keychain
     func retrieve(key: String) throws -> String? {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
@@ -80,7 +78,6 @@ final class KeychainService: KeychainServiceProtocol {
         }
     }
     
-    /// Deletes a value from the Keychain
     func delete(key: String) throws {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
@@ -97,17 +94,14 @@ final class KeychainService: KeychainServiceProtocol {
     
     // MARK: - Convenience Methods for API Keys
     
-    /// Saves an API key for a specific provider
     func saveAPIKey(_ apiKey: String, for provider: String) throws {
         try save(key: "\(provider)-api-key", value: apiKey)
     }
     
-    /// Retrieves an API key for a specific provider
     func getAPIKey(for provider: String) -> String? {
         return try? retrieve(key: "\(provider)-api-key")
     }
     
-    /// Deletes an API key for a specific provider
     func deleteAPIKey(for provider: String) {
         try? delete(key: "\(provider)-api-key")
     }

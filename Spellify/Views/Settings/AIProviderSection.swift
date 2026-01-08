@@ -23,7 +23,6 @@ struct AIProviderSection: View {
     
     var body: some View {
         Section {
-            // Status row
             SettingsRow(label: Strings.Common.status) {
                 ConnectionStatusView(
                     status: aiProviderManager.status,
@@ -116,7 +115,6 @@ struct AIProviderSection: View {
                 let _ = await aiProviderManager.testConnection()
             }
         } catch {
-            // Show error notification
             NotificationManager.shared.showError(
                 "Unable to securely store your API key. Please try again."
             )

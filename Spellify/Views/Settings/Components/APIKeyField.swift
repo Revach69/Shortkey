@@ -23,7 +23,6 @@ struct APIKeyField: View {
                         .font(.system(.body, design: .monospaced))
                         .foregroundStyle(.secondary)
                     
-                    // Edit button
                     Button(Strings.Settings.edit) {
                         onEdit()
                     }

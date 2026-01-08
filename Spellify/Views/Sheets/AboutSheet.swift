@@ -31,21 +31,17 @@ struct AboutSheet: View {
             height: 280
         ) {
             VStack(spacing: 16) {
-                // App Icon
                 Image(systemName: "wand.and.stars")
                     .font(.system(size: 64))
                     .foregroundStyle(.blue)
                 
-                // App Name
                 Text("Spellify")
                     .font(.system(size: 24, weight: .semibold))
                 
-                // Version
                 Text(appVersion)
                     .font(.system(size: 13))
                     .foregroundStyle(.secondary)
                 
-                // Copyright
                 Text("© 2026 Dror Lapidot")
                     .font(.system(size: 11))
                     .foregroundStyle(.secondary)

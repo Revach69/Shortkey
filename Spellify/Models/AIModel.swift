@@ -24,7 +24,6 @@ struct AIModel: Identifiable, Codable, Equatable, Hashable {
 
 extension AIModel {
     
-    /// Default model for new users
     static let defaultModel = AIModel(
         id: "gpt-4o-mini",
         name: "GPT-4o Mini",

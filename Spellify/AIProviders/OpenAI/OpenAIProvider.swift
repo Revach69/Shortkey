@@ -47,7 +47,6 @@ final class OpenAIProvider: AIModelProvider {
     // MARK: - AIModelProvider Methods
     
     func configure(apiKey: String) async {
-        // Update connection status based on API key presence
         if apiKey.isEmpty {
             connectionStatus = .notConfigured
         }
@@ -172,7 +171,6 @@ final class OpenAIProvider: AIModelProvider {
     }
     
     private func formatModelName(_ id: String) -> String {
-        // Convert model IDs to readable names
         switch id {
         case "gpt-4o-mini":
             return "GPT-4o Mini"

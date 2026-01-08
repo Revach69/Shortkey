@@ -32,7 +32,6 @@ final class ActionPickerPanelController {
     private var onActionSelected: ((SpellAction) -> Void)?
     private var onDismiss: (() -> Void)?
     
-    // Event monitors
     private var localMouseMonitor: Any?
     private var globalMouseMonitor: Any?
     private var keyMonitor: Any?
@@ -95,7 +94,6 @@ final class ActionPickerPanelController {
         panel.contentView = hostingView
         panel.setContentSize(hostingView.frame.size)
         
-        // Position near mouse cursor
         let mouseLocation = NSEvent.mouseLocation
         panel.setFrameOrigin(NSPoint(
             x: mouseLocation.x - 140, // Center horizontally (280 / 2)
@@ -103,14 +101,10 @@ final class ActionPickerPanelController {
         ))
         
         self.panel = panel
-        
         panel.makeKeyAndOrderFront(nil)
-        
-        // Set up all event monitors
         setupEventMonitors()
     }
     
-    /// Hides the panel
     func dismiss() {
         removeEventMonitors()
         panel?.orderOut(nil)
@@ -120,7 +114,6 @@ final class ActionPickerPanelController {
     
     // MARK: - Private Methods
     
-    /// Set up event monitors for auto-dismissal
     private func setupEventMonitors() {
         // Monitor for local clicks (inside our app)
         localMouseMonitor = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { [weak self] event in
@@ -187,7 +180,6 @@ final class ActionPickerPanelController {
         }
     }
     
-    /// Remove all event monitors
     private func removeEventMonitors() {
         if let monitor = localMouseMonitor {
             NSEvent.removeMonitor(monitor)

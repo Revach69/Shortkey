@@ -33,7 +33,6 @@ final class AIProviderManager: ObservableObject {
     
     // MARK: - Helpers
     
-    /// Convert system errors to short, friendly messages
     private func friendlyErrorMessage(from error: Error) -> String {
         let errorDescription = error.localizedDescription.lowercased()
         
@@ -63,7 +62,6 @@ final class AIProviderManager: ObservableObject {
     
     // MARK: - Public Methods
     
-    /// Validates the API key on app launch
     @MainActor
     func validateOnLaunch() async {
         guard provider.isConfigured else {
@@ -86,7 +84,6 @@ final class AIProviderManager: ObservableObject {
         }
     }
     
-    /// Tests the connection with the current API key
     @MainActor
     func testConnection() async -> Bool {
         status = .connecting
@@ -107,7 +104,6 @@ final class AIProviderManager: ObservableObject {
         }
     }
     
-    /// Fetches available models from the provider
     @MainActor
     func fetchModels() async {
         do {
@@ -124,7 +120,6 @@ final class AIProviderManager: ObservableObject {
         }
     }
     
-    /// Selects a model to use
     func selectModel(_ model: AIModel) {
         selectedModel = model
         saveSelectedModel()
@@ -134,7 +129,6 @@ final class AIProviderManager: ObservableObject {
         }
     }
     
-    /// Configures the API key for the provider
     @MainActor
     func configure(apiKey: String) async {
         await provider.configure(apiKey: apiKey)
@@ -146,14 +140,11 @@ final class AIProviderManager: ObservableObject {
         }
     }
     
-    /// Transforms text using the selected action
     func transform(text: String, action: SpellAction) async throws -> String {
-        // Check text length
         guard text.count <= Self.maxTextLength else {
             throw SpellifyError.textTooLong
         }
         
-        // Check if provider is ready
         guard status.isReady else {
             throw SpellifyError.providerNotConfigured
         }
@@ -165,7 +156,6 @@ final class AIProviderManager: ObservableObject {
         )
     }
     
-    /// Returns the display name of the current provider
     var providerDisplayName: String {
         provider.displayName
     }
@@ -206,8 +196,6 @@ enum SpellifyError: LocalizedError, Equatable {
             return "Transform failed: \(error.localizedDescription)"
         }
     }
-    
-    // MARK: - Equatable
     
     static func == (lhs: SpellifyError, rhs: SpellifyError) -> Bool {
         switch (lhs, rhs) {

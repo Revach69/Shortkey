@@ -35,7 +35,6 @@ enum ProFeature: String, CaseIterable {
     
     // MARK: - Implementation Status
     
-    /// All features in this enum are implemented
     var isImplemented: Bool {
         return true
     }

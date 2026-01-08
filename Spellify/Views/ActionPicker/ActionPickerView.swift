@@ -42,14 +42,12 @@ struct ActionPickerView: View {
         .padding(.vertical, 6)
         .padding(.horizontal, 6)
         .background {
-            // Beautiful macOS-style background
             RoundedRectangle(cornerRadius: 10, style: .continuous)
                 .fill(.ultraThinMaterial)
                 .shadow(color: Color.black.opacity(0.2), radius: 12, x: 0, y: 4)
                 .shadow(color: Color.black.opacity(0.08), radius: 1, x: 0, y: 1)
         }
         .overlay {
-            // Subtle border
             RoundedRectangle(cornerRadius: 10, style: .continuous)
                 .strokeBorder(Color.white.opacity(0.2), lineWidth: 1)
         }
@@ -91,13 +89,11 @@ struct ActionPickerRow: View {
     
     var body: some View {
         HStack(spacing: 12) {
-            // Icon on the left (from action.icon)
             Image(systemName: action.icon)
                 .font(.system(size: 14, weight: .medium))
                 .foregroundStyle(.secondary)
                 .frame(width: 16)
             
-            // Action name
             Text(action.name)
                 .font(.system(size: 14, weight: .regular))
                 .foregroundStyle(.primary)

@@ -23,7 +23,6 @@ final class NotificationManager: ObservableObject {
     
     // MARK: - Public Methods
     
-    /// Shows a notification that processing has started
     func showProcessing(actionName: String) {
         showNotification(
             title: "Spellify",
@@ -31,7 +30,6 @@ final class NotificationManager: ObservableObject {
         )
     }
     
-    /// Shows a success notification
     func showSuccess() {
         showNotification(
             title: "Spellify",
@@ -39,7 +37,6 @@ final class NotificationManager: ObservableObject {
         )
     }
     
-    /// Shows an error notification
     func showError(_ message: String? = nil) {
         showNotification(
             title: "Spellify",
@@ -47,7 +44,6 @@ final class NotificationManager: ObservableObject {
         )
     }
     
-    /// Shows a notification when no text is selected
     func showNoSelection() {
         showNotification(
             title: "Spellify",
@@ -55,7 +51,6 @@ final class NotificationManager: ObservableObject {
         )
     }
     
-    /// Shows a notification when text is too long
     func showTextTooLong() {
         showNotification(
             title: "Spellify",
@@ -63,7 +58,6 @@ final class NotificationManager: ObservableObject {
         )
     }
     
-    /// Shows a notification when API key is not configured
     func showAPIKeyNotConfigured() {
         showNotification(
             title: "Spellify",
@@ -75,7 +69,6 @@ final class NotificationManager: ObservableObject {
     
     private func requestAuthorization() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, error in
-            // Authorization completed
         }
     }
     
@@ -88,11 +81,10 @@ final class NotificationManager: ObservableObject {
         let request = UNNotificationRequest(
             identifier: UUID().uuidString,
             content: content,
-            trigger: nil // Deliver immediately
+            trigger: nil
         )
         
         UNUserNotificationCenter.current().add(request) { error in
-            // Notification added
         }
     }
 }

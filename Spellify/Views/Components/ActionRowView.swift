@@ -18,13 +18,11 @@ struct ActionRowView: View {
     
     var body: some View {
         HStack(spacing: 12) {
-            // Icon
             Image(systemName: action.icon)
                 .font(.system(size: 14, weight: .medium))
                 .foregroundStyle(.secondary)
                 .frame(width: 16)
             
-            // Name
             Text(action.name)
                 .lineLimit(1)
             

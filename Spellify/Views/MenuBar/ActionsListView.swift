@@ -19,7 +19,6 @@ struct ActionsListView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Section header
             Text(Strings.Popover.actions)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
@@ -27,19 +26,16 @@ struct ActionsListView: View {
                 .padding(.top, 12)
                 .padding(.bottom, 8)
             
-            // Actions list
             ForEach(actionsManager.actions) { action in
                 Button(action: {
                     actionEditorMode = .edit(action)
                 }) {
                     HStack(spacing: 12) {
-                        // Icon
                         Image(systemName: action.icon)
                             .font(.system(size: 14, weight: .medium))
                             .foregroundStyle(.secondary)
                             .frame(width: 16)
                         
-                        // Name
                         Text(action.name)
                             .foregroundStyle(.primary)
                             .lineLimit(1)
@@ -53,13 +49,10 @@ struct ActionsListView: View {
                 .buttonStyle(HoverButtonStyle())
             }
             
-            // Add action button
             Button(action: {
-                // Check if user can add more actions
                 if actionsManager.canAddAction {
                     actionEditorMode = .add
                 } else {
-                    // Show paywall
                     showPaywall = true
                 }
             }) {

@@ -44,12 +44,10 @@ final class SubscriptionVerification {
     func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
         switch result {
         case .unverified:
-            // Transaction failed cryptographic verification
             AppLogger.log("❌ Transaction verification failed")
             throw StoreError.failedVerification
             
         case .verified(let safe):
-            // Transaction is legitimate and signed by Apple
             AppLogger.log("✅ Transaction verified")
             return safe
         }

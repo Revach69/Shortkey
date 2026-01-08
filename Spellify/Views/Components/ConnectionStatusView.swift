@@ -37,11 +37,9 @@ struct ConnectionStatusView: View {
     
     var body: some View {
         HStack(spacing: 6) {
-            // Status dot (reusable component)
             StatusIndicator(status: status)
                 .frame(width: 6, height: 6)
             
-            // Status text
             Text(status.displayText)
                 .font(.system(size: fontSize))
                 .foregroundStyle(.secondary)

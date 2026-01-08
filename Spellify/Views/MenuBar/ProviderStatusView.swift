@@ -23,14 +23,11 @@ struct ProviderStatusView: View {
     
     var body: some View {
         HStack(spacing: 8) {
-            // Left: Provider [• Model]
             HStack(spacing: 0) {
                 Text(aiProviderManager.providerDisplayName)
                     .foregroundStyle(.primary)
                 
-                // Show model only when not "Not configured"
                 if case .notConfigured = aiProviderManager.status {
-                    // No model shown
                 } else if case .connected(let model) = aiProviderManager.status {
                     Text(" " + Constants.textSeparator + " " + model)
                         .foregroundStyle(.secondary)
@@ -39,7 +36,6 @@ struct ProviderStatusView: View {
             
             Spacer()
             
-            // Right: Connection status component
             ConnectionStatusView(
                 status: aiProviderManager.status,
                 fontSize: 14,
