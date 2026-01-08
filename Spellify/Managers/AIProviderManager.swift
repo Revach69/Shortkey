@@ -9,6 +9,7 @@ import Foundation
 import Combine
 
 /// Manages the active AI provider and its connection state
+@MainActor
 final class AIProviderManager: ObservableObject {
     
     // MARK: - Published Properties
@@ -62,7 +63,6 @@ final class AIProviderManager: ObservableObject {
     
     // MARK: - Public Methods
     
-    @MainActor
     func validateOnLaunch() async {
         guard provider.isConfigured else {
             status = .notConfigured
@@ -84,7 +84,6 @@ final class AIProviderManager: ObservableObject {
         }
     }
     
-    @MainActor
     func testConnection() async -> Bool {
         status = .connecting
         
@@ -104,7 +103,6 @@ final class AIProviderManager: ObservableObject {
         }
     }
     
-    @MainActor
     func fetchModels() async {
         do {
             availableModels = try await provider.fetchAvailableModels()
@@ -129,7 +127,6 @@ final class AIProviderManager: ObservableObject {
         }
     }
     
-    @MainActor
     func configure(apiKey: String) async {
         await provider.configure(apiKey: apiKey)
         

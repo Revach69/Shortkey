@@ -9,6 +9,7 @@ import Foundation
 import UserNotifications
 
 /// Manages system notifications for Spellify
+@MainActor
 final class NotificationManager: ObservableObject {
     
     // MARK: - Singleton

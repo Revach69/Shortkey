@@ -8,6 +8,7 @@
 import AppKit
 
 /// Main controller that orchestrates the text transformation flow
+@MainActor
 final class SpellifyController {
     
     // MARK: - Singleton
