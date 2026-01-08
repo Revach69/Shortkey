@@ -160,16 +160,28 @@ final class AIProviderManager: ObservableObject {
     // MARK: - Private Methods
     
     private func loadSelectedModel() {
-        guard let data = defaults.data(forKey: selectedModelKey),
-              let model = try? Self.decoder.decode(AIModel.self, from: data) else {
+        guard let data = defaults.data(forKey: selectedModelKey) else {
+            AppLogger.log("No saved model found, using default")
             return
         }
-        selectedModel = model
+        
+        do {
+            selectedModel = try Self.decoder.decode(AIModel.self, from: data)
+            AppLogger.log("Loaded saved model: \(selectedModel.name)")
+        } catch {
+            AppLogger.error("Failed to decode saved model: \(error). Using default model.")
+            // Keep using default model
+        }
     }
     
     private func saveSelectedModel() {
-        guard let data = try? Self.encoder.encode(selectedModel) else { return }
-        defaults.set(data, forKey: selectedModelKey)
+        do {
+            let data = try Self.encoder.encode(selectedModel)
+            defaults.set(data, forKey: selectedModelKey)
+            AppLogger.log("Saved model preference: \(selectedModel.name)")
+        } catch {
+            AppLogger.error("Failed to save model preference: \(error)")
+        }
     }
 }
 

@@ -99,7 +99,15 @@ final class KeychainService: KeychainServiceProtocol {
     }
     
     func getAPIKey(for provider: String) -> String? {
-        return try? retrieve(key: "\(provider)-api-key")
+        do {
+            return try retrieve(key: "\(provider)-api-key")
+        } catch KeychainError.encodingFailed, KeychainError.decodingFailed {
+            AppLogger.error("Keychain data corruption for \(provider)")
+            return nil
+        } catch {
+            // Item not found is normal, don't log
+            return nil
+        }
     }
     
     func deleteAPIKey(for provider: String) {

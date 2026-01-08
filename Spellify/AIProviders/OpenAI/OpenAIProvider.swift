@@ -17,7 +17,16 @@ final class OpenAIProvider: AIModelProvider {
     let apiKeyURL = URL(string: "https://platform.openai.com/api-keys")!
     
     var isConfigured: Bool {
-        (try? keychain.retrieve(key: keychainKey)) != nil
+        do {
+            let key = try keychain.retrieve(key: keychainKey)
+            return key != nil && !key!.isEmpty
+        } catch KeychainError.encodingFailed, KeychainError.decodingFailed {
+            AppLogger.error("Keychain data corruption for OpenAI key")
+            return false
+        } catch {
+            // errSecItemNotFound is expected when no key exists
+            return false
+        }
     }
     
     private(set) var connectionStatus: ConnectionStatus = .notConfigured
