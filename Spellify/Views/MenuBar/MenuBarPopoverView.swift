@@ -54,7 +54,7 @@ struct MenuBarPopoverView: View {
             
             PopoverFooterView(showingAbout: $showingAbout)
         }
-        .frame(width: Constants.popoverWidth)
+        .frame(width: Layout.popoverWidth)
         .sheet(item: $actionEditorMode) { mode in
             ActionEditorSheet(
                 action: mode.action,

@@ -19,7 +19,7 @@ struct APIKeyField: View {
             if hasStoredKey {
                 // Has key state: masked key + Edit button
                 HStack(spacing: 8) {
-                    Text(Constants.maskedAPIKey)
+                    Text(Layout.maskedAPIKey)
                         .font(.system(.body, design: .monospaced))
                         .foregroundStyle(.secondary)
                     

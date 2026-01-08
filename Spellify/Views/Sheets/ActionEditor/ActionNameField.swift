@@ -17,7 +17,7 @@ struct ActionNameField: View {
             label: Strings.ActionEditor.name,
             text: $name,
             placeholder: Strings.ActionEditor.namePlaceholder,
-            maxLength: Constants.maxNameLength,
+            maxLength: BusinessRules.maxNameLength,
             showCounter: true
         )
     }

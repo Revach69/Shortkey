@@ -32,7 +32,7 @@ struct SettingsView: View {
             PreferencesSection()
         }
         .formStyle(.grouped)
-        .frame(minWidth: Constants.settingsWidth, minHeight: Constants.settingsHeight)
+        .frame(minWidth: Layout.settingsWidth, minHeight: Layout.settingsHeight)
     }
 }
 

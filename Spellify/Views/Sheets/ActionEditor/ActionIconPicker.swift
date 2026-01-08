@@ -19,7 +19,7 @@ struct ActionIconPicker: View {
                 .foregroundStyle(.secondary)
             
             Menu {
-                ForEach(Constants.availableSFSymbols, id: \.self) { iconName in
+                ForEach(SFSymbols.available, id: \.self) { iconName in
                     Button(action: {
                         selectedIcon = iconName
                     }) {

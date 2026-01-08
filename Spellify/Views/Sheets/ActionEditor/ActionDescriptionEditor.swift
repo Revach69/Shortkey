@@ -18,7 +18,7 @@ struct ActionDescriptionEditor: View {
             helperText: Strings.ActionEditor.descriptionHelper,
             text: $description,
             placeholder: Strings.ActionEditor.descriptionPlaceholder,
-            maxLength: Constants.maxDescriptionLength,
+            maxLength: BusinessRules.maxDescriptionLength,
             minHeight: 120,
             showCounter: true
         )
