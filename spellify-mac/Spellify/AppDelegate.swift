@@ -38,6 +38,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             AccessibilityService.shared.requestAccessibilityPermissions()
         }
         
+        // Register device with backend on first launch
+        Task {
+            do {
+                try await SpellifyBackendService.shared.registerDeviceIfNeeded()
+            } catch {
+                AppLogger.error("Failed to register device: \(error.localizedDescription)")
+            }
+        }
+        
         Task {
             await aiProviderManager.validateOnLaunch()
         }

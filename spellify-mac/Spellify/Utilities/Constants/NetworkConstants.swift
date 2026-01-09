@@ -11,17 +11,21 @@ enum NetworkConstants {
     
     // MARK: - Timeouts
     
-    /// API request timeout in seconds
     static let requestTimeout: TimeInterval = 10.0
     
     // MARK: - Backend URLs
     
-    /// Spellify backend base URL
-    /// Update this with your Firebase project ID after deployment
-    static let backendBaseURL = "https://us-central1-YOUR-PROJECT-ID.cloudfunctions.net"
+    /// Update with your Firebase project ID after deployment
+    static let spellifyApiBaseURL = "https://us-central1-YOUR-PROJECT-ID.cloudfunctions.net"
+    
+    // MARK: - Backend Endpoints
+    
+    enum SpellifyApiEndpoint {
+        static let registerDevice = "registerDevice"
+        static let transform = "transform"
+    }
     
     // MARK: - External URLs
     
-    /// OpenAI API key page
     static let openAIKeyURL = URL(string: "https://platform.openai.com/api-keys")!
 }

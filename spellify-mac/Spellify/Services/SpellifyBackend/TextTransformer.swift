@@ -50,7 +50,7 @@ final class TextTransformer {
         ]
         
         let (data, httpResponse) = try await httpClient.post(
-            endpoint: "transform",
+            endpoint: NetworkConstants.SpellifyApiEndpoint.transform,
             body: requestBody
         )
         

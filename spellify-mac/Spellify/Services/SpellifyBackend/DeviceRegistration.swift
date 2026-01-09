@@ -46,7 +46,7 @@ final class DeviceRegistration {
         ]
         
         let (_, httpResponse) = try await httpClient.post(
-            endpoint: "registerDevice",
+            endpoint: NetworkConstants.SpellifyApiEndpoint.registerDevice,
             body: requestBody
         )
         

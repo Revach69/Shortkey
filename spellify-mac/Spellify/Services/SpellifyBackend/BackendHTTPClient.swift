@@ -13,7 +13,7 @@ final class BackendHTTPClient {
     private let session: URLSession
     
     init(
-        baseURL: String = NetworkConstants.backendBaseURL,
+        baseURL: String = NetworkConstants.spellifyApiBaseURL,
         session: URLSession = .shared
     ) {
         self.baseURL = baseURL
