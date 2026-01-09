@@ -21,7 +21,7 @@ final class KeychainService: KeychainServiceProtocol {
     
     // MARK: - Initialization
     
-    private init(service: String = "com.spellify.keychain") {
+    private init(service: String = AppConstants.keychainServiceName) {
         self.service = service
     }
     

@@ -28,7 +28,7 @@ final class SubscriptionManager: ObservableObject {
     
     // MARK: - Constants
     
-    private let productID = "com.drorlapidot.spellify.pro.monthly"
+    private let productID = AppConstants.proSubscriptionProductID
     
     // MARK: - Dependencies
     

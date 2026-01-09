@@ -9,7 +9,7 @@ import OSLog
 import os.log
 
 enum AppLogger {
-    private static let subsystem = Bundle.main.bundleIdentifier ?? "com.spellify.app"
+    private static let subsystem = Bundle.main.bundleIdentifier ?? AppConstants.logSubsystem
     
     static let general = Logger(subsystem: subsystem, category: "general")
     static let settings = Logger(subsystem: subsystem, category: "settings")

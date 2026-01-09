@@ -12,7 +12,7 @@ class CryptoService {
     static let shared = CryptoService()
     private let keychainService = KeychainService.shared
     
-    private let privateKeyTag = "com.spellify.privateKey"
+    private let privateKeyTag = AppConstants.privateKeyTag
     
     private init() {}
     
