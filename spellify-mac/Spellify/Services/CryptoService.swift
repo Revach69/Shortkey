@@ -31,11 +31,15 @@ class CryptoService {
     
     private func savePrivateKey(_ key: P256.Signing.PrivateKey) throws {
         let keyData = key.rawRepresentation
-        try keychainService.save(keyData, forKey: privateKeyTag)
+        let keyBase64 = keyData.base64EncodedString()
+        try keychainService.save(key: privateKeyTag, value: keyBase64)
     }
     
     private func loadPrivateKey() throws -> P256.Signing.PrivateKey {
-        let keyData = try keychainService.load(forKey: privateKeyTag)
+        guard let keyBase64 = try keychainService.retrieve(key: privateKeyTag),
+              let keyData = Data(base64Encoded: keyBase64) else {
+            throw CryptoError.keyNotFound
+        }
         return try P256.Signing.PrivateKey(rawRepresentation: keyData)
     }
     
@@ -53,5 +57,21 @@ class CryptoService {
         
         let signature = try privateKey.signature(for: jsonData)
         return signature.derRepresentation.base64EncodedString()
+    }
+}
+
+// MARK: - Errors
+
+enum CryptoError: LocalizedError {
+    case keyNotFound
+    case invalidKeyData
+    
+    var errorDescription: String? {
+        switch self {
+        case .keyNotFound:
+            return "Private key not found in Keychain"
+        case .invalidKeyData:
+            return "Invalid key data"
+        }
     }
 }

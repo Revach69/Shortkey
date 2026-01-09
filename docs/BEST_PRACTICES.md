@@ -1,4 +1,11 @@
-# Best Practices Used in Spellify
+# Best Practices - General Architecture
+
+> **Note**: This document covers general architectural principles used across the Spellify monorepo.  
+> For project-specific best practices, see:
+> - [Mac App Best Practices](../spellify-mac/docs/BEST_PRACTICES.md)
+> - [Backend Best Practices](../spellify-api/docs/BEST_PRACTICES.md)
+
+---
 
 ## SOLID Principles
 
@@ -68,124 +75,152 @@ class AIProviderManager {
 }
 ```
 
-## SwiftUI Patterns
+---
 
-### Small, Composable Views
+## Architecture Patterns
 
-Each view file is focused and under 100 lines:
+### Services vs Managers
 
-```
-MenuBarPopoverView
-├── PopoverHeaderView
-├── ActionsListView
-│   └── ActionRowView (reusable)
-├── ProviderStatusView
-│   └── StatusIndicator (reusable)
-└── PopoverFooterView
-```
+**Key Distinction**: State and purpose
 
-### Environment Objects for Dependency Injection
+#### Services (Stateless System Integration)
+- ✅ Wrap system APIs or external services
+- ✅ Usually stateless or minimal state
+- ✅ No `@Published` properties (Swift) or reactive state
+- ✅ Direct system/API integration
 
+**Examples:**
+- `KeychainService` - Wraps macOS Keychain
+- `CryptoService` - Wraps CryptoKit
+- Backend services - Wrap HTTP APIs
+
+#### Managers (Stateful Business Logic)
+- ✅ Manage application state
+- ✅ Have reactive properties (`@Published` in Swift)
+- ✅ Business rules and logic
+- ✅ Observed by UI layer
+
+**Examples:**
+- `ActionsManager` - Manages user's actions
+- `SubscriptionManager` - Manages subscription state
+
+**Decision Tree**: "Does it need to be observed by the UI?"
+- YES → Manager (with reactive state)
+- NO → Service (stateless)
+
+### Domain Models vs DTOs
+
+**Key Distinction**: Public API vs internal implementation
+
+#### Domain Models (`Models/` folder)
+- ✅ Represent business concepts
+- ✅ Rich domain logic (computed properties, methods)
+- ✅ Used throughout the app
+- ✅ Independent of external APIs
+- ✅ Public to entire codebase
+
+**Example:**
 ```swift
-@main
-struct SpellifyApp: App {
-    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    // AppDelegate creates and owns managers
-}
-
-// Views receive managers via environment
-struct MenuBarPopoverView: View {
-    @EnvironmentObject var actionsManager: ActionsManager
-    @EnvironmentObject var aiProviderManager: AIProviderManager
-}
-```
-
-### Semantic Naming
-
-- Views end with `View` (e.g., `ActionsListView`)
-- Sections end with `Section` (e.g., `AIProviderSection`)
-- Panels end with `Panel` (e.g., `ActionPickerPanel`)
-
-## Async/Await
-
-Modern Swift concurrency throughout:
-
-```swift
-func transform(text: String, action: SpellAction) async throws -> String {
-    return try await provider.transform(
-        text: text,
-        prompt: action.prompt,
-        model: selectedModel.id
-    )
-}
-```
-
-## Testability
-
-### Protocol-Based Dependencies
-
-```swift
-// Production
-let provider = OpenAIProvider(
-    session: URLSession.shared,
-    keychain: KeychainService()
-)
-
-// Test
-let provider = OpenAIProvider(
-    session: MockURLSession(),
-    keychain: MockKeychainService()
-)
-```
-
-### Isolated UserDefaults in Tests
-
-```swift
-override func setUp() {
-    testDefaults = UserDefaults(suiteName: "TestSuite")!
-    sut = ActionsManager(defaults: testDefaults)
-}
-
-override func tearDown() {
-    testDefaults.removePersistentDomain(forName: "TestSuite")
-}
-```
-
-## Apple Best Practices
-
-### Localization
-
-All strings in `Strings.swift`:
-
-```swift
-enum Strings {
-    enum Popover {
-        static let title = NSLocalizedString("Spellify", comment: "App name")
+struct QuotaInfo {
+    let used: Int
+    let limit: Int
+    let resetsAt: String
+    
+    // Rich domain logic
+    var remaining: Int {
+        max(0, limit - used)
+    }
+    
+    var isExceeded: Bool {
+        used >= limit
+    }
+    
+    var usagePercentage: Double {
+        guard limit > 0 else { return 0 }
+        return Double(used) / Double(limit)
     }
 }
 ```
 
-### Secure Storage
+#### DTOs - Data Transfer Objects (Inside service folders)
+- ✅ Match API/external structure exactly
+- ✅ Only used inside specific service
+- ✅ No business logic
+- ✅ Convert to domain models
+- ✅ Internal implementation detail
 
-API keys in Keychain, not UserDefaults:
-
+**Example:**
 ```swift
-let query: [String: Any] = [
-    kSecClass as String: kSecClassGenericPassword,
-    kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock
-]
+// SpellifyBackend/BackendResponseModels.swift
+struct QuotaInfoResponse: Decodable {
+    let used: Int
+    let limit: Int
+    let resetsAt: String
+    
+    // Convert DTO to domain model
+    func toDomain() -> QuotaInfo {
+        QuotaInfo(used: used, limit: limit, resetsAt: resetsAt)
+    }
+}
 ```
 
-### System Integration
+#### Data Flow (Clean Architecture)
+```
+External API → DTO (internal) → .toDomain() → Domain Model (public) → App
+```
 
-- `SMAppService` for launch at login
-- `UNUserNotificationCenter` for notifications
-- `NSStatusItem` for menu bar
-- `CGEvent` for keyboard events
+**Benefits:**
+- API structure can change without affecting the app
+- Domain models stay stable
+- Business logic centralized in domain models
+- Clear separation of concerns
+
+### Service Folder Organization
+
+For complex services, use folder structure with multiple focused files:
+
+```
+Services/
+├── SimpleService.swift              # Small, single file
+└── ComplexService/                  # Folder for multi-file services
+    ├── ComplexService.swift         # Main coordinator
+    ├── HelperA.swift                # Single responsibility
+    ├── HelperB.swift                # Single responsibility
+    ├── ResponseModels.swift         # Internal DTOs
+    └── ServiceError.swift           # Error types
+```
+
+**Examples in codebase:**
+- `SubscriptionManager/` - Complex manager with multiple files
+- `SpellifyBackend/` - Complex service with multiple files
+
+**Benefits:**
+- Each file has single responsibility
+- Easy to find relevant code
+- Easy to test independently
+- Easy to maintain and extend
+
+### Naming Conventions
+
+#### Implementation-Agnostic Names
+✅ **Good**: `SpellifyBackendService` (domain-focused)  
+❌ **Bad**: `FirebaseBackendManager` (implementation detail)
+
+**Why?** If you switch from Firebase to AWS, you don't want to rename everything.
+
+#### Configuration Location
+✅ **Client config** → Client constants  
+✅ **Backend config** → Backend constants
+
+**Why?** Each side owns its own configuration.
+
+---
 
 ## Error Handling
 
 ### Typed Errors
+
+Use enums with `LocalizedError`:
 
 ```swift
 enum TextTransformError: LocalizedError {
@@ -196,7 +231,8 @@ enum TextTransformError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .textTooLong: return "Text too long"
-        // ...
+        case .providerNotConfigured: return "Provider not configured"
+        case .noTextSelected: return "No text selected"
         }
     }
 }
@@ -204,19 +240,24 @@ enum TextTransformError: LocalizedError {
 
 ### Graceful Degradation
 
+Handle errors without crashing:
+
 ```swift
-// If model fetch fails, keep using existing models
 do {
     availableModels = try await provider.fetchAvailableModels()
 } catch {
-    print("Failed to fetch models: \(error)")
-    // Keep using existing models
+    logger.error("Failed to fetch models: \(error)")
+    // Keep using existing models - don't crash!
 }
 ```
+
+---
 
 ## Code Organization
 
 ### File Structure
+
+Group related files in folders:
 
 ```
 Feature/
@@ -227,6 +268,8 @@ Feature/
 
 ### Comment Style
 
+Use MARK comments for organization:
+
 ```swift
 // MARK: - Properties
 // MARK: - Initialization
@@ -234,5 +277,20 @@ Feature/
 // MARK: - Private Methods
 ```
 
+---
 
+## Project-Specific Practices
 
+For detailed best practices specific to each project:
+
+- **macOS App**: See [spellify-mac/docs/BEST_PRACTICES.md](../spellify-mac/docs/BEST_PRACTICES.md)
+  - SwiftUI patterns
+  - Apple HIG compliance
+  - Localization
+  - Testing strategies
+
+- **Backend API**: See [spellify-api/docs/BEST_PRACTICES.md](../spellify-api/docs/BEST_PRACTICES.md)
+  - TypeScript conventions
+  - Firebase best practices
+  - API design patterns
+  - Security practices

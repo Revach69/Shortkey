@@ -113,6 +113,20 @@ final class KeychainService: KeychainServiceProtocol {
     func deleteAPIKey(for provider: String) {
         try? delete(key: "\(provider)-api-key")
     }
+    
+    // MARK: - Device ID Management
+    
+    func getOrCreateInstallId() -> String {
+        let key = "device-install-id"
+        
+        if let existingId = try? retrieve(key: key), !existingId.isEmpty {
+            return existingId
+        }
+        
+        let newId = UUID().uuidString
+        try? save(key: key, value: newId)
+        return newId
+    }
 }
 
 // MARK: - Errors

@@ -27,6 +27,10 @@
 - ✅ One component per file
 - ✅ Single Responsibility Principle
 - ✅ Group related components in subfolders
+- ✅ **Domain Models** go in `Models/` (app-wide use)
+- ✅ **DTOs** stay in service folders (internal use only)
+- ✅ **Services** are stateless (no @Published)
+- ✅ **Managers** are stateful (ObservableObject)
 
 ### Code Quality
 - ✅ Follow **SOLID principles**
@@ -50,11 +54,16 @@
 - `Views/Settings/Components/ConnectionStatusRow.swift` - Display component
 
 ### Perfect Manager Examples:
-- `Managers/ActionsManager.swift` - CRUD with persistence
-- `Managers/AIProviderManager.swift` - Business logic with async
+- `Managers/ActionsManager.swift` - CRUD with persistence (ObservableObject)
+- `Managers/SubscriptionManager/` - Folder structure for complex managers
 
 ### Perfect Service Examples:
-- `Services/KeychainService.swift` - System service with protocol
+- `Services/KeychainService.swift` - Simple stateless service
+- `Services/SpellifyBackend/` - Folder structure for complex services
+
+### Perfect Model Examples:
+- `Models/QuotaInfo.swift` - Domain model with rich logic (in Models/)
+- `Services/SpellifyBackend/BackendResponseModels.swift` - DTOs (in service folder)
 
 ---
 

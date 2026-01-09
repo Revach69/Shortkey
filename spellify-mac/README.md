@@ -113,7 +113,7 @@ Orchestrates transformation flow:
 1. Receives hotkey event
 2. Gets selected text (AccessibilityService)
 3. Shows ActionPickerPanel
-4. Transforms text (AIProviderManager or FirebaseBackendManager)
+4. Transforms text (AIProviderManager or SpellifyBackendService)
 5. Replaces text (AccessibilityService)
 
 ### Managers
@@ -125,7 +125,14 @@ Orchestrates transformation flow:
 ### Services
 - **AccessibilityService**: Get/replace selected text via CGEvent
 - **CryptoService**: P256 keypair, request signing
-- **FirebaseBackendManager**: Secure backend API calls
+- **SpellifyBackend/**: Secure backend API communication
+  - **SpellifyBackendService**: Main backend service
+  - **DeviceRegistration**: Device registration
+  - **TextTransformer**: Text transformation
+  - **BackendHTTPClient**: HTTP communication
+  - **ResponseParser**: JSON parsing
+  - **BackendModels**: Data models
+  - **BackendError**: Error types
 - **HotKeyManager**: Global keyboard shortcut (CGEvent tap)
 - **KeychainService**: Secure storage for API keys
 
@@ -146,9 +153,9 @@ ActionPickerPanel.show()
       ↓
 User selects action
       ↓
-FirebaseBackendManager.transform()
+SpellifyBackendService.transformText()
   - Signs request with CryptoService
-  - Calls Firebase backend
+  - Calls backend via BackendHTTPClient
   - Backend validates, checks quota, calls OpenAI
   - Returns transformed text
       ↓

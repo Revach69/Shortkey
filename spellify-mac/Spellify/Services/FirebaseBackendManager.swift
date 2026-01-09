@@ -18,7 +18,7 @@ final class FirebaseBackendManager {
     private init() {}
     
     func registerDeviceIfNeeded() async throws {
-        let installId = try keychainService.getInstallId()
+        let installId = keychainService.getOrCreateInstallId()
         
         if UserDefaults.standard.bool(forKey: "deviceRegistered") {
             return
@@ -48,11 +48,11 @@ final class FirebaseBackendManager {
         }
         
         UserDefaults.standard.set(true, forKey: "deviceRegistered")
-        Logger.log("Device registered successfully")
+        AppLogger.log("Device registered successfully")
     }
     
     func transformText(_ text: String, instruction: String) async throws -> (result: String, quota: QuotaInfo) {
-        let installId = try keychainService.getInstallId()
+        let installId = keychainService.getOrCreateInstallId()
         
         let signature = try cryptoService.sign(
             deviceId: installId,
@@ -101,7 +101,7 @@ final class FirebaseBackendManager {
         }
         
         let quota = QuotaInfo(used: used, limit: limit, resetsAt: resetsAt)
-        Logger.log("Transform successful. Quota: \(used)/\(limit)")
+        AppLogger.log("Transform successful. Quota: \(used)/\(limit)")
         
         return (transformedText, quota)
     }
