@@ -1,56 +1,184 @@
-# Spellify
+# Spellify Documentation
 
-A macOS menu bar app that helps you transform text using AI, anywhere on your Mac.
+Welcome to the Spellify documentation! This directory contains comprehensive guides for understanding and contributing to the Spellify project.
 
-## Overview
+---
 
-Spellify is a lightweight utility that lives in your menu bar. With a simple keyboard shortcut, you can transform any selected text using customizable AI-powered actions like fixing grammar, translating to another language, or making text more formal.
+## Start Here
 
-## Features
+New to Spellify? Read these in order:
 
-- **Menu Bar App**: Runs in the background, always accessible from the menu bar
-- **Global Keyboard Shortcut**: Trigger Spellify from any app with a customizable shortcut (default: ⌘⇧S)
-- **Customizable Actions**: Create your own text transformation prompts
-- **OpenAI Integration**: Powered by OpenAI's GPT models
-- **Clipboard Preservation**: Your clipboard content is preserved after each transformation
-- **Native macOS Experience**: Built with SwiftUI following Apple's design guidelines
+1. Main README - Project overview and quick start
+2. MONOREPO.md - Understanding the repository structure
+3. ARCHITECTURE.md - System design and data flow
+4. DEVELOPMENT.md - Setting up your dev environment
 
-## How to Use
+---
 
-1. **Install the app** and grant Accessibility permissions when prompted
-2. **Configure your OpenAI API key** via Configure... in the menu bar popover
-3. **Select any text** in any application
-4. **Press the keyboard shortcut** (default: ⌘⇧S)
-5. **Choose an action** from the picker that appears
-6. **Done!** The selected text is replaced with the transformed result
+## Documentation Index
 
-## Default Actions
+### General Documentation
 
-| Action | Description |
-|--------|-------------|
-| Fix Grammar | Fixes grammar and spelling errors while maintaining tone |
-| Translate to Spanish | Translates text to Spanish |
+- MONOREPO.md - Monorepo structure and workflows
+- ARCHITECTURE.md - Full system architecture (client + backend)
+- FEATURES.md - Feature specifications and user flows
+- DEVELOPMENT.md - Development setup and workflows
+- BEST_PRACTICES.md - Code conventions and patterns
 
-## Requirements
+### Project-Specific Documentation
 
-- macOS 13.0 (Ventura) or later
-- OpenAI API key
+- spellify-mac/README.md - macOS client documentation
+- spellify-api/README.md - Firebase backend documentation
+- spellify-mac/.cursorrules - Swift/SwiftUI conventions
+- spellify-api/.cursorrules - TypeScript/Firebase conventions
 
-## Privacy
+---
 
-- Your API key is stored securely in the macOS Keychain
-- Text is sent to OpenAI's API for processing
-- No data is stored or logged by Spellify
+## Quick Navigation
 
-## Building from Source
+### I want to...
 
-1. Clone the repository
-2. Open `Spellify.xcodeproj` in Xcode
-3. Build and run (⌘R)
+understand the system → Read ARCHITECTURE.md
+start developing → Read DEVELOPMENT.md
+work on the Mac app → Read spellify-mac/README.md + .cursorrules
+work on the backend → Read spellify-api/README.md + .cursorrules
+understand the monorepo → Read MONOREPO.md
+see what features exist → Read FEATURES.md
+follow code conventions → Read BEST_PRACTICES.md
+
+---
+
+## Document Descriptions
+
+### MONOREPO.md
+Understanding the Repository Structure
+
+Learn about:
+- Why we use a monorepo
+- Directory structure
+- Project-specific rules
+- Git workflow
+- Common tasks
+
+Read this first if you're new to the project!
+
+### ARCHITECTURE.md
+System Design and Architecture
+
+Learn about:
+- Two-tier architecture (client + backend)
+- macOS client layer architecture
+- Backend service architecture
+- Data flow
+- Security design
+- State management
+- Performance characteristics
+
+Essential for understanding how everything works together.
+
+### FEATURES.md
+Feature Specifications
+
+Learn about:
+- Core features (menu bar, shortcuts, actions)
+- Backend integration (crypto signing, quotas, rate limits)
+- Subscription management
+- User flows
+- Error handling
+- Settings
+
+Great for understanding what the app does.
+
+### DEVELOPMENT.md
+Development Guide
+
+Learn about:
+- Prerequisites (macOS, Xcode, Node.js, Firebase)
+- Getting started (cloning, setup, running)
+- Running tests
+- Development workflows
+- Common tasks
+- Debugging
+- Contributing
+
+Your go-to guide for day-to-day development.
+
+### BEST_PRACTICES.md
+Code Conventions and Patterns
+
+Learn about:
+- SOLID principles in practice
+- SwiftUI patterns
+- Async/await usage
+- Testability patterns
+- Apple best practices
+- Error handling
+- Code organization
+
+Read this to write code that fits the project style.
+
+---
+
+## Project Structure
+
+spellify/
+├── docs/                  YOU ARE HERE
+│   ├── README.md          This file
+│   ├── MONOREPO.md        Repository structure guide
+│   ├── ARCHITECTURE.md    System architecture
+│   ├── FEATURES.md        Feature specs
+│   ├── DEVELOPMENT.md     Dev guide
+│   └── BEST_PRACTICES.md  Code conventions
+├── spellify-mac/          macOS Client
+│   ├── README.md          Mac app docs
+│   └── .cursorrules       Swift/SwiftUI rules
+└── spellify-api/          Firebase Backend
+    ├── README.md          Backend docs
+    └── .cursorrules       TypeScript/Firebase rules
+
+---
+
+## Getting Started Checklist
+
+- Read Main README
+- Read MONOREPO.md
+- Read ARCHITECTURE.md
+- Read DEVELOPMENT.md
+- Choose your project (Mac app or Backend)
+- Read project-specific README
+- Read project-specific .cursorrules
+- Set up dev environment
+- Run the project
+- Make your first change!
+
+---
+
+## Questions?
+
+- General questions: Check Main README
+- Architecture questions: Check ARCHITECTURE.md
+- Dev setup questions: Check DEVELOPMENT.md
+- Code style questions: Check BEST_PRACTICES.md
+- Monorepo questions: Check MONOREPO.md
+
+Still stuck? Open an issue on GitHub!
+
+---
+
+## Contributing to Docs
+
+Found an error or want to improve the documentation?
+
+1. Edit the relevant Markdown file
+2. Follow Markdown best practices
+3. Use clear headings and formatting
+4. Add examples where helpful
+5. Submit a pull request
+
+Good documentation is code too!
+
+---
 
 ## License
 
-MIT License - see LICENSE file for details
-
-
-
+All documentation is part of the Spellify project and is licensed under the MIT License.

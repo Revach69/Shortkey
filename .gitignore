@@ -1,16 +1,51 @@
 # ============================================================================
-# TextTools .gitignore
+# Spellify Monorepo .gitignore
+# ============================================================================
+#
+# This is the root .gitignore for the monorepo.
+# Project-specific ignores are in:
+# - spellify-api/.gitignore (Firebase backend)
 # ============================================================================
 
+# -----------------------------------------------------------------------------
+# macOS System Files
+# -----------------------------------------------------------------------------
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+.DocumentRevisions-V100
+.fseventsd
+.TemporaryItems
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# -----------------------------------------------------------------------------
+# Xcode (macOS app)
+# -----------------------------------------------------------------------------
 # Build output
 build/
 DerivedData/
+*.moved-aside
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
 
-# Xcode
+# User-specific
 *.xcodeproj/project.xcworkspace/xcuserdata/
 *.xcodeproj/xcuserdata/
 *.xcworkspace/xcuserdata/
 *.xcuserstate
+xcuserdata/
+
+# Xcode legacy
 *.xcscmblueprint
 *.xccheckout
 
@@ -19,27 +54,13 @@ DerivedData/
 .swiftpm/
 Package.resolved
 
-# CocoaPods (if used)
+# CocoaPods
 Pods/
 *.xcworkspace
 
-# Carthage (if used)
+# Carthage
 Carthage/Build/
 Carthage/Checkouts/
-
-# macOS system files
-.DS_Store
-.AppleDouble
-.LSOverride
-._*
-.Spotlight-V100
-.Trashes
-
-# IDE settings (optional - some teams share these)
-.idea/
-*.swp
-*.swo
-*~
 
 # Archives & distribution
 *.ipa
@@ -47,19 +68,85 @@ Carthage/Checkouts/
 *.dSYM
 *.app
 
-# Secrets (never commit these)
+# -----------------------------------------------------------------------------
+# IDE Settings
+# -----------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Cursor IDE
+.cursor/
+
+# -----------------------------------------------------------------------------
+# Secrets & Sensitive Data
+# -----------------------------------------------------------------------------
+# Never commit these!
 *.p12
 *.mobileprovision
 *.pem
+*.key
+*.cert
+*.pfx
 Secrets/
 secrets/
+.env
+.env.local
+.env.*.local
 
+# Firebase
+.firebase/
+.runtimeconfig.json
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+
+# -----------------------------------------------------------------------------
 # Logs
+# -----------------------------------------------------------------------------
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
 
-# Temporary files
+# -----------------------------------------------------------------------------
+# Temporary Files
+# -----------------------------------------------------------------------------
 *.tmp
 *.temp
+*.bak
+*.swp
+*~.nib
+tmp/
+temp/
+
+# -----------------------------------------------------------------------------
+# Node.js (Firebase backend)
+# -----------------------------------------------------------------------------
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# -----------------------------------------------------------------------------
+# Build Artifacts
+# -----------------------------------------------------------------------------
+dist/
+lib/
+*.tsbuildinfo
+
+# -----------------------------------------------------------------------------
+# Testing
+# -----------------------------------------------------------------------------
+coverage/
+*.coverage
+.nyc_output/
+
+# -----------------------------------------------------------------------------
+# End of Spellify .gitignore
+# -----------------------------------------------------------------------------
 
 
 

@@ -1,0 +1,219 @@
+# Spellify API - Cursor AI Rules (TypeScript + Firebase)
+
+## 📚 Read These Documents First
+
+1. **`README.md`** - Setup, deployment, architecture
+2. **`../docs/ARCHITECTURE.md`** - Full system architecture
+3. **Firebase Functions docs** - https://firebase.google.com/docs/functions
+
+---
+
+## 🎯 Core Rules (Must Follow)
+
+### File Size
+- ✅ Keep files **< 100 lines** (preferred)
+- ✅ Max **150 lines** absolute limit
+- ✅ If larger, **split into smaller modules**
+
+### TypeScript
+- ✅ **Strict mode enabled** (`tsconfig.json`)
+- ✅ Use **explicit types** (no `any` unless necessary)
+- ✅ Use **interfaces** for data structures
+- ✅ Use **enums** for constants
+
+### Code Structure
+- ✅ One function per file (Cloud Functions)
+- ✅ Services in `services/` directory
+- ✅ Types in `types.ts`
+- ✅ Config in `config.ts`
+
+### Error Handling
+- ✅ Use **HttpsError** for Cloud Functions
+- ✅ Proper error codes (`invalid-argument`, `permission-denied`, etc.)
+- ✅ User-friendly error messages
+- ✅ Log errors for debugging
+
+### Security
+- ✅ **Validate all inputs** (use `validation.ts`)
+- ✅ **Verify signatures** for sensitive operations
+- ✅ Use **Firestore transactions** for atomic operations
+- ✅ Follow **principle of least privilege**
+
+### Comments & Documentation
+- ✅ Comments explain **WHY**, not **WHAT**
+- ❌ **No trivial comments** that repeat the code
+- ✅ Document complex business logic
+- ✅ Add JSDoc for exported functions
+
+---
+
+## 📖 Examples in Codebase
+
+### Perfect Service Examples:
+- `services/device.ts` - Clean CRUD operations
+- `services/quota.ts` - Atomic transactions
+- `services/openai.ts` - External API integration
+
+### Perfect Structure:
+```
+functions/src/
+├── index.ts              # Cloud Function handlers (orchestration)
+├── types.ts              # Shared TypeScript interfaces
+├── config.ts             # Configuration constants
+├── validation.ts         # Input validation
+├── crypto.ts             # Signature verification
+└── services/             # Business logic modules
+    ├── device.ts
+    ├── quota.ts
+    ├── rateLimit.ts
+    ├── openai.ts
+    └── analytics.ts
+```
+
+---
+
+## 🚫 Anti-Patterns (Never Do)
+
+```typescript
+// ❌ BAD: Using any
+function transform(data: any) { ... }
+
+// ❌ BAD: No error handling
+const result = await db.collection('devices').doc(id).get();
+return result.data();
+
+// ❌ BAD: Magic numbers
+if (count > 10) { ... }
+
+// ❌ BAD: Large files
+// 300+ lines of code in one file
+
+// ❌ BAD: Trivial comments
+// Get device from Firestore
+const device = await getDevice(deviceId);
+```
+
+---
+
+## ✅ Correct Patterns (Always Do)
+
+```typescript
+// ✅ GOOD: Explicit types
+interface TransformRequest {
+  text: string;
+  deviceId: string;
+  signature: string;
+}
+
+// ✅ GOOD: Proper error handling
+try {
+  const result = await db.collection('devices').doc(id).get();
+  if (!result.exists) {
+    throw new functions.https.HttpsError('not-found', 'Device not found');
+  }
+  return result.data() as Device;
+} catch (error) {
+  logger.error('Failed to get device', { deviceId: id, error });
+  throw error;
+}
+
+// ✅ GOOD: Use constants
+if (count > TIER_CONFIG[tier].dailyLimit) { ... }
+
+// ✅ GOOD: Small, focused files
+// Each service is 30-50 lines
+
+// ✅ GOOD: Comments explain WHY
+// Use transaction to prevent race conditions on quota
+return db.runTransaction(async (transaction) => { ... });
+```
+
+---
+
+## 🔄 Workflow
+
+**Before writing ANY code:**
+1. Read `README.md` for architecture
+2. Check similar services in `services/`
+3. Follow existing patterns
+4. Keep it small and focused
+
+**When adding a new endpoint:**
+1. Add handler in `index.ts`
+2. Add validation in `validation.ts`
+3. Add types in `types.ts`
+4. Business logic in `services/`
+5. Test with emulators
+
+**When adding a new service:**
+1. Create file in `services/`
+2. Export clear interface
+3. Handle errors properly
+4. Keep under 100 lines
+5. Add to `index.ts` if needed
+
+---
+
+## 🧪 Testing
+
+### Local Testing (Emulators)
+```bash
+firebase emulators:start
+```
+
+### Manual Testing
+```bash
+curl -X POST http://localhost:5001/PROJECT/us-central1/FUNCTION \
+  -H "Content-Type: application/json" \
+  -d '{"data": {...}}'
+```
+
+### Production Testing
+- Test with small requests first
+- Monitor Firebase Console logs
+- Check Firestore data
+
+---
+
+## 🔧 Firebase Specific
+
+### Cloud Functions
+- ✅ Use `https.onCall` for callable functions
+- ✅ Set `timeoutSeconds` for long operations
+- ✅ Use `logger` not `console.log`
+- ✅ Return data in `{data: ...}` format
+
+### Firestore
+- ✅ Use **transactions** for atomic operations
+- ✅ Use **batch writes** for multiple updates
+- ✅ Add **TTL** for temporary data (rateLimits)
+- ✅ Use **subcollections** for nested data
+
+### Security
+- ✅ Firestore rules: **server-only access**
+- ✅ Validate all inputs
+- ✅ Use environment config for secrets
+- ✅ Never log sensitive data
+
+---
+
+## 📝 Remember
+
+- **Follow TypeScript best practices**
+- **Keep services small** (< 100 lines)
+- **Use transactions** for atomic operations
+- **Validate everything** that comes from client
+- **Log errors** but not sensitive data
+- **Test with emulators** before deploying
+
+---
+
+## 🔗 Resources
+
+- [Firebase Functions Docs](https://firebase.google.com/docs/functions)
+- [Firestore Docs](https://firebase.google.com/docs/firestore)
+- [TypeScript Best Practices](https://google.github.io/styleguide/tsguide.html)
+
+---
+
+**When in doubt, check the README or existing services!**

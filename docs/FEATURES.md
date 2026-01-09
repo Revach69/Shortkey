@@ -32,14 +32,27 @@ Create, edit, and delete your own text transformation actions.
 
 - **Name**: Display name shown in the picker
 - **Prompt**: The instruction sent to the AI along with your text
+- **Icon**: Choose from SF Symbols
+- **Pro Badge**: Mark actions as Pro-only
 
-### AI Provider Integration
+### Secure Backend Integration
 
-Currently supports OpenAI with an extensible architecture for future providers.
+All transformations are processed through a secure Firebase backend.
 
-- **Dynamic Model Selection**: Choose from available models
-- **Connection Status**: Visual indicator of API connection
-- **Secure Storage**: API key stored in macOS Keychain
+- **Crypto Signing**: P256 signatures prevent device ID spoofing
+- **Rate Limiting**: 10 requests per minute (prevents abuse)
+- **Quota Management**: 10/day free tier, 1000/day pro tier
+- **Secure Storage**: Private keys in Keychain, never leave device
+- **No API Key Required**: Users don't need their own OpenAI key
+
+### Subscription Management
+
+StoreKit 2 integration for Pro features.
+
+- **Free Tier**: 10 transformations/day, 500 characters max
+- **Pro Tier**: 1000 transformations/day, 2000 characters max
+- **Auto-Renewable**: Monthly or annual subscriptions
+- **Receipt Validation**: Secure server-side validation
 
 ## User Flow
 
@@ -66,19 +79,21 @@ Currently supports OpenAI with an extensible architecture for future providers.
 | Scenario | Behavior |
 |----------|----------|
 | No text selected | Notification: "Select some text first" |
-| Text too long (>10,000 chars) | Notification: "Text too long" |
-| API not configured | Alert with link to Settings |
-| API error | Notification with error message |
-| Network timeout (10s) | Notification: "An error occurred" |
+| Text too long (>500 free, >2000 pro) | Notification: "Text too long" |
+| Daily quota exceeded | Notification: "Daily limit reached" |
+| Rate limit exceeded | Notification: "Too many requests, try again later" |
+| Backend error | Notification with error message |
+| Network timeout | Notification: "Connection error" |
+| Invalid signature | Backend rejects request (security) |
 
 ## Settings
 
-### OpenAI Configuration
+### Subscription Section
 
-- API Key input (secure, stored in Keychain)
-- Test button to validate the key
-- Model picker (fetched dynamically from API)
-- Connection status indicator
+- Current tier display (Free/Pro)
+- Usage stats (today's usage, daily limit)
+- Subscribe button (opens paywall)
+- Restore purchases button
 
 ### Keyboard Shortcut
 
@@ -88,6 +103,13 @@ Currently supports OpenAI with an extensible architecture for future providers.
 ### Preferences
 
 - Launch at login toggle (uses SMAppService)
+
+### Advanced (Optional)
+
+- Direct OpenAI mode (legacy, requires own API key)
+- API Key input (secure, stored in Keychain)
+- Model picker
+- Connection status indicator
 
 
 

@@ -2,166 +2,242 @@
 
 ## Overview
 
-Spellify follows a clean architecture with clear separation of concerns, making it easy to understand, test, and extend.
+Spellify is a client-server application with clean separation of concerns, making it easy to understand, test, and extend.
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        Views Layer                          │
-│  (SwiftUI views - MenuBar, Settings, ActionPicker)         │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│                      Managers Layer                         │
-│  (ActionsManager, AIProviderManager, NotificationManager)  │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│                      Services Layer                         │
-│  (KeychainService, AccessibilityService, HotKeyManager)    │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    AI Providers Layer                       │
-│  (OpenAIProvider - implements AIModelProvider protocol)    │
-└─────────────────────────────────────────────────────────────┘
-```
+---
 
-## Directory Structure
+## System Architecture
 
-```
-Spellify/
-├── SpellifyApp.swift           # App entry point
-├── AppDelegate.swift           # Menu bar setup, lifecycle
-│
-├── Models/                     # Data models
-│   ├── SpellAction.swift       # Action with name + prompt
-│   ├── AIModel.swift           # AI model info
-│   └── ConnectionStatus.swift  # Provider status enum
-│
-├── Protocols/                  # Abstractions
-│   └── AIModelProvider.swift   # Provider interface
-│
-├── AIProviders/                # Provider implementations
-│   └── OpenAI/
-│       ├── OpenAIProvider.swift
-│       └── OpenAIModels.swift
-│
-├── Views/                      # UI components
-│   ├── MenuBar/                # Popover views
-│   ├── Settings/               # Settings window
-│   ├── ActionPicker/           # Floating picker
-│   ├── Sheets/                 # Modal sheets
-│   └── Components/             # Reusable components
-│
-├── Services/                   # System services
-│   ├── KeychainService.swift   # Secure storage
-│   ├── AccessibilityService.swift
-│   ├── HotKeyManager.swift
-│   └── SpellifyController.swift
-│
-├── Managers/                   # Business logic
-│   ├── ActionsManager.swift    # CRUD operations
-│   ├── AIProviderManager.swift # Provider state
-│   └── NotificationManager.swift
-│
-└── Utilities/                  # Helpers
-    ├── Constants.swift
-    └── Strings.swift           # Localization
-```
+### Two-Tier Architecture
+
+Spellify is built as a monorepo with two independent projects:
+
+1. spellify-mac - Native macOS client (Swift + SwiftUI)
+2. spellify-api - Secure backend (TypeScript + Firebase)
+
+This architecture provides:
+- Security: Backend validates all requests, prevents abuse
+- Scalability: Backend can serve multiple clients
+- Cost Control: Quota and rate limiting built-in
+- Flexibility: Easy to add new AI providers or platforms
+
+---
+
+## macOS Client Architecture
+
+### Layer Architecture
+
+Views Layer -> Managers Layer -> Services Layer -> System Integration
+
+### Directory Structure
+
+See spellify-mac/README.md for detailed directory structure.
+
+Key directories:
+- Models/ - Data models
+- Protocols/ - Abstractions
+- AIProviders/ - AI provider implementations
+- Views/ - SwiftUI components
+- Services/ - System integration
+- Managers/ - Business logic
+- Utilities/ - Helpers and constants
+
+---
+
+## Backend Architecture
+
+### Service-Oriented Architecture
+
+Functions:
+- index.ts - Cloud Function endpoints (registerDevice, transform)
+- types.ts - TypeScript interfaces
+- config.ts - Configuration
+- validation.ts - Input validation
+- crypto.ts - Signature verification
+- services/ - Business logic modules
+
+### Firestore Collections
+
+devices - Device registry
+rateLimits - Rate limiting (TTL: 2 min)
+usageLogs - Analytics
+
+---
 
 ## Key Components
 
-### AppDelegate
+### macOS Client
 
-The main coordinator that sets up:
-- Menu bar status item with icon
-- Popover with SwiftUI content
-- Global hotkey listener
-- SpellifyController configuration
+AppDelegate - Main coordinator, menu bar setup
+SpellifyController - Orchestrates transformation flow
+FirebaseBackendManager - Backend API communication
+CryptoService - P256 signing
+ActionsManager - CRUD for actions
+SubscriptionManager - StoreKit 2 integration
+KeychainService - Secure storage
+AccessibilityService - Get/replace selected text
+HotKeyManager - Global keyboard shortcut
 
-### SpellifyController
+### Backend
 
-Orchestrates the main transformation flow:
-1. Receives hotkey event
-2. Gets selected text via AccessibilityService
-3. Shows ActionPickerPanel
-4. Transforms text via AIProviderManager
-5. Replaces text via AccessibilityService
+registerDevice - Device registration endpoint
+transform - Text transformation endpoint
+deviceCollection - Device CRUD
+rateLimitCollection - Rate limiting (atomic)
+quotaService - Quota management (atomic)
+openAiApi - OpenAI integration
+analyticsCollection - Usage logging
 
-### AIModelProvider Protocol
-
-Defines the interface for AI providers, enabling easy addition of new providers:
-
-```swift
-protocol AIModelProvider {
-    var id: String { get }
-    var displayName: String { get }
-    var isConfigured: Bool { get }
-    var connectionStatus: ConnectionStatus { get }
-    
-    func configure(apiKey: String) async
-    func testConnection() async throws -> Bool
-    func fetchAvailableModels() async throws -> [AIModel]
-    func transform(text: String, prompt: String, model: String) async throws -> String
-}
-```
-
-### Managers
-
-- **ActionsManager**: CRUD for actions, persisted to UserDefaults
-- **AIProviderManager**: Manages active provider, model selection, transformation
-- **NotificationManager**: System notifications for status updates
-
-### Services
-
-- **KeychainService**: Secure storage using macOS Keychain
-- **AccessibilityService**: Get/replace selected text via simulated keystrokes
-- **HotKeyManager**: Global keyboard shortcut using CGEvent tap
+---
 
 ## Data Flow
 
-### Configuration Flow
+### Initial Setup Flow
 
-```
-User enters API key → AIProviderManager.configure()
-                           ↓
-                    KeychainService.save()
-                           ↓
-                    AIProviderManager.testConnection()
-                           ↓
-                    OpenAIProvider.fetchAvailableModels()
-                           ↓
-                    Update UI status
-```
+1. App Launch
+2. CryptoService generates keypair
+3. Private key stored in Keychain
+4. FirebaseBackendManager registers device
+5. Backend creates device document
+6. Ready for transformations
 
 ### Transformation Flow
 
-```
-Hotkey pressed → SpellifyController.handleHotKeyPressed()
-                           ↓
-                 AccessibilityService.getSelectedText()
-                           ↓
-                 ActionPickerPanel.show()
-                           ↓
-                 User selects action
-                           ↓
-                 AIProviderManager.transform()
-                           ↓
-                 OpenAIProvider.transform() → OpenAI API
-                           ↓
-                 AccessibilityService.replaceSelectedText()
-```
+1. User presses keyboard shortcut
+2. HotKeyManager triggers SpellifyController
+3. AccessibilityService gets selected text
+4. ActionPickerPanel shows
+5. User selects action
+6. FirebaseBackendManager signs and sends request
+7. Backend verifies signature, checks limits, calls OpenAI
+8. AccessibilityService replaces text
+9. NotificationManager shows status
+
+---
+
+## Security Architecture
+
+### Crypto Signing (P256)
+
+- Private key stored in Keychain (never leaves device)
+- Public key sent to backend during registration
+- Requests signed with canonical format
+- Backend verifies signatures
+- Prevents device ID spoofing
+
+### Rate Limiting
+
+- 10 requests per minute per device
+- Atomic Firestore transaction
+- Auto-cleanup via TTL
+
+### Quota Management
+
+- Free tier: 10 requests/day, 500 chars max
+- Pro tier: 1000 requests/day, 2000 chars max
+- Atomic Firestore transaction
+- Auto-reset at midnight UTC
+
+### Firestore Security Rules
+
+All collections have server-only access. Direct client access is completely blocked.
+
+---
 
 ## State Management
 
-- **@Published properties** in Managers for reactive updates
-- **@EnvironmentObject** for passing managers to views
-- **@AppStorage** for simple preferences
-- **UserDefaults** for actions persistence
-- **Keychain** for secure API key storage
+### macOS Client
 
+- @Published properties in Managers
+- @EnvironmentObject for dependency injection
+- @AppStorage for preferences
+- UserDefaults for actions
+- Keychain for API keys
 
+### Backend
 
+- Firestore for persistent storage
+- Transactions for atomic operations
+- Environment variables for secrets
+
+---
+
+## Extensibility
+
+### Adding New AI Providers
+
+Backend: Create service, add config, update transform function
+Client: Update UI if needed
+
+### Adding New Platforms
+
+Implement client in new language, use same backend, implement P256 signing
+
+### Adding New Features
+
+- Client-only: Update spellify-mac/
+- Backend-only: Update spellify-api/
+- Both: Update both projects
+
+---
+
+## Testing Strategy
+
+### macOS Client
+
+- Unit Tests: Managers, Services
+- Manual Tests: UI, Accessibility
+- Test Environment: Firebase emulators
+
+### Backend
+
+- Local Testing: Firebase emulators
+- Integration Tests: Real Firestore (staging)
+- Manual Tests: curl, Postman
+- Monitoring: Firebase Console
+
+---
+
+## Deployment
+
+### macOS Client
+
+1. Build in Xcode (Archive)
+2. Notarize with Apple
+3. Distribute via GitHub releases
+
+### Backend
+
+1. firebase deploy
+2. Update client with Firebase URL
+3. Monitor Firebase Console
+
+---
+
+## Cost Considerations
+
+For 1,000 users with 5 calls/day:
+- Firebase: ~$1.14/month
+- OpenAI: ~$1.69/month
+- Total: ~$2.83/month ($0.003/user/month)
+
+---
+
+## Performance
+
+- Cold Start: 2-3s
+- Warm Request: 1-2s
+- Signature Verification: <10ms
+- Rate Limit Check: ~50ms
+- Quota Check: ~50ms
+
+---
+
+## Related Documentation
+
+- BEST_PRACTICES.md - Code conventions
+- FEATURES.md - Feature specifications
+- DEVELOPMENT.md - Development setup
+- MONOREPO.md - Monorepo structure guide
+- ../spellify-mac/README.md - Mac app docs
+- ../spellify-api/README.md - Backend docs
