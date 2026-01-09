@@ -213,17 +213,28 @@ const openaiKey = functions.config().openai.key;
 
 ```
 functions/src/
-├── index.ts              # Cloud Function handlers (orchestration)
+├── index.ts              # Cloud Functions registration (orchestration only!)
 ├── types.ts              # TypeScript interfaces
 ├── config.ts             # Configuration constants
-├── validation.ts         # Input validation
-├── crypto.ts             # Signature verification
-└── services/             # Business logic modules
-    ├── deviceCollection.ts
-    ├── quotaService.ts
-    ├── rateLimitCollection.ts
-    ├── openAiApi.ts
-    └── analyticsCollection.ts
+├── constants.ts          # Collection names, constants
+│
+├── handlers/             # Feature folders (colocation pattern)
+│   ├── registerDevice/
+│   │   ├── index.ts      # Handler logic
+│   │   └── validation.ts # Feature-specific validation
+│   └── transform/
+│       ├── index.ts      # Handler logic
+│       └── validation.ts # Feature-specific validation
+│
+├── utils/                # Shared utility functions
+│   └── crypto.ts         # Signature verification (used by multiple handlers)
+│
+└── services/             # Business logic modules (single responsibility)
+    ├── deviceCollection.ts          # Device CRUD
+    ├── quotaService.ts              # Quota management
+    ├── rateLimitCollection.ts       # Rate limiting
+    ├── openAiApi.ts                 # OpenAI integration
+    └── analyticsCollection.ts       # Usage logging
 ```
 
 **Benefits:**

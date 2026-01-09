@@ -69,22 +69,29 @@ This starts:
 
 ```
 functions/src/
-├── index.ts              # Cloud Function endpoints
-│   ├── registerDevice    # Device registration
-│   └── transform         # Text transformation
+├── index.ts              # Cloud Functions registration (orchestration only!)
 │
 ├── types.ts              # TypeScript interfaces
 ├── config.ts             # Configuration constants
 ├── constants.ts          # Collection names
-├── validation.ts         # Input validation
-├── crypto.ts             # Signature verification
 │
-└── services/             # Business logic modules
-    ├── deviceCollection.ts      # Device CRUD
-    ├── rateLimitCollection.ts   # Rate limiting
-    ├── quotaService.ts          # Quota management
-    ├── openAiApi.ts             # OpenAI integration
-    └── analyticsCollection.ts   # Usage logging
+├── handlers/             # Feature folders (colocation pattern)
+│   ├── registerDevice/
+│   │   ├── index.ts      # Handler logic
+│   │   └── validation.ts # Feature-specific validation
+│   └── transform/
+│       ├── index.ts      # Handler logic
+│       └── validation.ts # Feature-specific validation
+│
+├── utils/                # Shared utility functions
+│   └── crypto.ts         # Signature verification (used by multiple handlers)
+│
+└── services/             # Business logic modules (single responsibility)
+    ├── deviceCollection.ts          # Device CRUD
+    ├── rateLimitCollection.ts       # Rate limiting
+    ├── quotaService.ts              # Quota management
+    ├── openAiApi.ts                 # OpenAI integration
+    └── analyticsCollection.ts       # Usage logging
 ```
 
 ---

@@ -1,7 +1,10 @@
 import * as functions from 'firebase-functions';
-import { TierType } from './types';
-import { CONFIG } from './config';
+import { TierType } from '../../types';
+import { CONFIG } from '../../config';
 
+/**
+ * Validates text transformation request
+ */
 export function validateTransformRequest(
   data: any,
   tier: TierType
@@ -32,22 +35,6 @@ export function validateTransformRequest(
     throw new functions.https.HttpsError(
       'invalid-argument',
       'Invalid deviceId'
-    );
-  }
-}
-
-export function validateRegisterDeviceRequest(data: any): void {
-  if (!data.deviceId || typeof data.deviceId !== 'string') {
-    throw new functions.https.HttpsError(
-      'invalid-argument',
-      'Invalid deviceId'
-    );
-  }
-
-  if (!data.publicKey || typeof data.publicKey !== 'string') {
-    throw new functions.https.HttpsError(
-      'invalid-argument',
-      'Invalid publicKey'
     );
   }
 }
