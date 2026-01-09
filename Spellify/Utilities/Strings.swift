@@ -461,5 +461,35 @@ enum Strings {
             value: "OK",
             comment: "OK button"
         )
+        
+        static let registrationFailed = NSLocalizedString(
+            "error.registration_failed",
+            value: "Device registration failed",
+            comment: "Device registration error"
+        )
+        
+        static let transformFailed = NSLocalizedString(
+            "error.transform_failed",
+            value: "Text transformation failed",
+            comment: "Transform error"
+        )
+        
+        static let rateLimitExceeded = NSLocalizedString(
+            "error.rate_limit_exceeded",
+            value: "Rate limit exceeded. Please wait a moment.",
+            comment: "Rate limit error"
+        )
+        
+        static let invalidSignature = NSLocalizedString(
+            "error.invalid_signature",
+            value: "Invalid signature. Please try again.",
+            comment: "Invalid signature error"
+        )
+        
+        static let invalidResponse = NSLocalizedString(
+            "error.invalid_response",
+            value: "Invalid response from server",
+            comment: "Invalid response error"
+        )
     }
 }
