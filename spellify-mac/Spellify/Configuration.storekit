@@ -38,7 +38,7 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "com.drorlapidot.spellify.pro.monthly",
+          "productID" : "app.spellify.mac.pro.monthly",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Spellify Pro Monthly",
           "subscriptionGroupID" : "21510442",

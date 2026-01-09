@@ -25,7 +25,14 @@ enum NetworkConstants {
         static let transform = "transform"
     }
     
-    // MARK: - External URLs
+    // MARK: - AI Provider URLs
     
-    static let openAIKeyURL = URL(string: "https://platform.openai.com/api-keys")!
+    enum OpenAI {
+        static let baseURL = "https://api.openai.com/v1"
+        static let apiKeyURL = URL(string: "https://platform.openai.com/api-keys")!
+    }
+    
+    // MARK: - Other External URLs
+    
+    static let sfSymbolsURL = URL(string: "https://developer.apple.com/sf-symbols/")!
 }

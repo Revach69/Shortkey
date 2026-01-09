@@ -65,8 +65,8 @@ struct APIKeyEntrySheet: View {
 
 #Preview("Empty") {
     APIKeyEntrySheet(
-        providerName: "OpenAI",
-        apiKeyURL: URL(string: "https://platform.openai.com/api-keys")!,
+        providerName: AIProviderConstants.OpenAI.displayName,
+        apiKeyURL: NetworkConstants.OpenAI.apiKeyURL,
         apiKey: .constant(""),
         onSave: {},
         onCancel: {}
@@ -75,8 +75,8 @@ struct APIKeyEntrySheet: View {
 
 #Preview("With Key") {
     APIKeyEntrySheet(
-        providerName: "OpenAI",
-        apiKeyURL: URL(string: "https://platform.openai.com/api-keys")!,
+        providerName: AIProviderConstants.OpenAI.displayName,
+        apiKeyURL: NetworkConstants.OpenAI.apiKeyURL,
         apiKey: .constant("sk-test-key-12345"),
         onSave: {},
         onCancel: {}

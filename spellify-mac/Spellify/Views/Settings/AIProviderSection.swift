@@ -89,11 +89,11 @@ struct AIProviderSection: View {
     
     private func getProviderAPIKeyURL() -> URL {
         // For now, always OpenAI. When we add more providers, get from aiProviderManager.provider
-        URL(string: "https://platform.openai.com/api-keys")!
+        NetworkConstants.OpenAI.apiKeyURL
     }
     
     private func checkForStoredKey() {
-        if let storedKey = KeychainService.shared.getAPIKey(for: "openai"), !storedKey.isEmpty {
+        if let storedKey = KeychainService.shared.getAPIKey(for: AIProviderConstants.OpenAI.id), !storedKey.isEmpty {
             hasStoredKey = true
         } else {
             hasStoredKey = false
@@ -104,7 +104,7 @@ struct AIProviderSection: View {
         guard !apiKey.isEmpty else { return }
         
         do {
-            try KeychainService.shared.saveAPIKey(apiKey, for: "openai")
+            try KeychainService.shared.saveAPIKey(apiKey, for: AIProviderConstants.OpenAI.id)
             hasStoredKey = true
             showingAPIKeyModal = false
             
@@ -122,7 +122,7 @@ struct AIProviderSection: View {
     }
     
     private func removeAPIKey() {
-        KeychainService.shared.deleteAPIKey(for: "openai")
+        KeychainService.shared.deleteAPIKey(for: AIProviderConstants.OpenAI.id)
         hasStoredKey = false
         apiKey = ""
         

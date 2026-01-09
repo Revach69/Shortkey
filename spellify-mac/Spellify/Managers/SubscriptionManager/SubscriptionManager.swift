@@ -26,10 +26,6 @@ final class SubscriptionManager: ObservableObject {
     @Published private(set) var products: [Product] = []
     @Published private(set) var isLoading: Bool = false
     
-    // MARK: - Constants
-    
-    private let productID = AppConstants.proSubscriptionProductID
-    
     // MARK: - Dependencies
     
     private let verification: SubscriptionVerification
@@ -40,8 +36,8 @@ final class SubscriptionManager: ObservableObject {
     // MARK: - Initialization
     
     private init() {
-        self.verification = SubscriptionVerification(productID: productID)
-        self.productLoader = ProductLoader(productID: productID)
+        self.verification = SubscriptionVerification(productID: AppConstants.proSubscriptionProductID)
+        self.productLoader = ProductLoader(productID: AppConstants.proSubscriptionProductID)
         self.purchaseHandler = PurchaseHandler(verification: verification)
         self.transactionListener = nil
         

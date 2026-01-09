@@ -12,8 +12,6 @@ class CryptoService {
     static let shared = CryptoService()
     private let keychainService = KeychainService.shared
     
-    private let privateKeyTag = AppConstants.privateKeyTag
-    
     private init() {}
     
     func getOrCreateKeyPair() throws -> (privateKey: P256.Signing.PrivateKey, publicKey: Data) {
@@ -32,11 +30,11 @@ class CryptoService {
     private func savePrivateKey(_ key: P256.Signing.PrivateKey) throws {
         let keyData = key.rawRepresentation
         let keyBase64 = keyData.base64EncodedString()
-        try keychainService.save(key: privateKeyTag, value: keyBase64)
+        try keychainService.save(key: AppConstants.privateKeyTag, value: keyBase64)
     }
     
     private func loadPrivateKey() throws -> P256.Signing.PrivateKey {
-        guard let keyBase64 = try keychainService.retrieve(key: privateKeyTag),
+        guard let keyBase64 = try keychainService.retrieve(key: AppConstants.privateKeyTag),
               let keyData = Data(base64Encoded: keyBase64) else {
             throw CryptoError.keyNotFound
         }

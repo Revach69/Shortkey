@@ -35,7 +35,7 @@ struct ActionIconPicker: View {
                 Divider()
                 
                 Button(Strings.ActionEditor.browseSymbols) {
-                    NSWorkspace.shared.open(URL(string: "https://developer.apple.com/sf-symbols/")!)
+                    NSWorkspace.shared.open(NetworkConstants.sfSymbolsURL)
                 }
             } label: {
                 HStack(spacing: 6) {

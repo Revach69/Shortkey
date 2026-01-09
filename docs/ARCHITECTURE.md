@@ -25,6 +25,20 @@ This architecture provides:
 
 ## macOS Client Architecture
 
+### Bundle Identifier Strategy
+
+**Current:** `app.spellify.mac`
+
+**Naming Convention:**
+- Uses reverse domain notation with owned domain `spellify.app`
+- Platform-specific suffix (`.mac`) allows for future expansion
+- Future platforms: `app.spellify.ios`, `app.spellify.ipad`
+- Shared data via App Groups: `group.app.spellify`
+
+**Why not `app.spellify.Spellify`?**
+- Redundant product name
+- Platform suffix is clearer and more scalable
+
 ### Layer Architecture
 
 Views Layer -> Managers Layer -> Services Layer -> System Integration

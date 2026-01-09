@@ -12,9 +12,9 @@ final class OpenAIProvider: AIModelProvider {
     
     // MARK: - AIModelProvider Properties
     
-    let id = "openai"
-    let displayName = "OpenAI"
-    let apiKeyURL = URL(string: "https://platform.openai.com/api-keys")!
+    let id = AIProviderConstants.OpenAI.id
+    let displayName = AIProviderConstants.OpenAI.displayName
+    let apiKeyURL = NetworkConstants.OpenAI.apiKeyURL
     
     var isConfigured: Bool {
         do {
@@ -35,9 +35,9 @@ final class OpenAIProvider: AIModelProvider {
     
     private let session: URLSessionProtocol
     private let keychain: KeychainServiceProtocol
-    private let keychainKey = "openai-api-key" // Must match KeychainService.saveAPIKey format
-    private let baseURL = "https://api.openai.com/v1"
-    private let timeout: TimeInterval = 10.0
+    private let keychainKey = AIProviderConstants.OpenAI.keychainKey
+    private let baseURL = NetworkConstants.OpenAI.baseURL
+    private let timeout: TimeInterval = NetworkConstants.requestTimeout
     
     // Reusable encoder/decoder for performance
     private static let encoder = JSONEncoder()
