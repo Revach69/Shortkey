@@ -1,10 +1,8 @@
 import * as functions from 'firebase-functions';
 import { TierType } from '../../types/models';
 import { CONFIG } from '../../config';
-import {
-  getCurrentMinute,
-  incrementRateLimitIfAllowed,
-} from '../../services/collections/rateLimitCollection';
+import { getCurrentMinute } from '../../utils/dateHelpers';
+import { incrementRateLimitIfAllowed } from '../../services/collections/rateLimitCollection';
 
 export async function checkRateLimit(
   deviceId: string,
