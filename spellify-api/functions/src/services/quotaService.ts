@@ -3,19 +3,9 @@ import * as admin from 'firebase-admin';
 import { TierType, QuotaInfo } from '../types/models';
 import { Collections } from '../constants';
 import { CONFIG } from '../config';
+import { getTodayString, getNextMidnightISO, getServerTimestamp } from '../utils/dateHelpers';
 
 const db = admin.firestore();
-
-function getTodayString(): string {
-  return new Date().toISOString().split('T')[0];
-}
-
-function getNextMidnightISO(): string {
-  const tomorrow = new Date();
-  tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
-  tomorrow.setUTCHours(0, 0, 0, 0);
-  return tomorrow.toISOString();
-}
 
 export async function checkAndIncrementQuota(
   deviceId: string,
@@ -51,7 +41,7 @@ export async function checkAndIncrementQuota(
     }
     
     device.dailyCount++;
-    device.lastSeen = admin.firestore.FieldValue.serverTimestamp();
+    device.lastSeen = getServerTimestamp();
     
     transaction.set(deviceRef, device);
     

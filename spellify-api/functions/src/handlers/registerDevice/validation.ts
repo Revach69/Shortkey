@@ -1,9 +1,7 @@
 import * as functions from 'firebase-functions';
 import { RegisterDeviceRequest } from './index';
+import { isValidPublicKey } from '../../utils/crypto';
 
-/**
- * Validates device registration request
- */
 export function validateRegisterDeviceRequest(data: RegisterDeviceRequest): void {
   if (!data.deviceId || typeof data.deviceId !== 'string') {
     throw new functions.https.HttpsError(
@@ -16,6 +14,13 @@ export function validateRegisterDeviceRequest(data: RegisterDeviceRequest): void
     throw new functions.https.HttpsError(
       'invalid-argument',
       'Invalid publicKey'
+    );
+  }
+
+  if (!isValidPublicKey(data.publicKey)) {
+    throw new functions.https.HttpsError(
+      'invalid-argument',
+      'Invalid public key format'
     );
   }
 }

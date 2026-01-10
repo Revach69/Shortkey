@@ -1,26 +1,22 @@
-import * as functions from 'firebase-functions';
 import { validateRegisterDeviceRequest } from './validation';
-import { registerDevice as registerDeviceService } from '../../services/collections/deviceCollection';
+import { createDevice } from '../../services/collections/deviceCollection';
+import { getServerTimestamp, getTodayString } from '../../utils/dateHelpers';
+import { Tier } from '../../types/models';
 
 export interface RegisterDeviceRequest {
   deviceId: string;
   publicKey: string;
 }
 
-/**
- * Handler for device registration
- * Validates request and registers device with public key
- */
 export async function registerDeviceHandler(
-  request: functions.https.CallableRequest<RegisterDeviceRequest>
+  data: RegisterDeviceRequest
 ): Promise<{ success: boolean }> {
-  const data = request.data;
-  
-  // Validate input
   validateRegisterDeviceRequest(data);
   
-  // Register device
-  await registerDeviceService(data.deviceId, data.publicKey);
+  const now = getServerTimestamp();
+  const today = getTodayString();
+
+  await createDevice(data.deviceId, data.publicKey, Tier.FREE, 0, today, now);
   
   return { success: true };
 }

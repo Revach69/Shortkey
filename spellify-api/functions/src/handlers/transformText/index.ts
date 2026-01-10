@@ -1,6 +1,6 @@
 import { QuotaInfo } from '../../types/models';
+import { RequestContext } from '../../types/server';
 import { validateTransformRequest } from './validation';
-import { getRequestContext } from '../../utils/getRequestContext';
 import { checkAndIncrementQuota } from '../../services/quotaService';
 import { transformText } from '../../services/externals/openAiApi';
 import { logUsage } from '../../services/logService';
@@ -19,12 +19,15 @@ interface TransformResponse {
 
 /**
  * Handler for text transformation
- * Validates signature, checks limits, transforms text via OpenAI
+ * Validates request, checks limits, transforms text via OpenAI
  */
-export async function transformTextHandler(data: TransformRequest): Promise<TransformResponse> {
-  const { deviceId, text, instruction, signature } = data;
+export async function transformTextHandler(
+  data: TransformRequest,
+  context: RequestContext
+): Promise<TransformResponse> {
+  const { text, instruction } = data;
+  const { device } = context;
   
-  const { device } = await getRequestContext(deviceId, signature, { deviceId, text, instruction });
   validateTransformRequest(data, device.tier);
   
   const quota = await checkAndIncrementQuota(device.deviceId, device.tier);
