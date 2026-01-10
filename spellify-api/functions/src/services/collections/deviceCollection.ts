@@ -1,11 +1,11 @@
 import * as admin from 'firebase-admin';
 import { Tier, TierType } from '../../types/models';
-import { Collections } from '../../constants';
+import { COLLECTIONS } from '../../constants';
 
 const db = admin.firestore();
 
 export function getDeviceRef(deviceId: string) {
-  return db.collection(Collections.DEVICES).doc(deviceId);
+  return db.collection(COLLECTIONS.DEVICES).doc(deviceId);
 }
 
 export async function getDevice(deviceId: string): Promise<any | null> {

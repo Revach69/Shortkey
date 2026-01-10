@@ -1,5 +1,5 @@
 import * as admin from 'firebase-admin';
-import { Collections } from '../../constants';
+import { COLLECTIONS } from '../../constants';
 
 const db = admin.firestore();
 
@@ -9,7 +9,7 @@ export async function incrementRateLimitIfAllowed(
   maxLimit: number
 ): Promise<void> {
   const rateLimitRef = db
-    .collection(Collections.RATE_LIMITS)
+    .collection(COLLECTIONS.RATE_LIMITS)
     .doc(`${deviceId}_${currentMinute}`);
 
   await db.runTransaction(async (transaction: admin.firestore.Transaction) => {

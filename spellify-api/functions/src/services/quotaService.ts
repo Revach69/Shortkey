@@ -1,7 +1,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { TierType, QuotaInfo } from '../types/models';
-import { Collections } from '../constants';
+import { COLLECTIONS } from '../constants';
 import { CONFIG } from '../config';
 import { getTodayString, getNextMidnightISO, getServerTimestamp } from '../utils/dateHelpers';
 
@@ -14,7 +14,7 @@ export async function checkAndIncrementQuota(
   const today = getTodayString();
   const limit = CONFIG.tiers[tier].daily;
   
-  const deviceRef = db.collection(Collections.DEVICES).doc(deviceId);
+  const deviceRef = db.collection(COLLECTIONS.DEVICES).doc(deviceId);
   
   const result = await db.runTransaction(async (transaction) => {
     const doc = await transaction.get(deviceRef);

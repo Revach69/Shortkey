@@ -1,15 +1,18 @@
-import * as functions from 'firebase-functions';
+import { defineSecret } from 'firebase-functions/params';
 import OpenAI from 'openai';
 import { CONFIG } from '../../config';
+import { SECRETS } from '../../constants';
 
-const openai = new OpenAI({
-  apiKey: functions.config().openai.key,
-});
+const openaiApiKey = defineSecret(SECRETS.OPENAI_API_KEY);
 
 export async function transformText(
   text: string,
   instruction: string
 ): Promise<string> {
+  const openai = new OpenAI({
+    apiKey: openaiApiKey.value(),
+  });
+
   const response = await openai.chat.completions.create({
     model: CONFIG.openai.model,
     messages: [
