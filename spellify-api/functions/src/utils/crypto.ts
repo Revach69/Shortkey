@@ -1,7 +1,7 @@
 import * as crypto from 'crypto';
 
 export function verifySignature(
-  data: { deviceId: string; text: string; instruction: string },
+  data: Record<string, any>,
   signatureBase64: string,
   publicKeyBase64: string
 ): boolean {
@@ -27,12 +27,9 @@ export function verifySignature(
   }
 }
 
-export function createCanonicalRequest(data: {
-  deviceId: string;
-  text: string;
-  instruction: string;
-}): string {
-  return JSON.stringify(data, ['deviceId', 'text', 'instruction'].sort());
+function createCanonicalRequest(data: Record<string, any>): string {
+  const sortedKeys = Object.keys(data).sort();
+  return JSON.stringify(data, sortedKeys);
 }
 
 export function isValidPublicKey(publicKeyBase64: string): boolean {

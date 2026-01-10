@@ -1,8 +1,8 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { TierType } from '../types';
-import { CONFIG } from '../config';
-import { Collections } from '../constants';
+import { TierType } from '../../types/models';
+import { CONFIG } from '../../config';
+import { Collections } from '../../constants';
 
 const db = admin.firestore();
 

@@ -1,4 +1,4 @@
-import { Tier } from './types';
+import { Tier } from './types/models';
 
 export const CONFIG = {
   tiers: {

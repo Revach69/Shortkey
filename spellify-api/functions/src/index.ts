@@ -1,18 +1,16 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { registerDeviceHandler } from './handlers/registerDevice';
-import { transformHandler } from './handlers/transform';
+import { transformTextHandler } from './handlers/transformText';
 
-// Initialize Firebase Admin
 admin.initializeApp();
 
-// Export Cloud Functions
 export const registerDevice = functions
   .https.onCall(registerDeviceHandler);
 
-export const transform = functions
+export const transformText = functions
   .runWith({
     timeoutSeconds: 30,
     memory: '256MB',
   })
-  .https.onCall(transformHandler);
+  .https.onCall(transformTextHandler);

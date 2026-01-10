@@ -87,17 +87,41 @@ export const transform = functions
 
 #### Logging
 
-Use `functions.logger` not `console.log`:
+Use **Cloud Logging** via `functions.logger` (not `console.log` or Firestore):
 
 ```typescript
-import { logger } from 'firebase-functions';
+import * as functions from 'firebase-functions';
 
-// Good ✅
-logger.info('Device registered', { deviceId });
-logger.error('Transform failed', { error, deviceId });
+// Good ✅ - Structured logging with Cloud Logging
+functions.logger.log('usage_event', {
+  deviceId,
+  tier,
+  textLength,
+  success: true,
+  timestamp: new Date().toISOString(),
+});
 
-// Bad ❌
+functions.logger.error('Transform failed', { error, deviceId });
+
+// Bad ❌ - console.log (not structured)
 console.log('Device registered');
+
+// Bad ❌ - Firestore for logs (expensive, slower)
+await db.collection('usageLogs').add({ deviceId, timestamp: ... });
+```
+
+**Why Cloud Logging?**
+- ✅ **Free** (included in Cloud Functions free tier)
+- ✅ **Fast** (async, doesn't block function execution)
+- ✅ **Queryable** (structured JSON in Cloud Console)
+- ✅ **Exportable** (auto-export to BigQuery for analytics)
+- ✅ **Integrated** (works with Cloud Monitoring/Alerting)
+
+**Viewing Logs in Cloud Console:**
+```
+Cloud Logging → Logs Explorer
+Filter: jsonPayload.message="usage_event"
+Filter errors: jsonPayload.success=false
 ```
 
 ### Firestore
@@ -214,34 +238,95 @@ const openaiKey = functions.config().openai.key;
 ```
 functions/src/
 ├── index.ts              # Cloud Functions registration (orchestration only!)
-├── types.ts              # TypeScript interfaces
 ├── config.ts             # Configuration constants
 ├── constants.ts          # Collection names, constants
+│
+├── types/                # TypeScript type definitions
+│   ├── models.ts         # Domain models (Device, Quota, etc.)
+│   └── server.ts         # Server types (RequestContext, etc.)
 │
 ├── handlers/             # Feature folders (colocation pattern)
 │   ├── registerDevice/
 │   │   ├── index.ts      # Handler logic
-│   │   └── validation.ts # Feature-specific validation
+│   │   └── validation.ts # Handler-specific validation
 │   └── transform/
 │       ├── index.ts      # Handler logic
-│       └── validation.ts # Feature-specific validation
+│       └── validation.ts # Handler-specific validation
 │
 ├── utils/                # Shared utility functions
-│   └── crypto.ts         # Signature verification (used by multiple handlers)
+│   ├── crypto.ts         # Signature verification (used by multiple handlers)
+│   └── getRequestContext.ts  # Common request processing
 │
-└── services/             # Business logic modules (single responsibility)
-    ├── deviceCollection.ts          # Device CRUD
-    ├── quotaService.ts              # Quota management
-    ├── rateLimitCollection.ts       # Rate limiting
-    ├── openAiApi.ts                 # OpenAI integration
-    └── analyticsCollection.ts       # Usage logging
+└── services/             # Business logic modules (organized by type)
+    ├── collections/      # Firestore collection services
+    │   ├── deviceCollection.ts      # Device CRUD
+    │   └── rateLimitCollection.ts   # Rate limit CRUD
+    ├── externals/        # External API integrations
+    │   └── openAiApi.ts             # OpenAI API client
+    ├── logService.ts                # Cloud Logging wrapper
+    └── quotaService.ts              # Quota management (business logic)
 ```
 
 **Benefits:**
-- Each file has single responsibility
-- Easy to find relevant code
-- Easy to test independently
-- Easy to maintain
+- ✅ **Single Responsibility** - Each file has one clear purpose
+- ✅ **Organized by Type** - `collections/` vs `externals/` vs business logic
+- ✅ **Easy to Navigate** - Clear where to find Firestore code vs external APIs
+- ✅ **Easy to Extend** - Add new external API? → `externals/stripeApi.ts`
+- ✅ **Easy to Test** - Each module is independently testable
+- ✅ **Easy to Maintain** - Small, focused files (30-70 lines)
+
+### Services Organization Strategy
+
+#### When to use `services/collections/`?
+✅ Firestore CRUD operations (Create, Read, Update, Delete)  
+✅ Direct database access  
+✅ Collection-specific logic
+
+```typescript
+// services/collections/deviceCollection.ts
+export async function getDevice(deviceId: string) {
+  const doc = await db.collection(Collections.DEVICES).doc(deviceId).get();
+  return doc.exists ? doc.data() : null;
+}
+```
+
+#### When to use `services/externals/`?
+✅ External API calls (OpenAI, Stripe, Twilio, etc.)  
+✅ Third-party service integrations  
+✅ HTTP requests to non-Google services
+
+```typescript
+// services/externals/openAiApi.ts
+export async function transformText(text: string, instruction: string) {
+  const response = await openai.chat.completions.create({ ... });
+  return response.choices[0].message.content || '';
+}
+```
+
+#### When to use `services/` root?
+✅ Business logic (orchestrates multiple operations)  
+✅ Cross-cutting concerns (logging, monitoring)  
+✅ Doesn't fit in `collections/` or `externals/`
+
+```typescript
+// services/quotaService.ts
+// Orchestrates: Firestore transaction + business rules
+export async function checkAndIncrementQuota(deviceId: string, tier: TierType) {
+  // Complex logic combining Firestore access + quota rules
+}
+
+// services/logService.ts
+// Wraps Cloud Logging (not Firestore, not external API)
+export function logUsage(deviceId: string, tier: TierType, ...) {
+  functions.logger.log('usage_event', { ... });
+}
+```
+
+**Future Examples:**
+- `externals/stripeApi.ts` - Stripe payment processing
+- `externals/twilioApi.ts` - SMS notifications
+- `collections/subscriptionCollection.ts` - Subscription CRUD
+- `services/billingService.ts` - Business logic for billing (uses Stripe + Firestore)
 
 ---
 
@@ -291,23 +376,34 @@ throw new https.HttpsError('resource-exhausted', 'quota_exceeded');
 
 ```typescript
 // config.ts
-export const TIER_CONFIG = {
-  free: {
-    dailyLimit: 10,
-    maxTextLength: 500,
+export const CONFIG = {
+  tiers: {
+    free: {
+      daily: 10,
+      burst: 10,
+      maxTextLength: 500,
+    },
+    pro: {
+      daily: 1000,
+      burst: 30,
+      maxTextLength: 2000,
+    },
   },
-  pro: {
-    dailyLimit: 1000,
-    maxTextLength: 2000,
+  openai: {
+    model: 'gpt-4o-mini',
+    temperature: 0.7,
+    maxTokens: 1000,
   },
 } as const;
 
+// constants.ts
 export const Collections = {
   DEVICES: 'devices',
   RATE_LIMITS: 'rateLimits',
-  USAGE_LOGS: 'usageLogs',
 } as const;
 ```
+
+**Note:** Usage logging is done via Cloud Logging (not Firestore), so no `USAGE_LOGS` collection needed.
 
 ### Use Constants
 
@@ -456,26 +552,60 @@ export const transform = functions.https.onCall(async (data) => {
 
 ## Perfect Examples in Codebase
 
-### Services
-- `services/deviceCollection.ts` - Clean CRUD operations
-- `services/quotaService.ts` - Atomic transactions
-- `services/openAiApi.ts` - External API integration
+### Handlers (Colocation Pattern)
+- `handlers/registerDevice/index.ts` - Clean handler with colocated validation
+- `handlers/transform/index.ts` - Orchestrates complex flow (context → validation → quota → transform → log)
+- `handlers/*/validation.ts` - Handler-specific validation (not shared)
 
-### Structure
+### Services by Type
+
+#### Collections (Firestore CRUD)
+- `services/collections/deviceCollection.ts` - Device CRUD operations
+- `services/collections/rateLimitCollection.ts` - Rate limit CRUD with TTL
+
+#### Externals (API Integrations)
+- `services/externals/openAiApi.ts` - OpenAI API client (clean, focused)
+
+#### Business Logic
+- `services/quotaService.ts` - Atomic transactions for quota management
+- `services/logService.ts` - Cloud Logging wrapper (structured events)
+
+### Utils (Shared, Reusable)
+- `utils/crypto.ts` - P256 signature verification
+- `utils/getRequestContext.ts` - Common request processing (device lookup, signature, rate limit)
+
+### Structure Overview
 ```
 functions/src/
-├── index.ts              # Orchestration only (~50 lines)
-├── types.ts              # Type definitions (~25 lines)
-├── config.ts             # Constants (~30 lines)
-├── validation.ts         # Input validation (~50 lines)
-├── crypto.ts             # Signature verification (~35 lines)
-└── services/             # Business logic (30-50 lines each)
-    ├── deviceCollection.ts
-    ├── quotaService.ts
-    ├── rateLimitCollection.ts
-    ├── openAiApi.ts
-    └── analyticsCollection.ts
+├── index.ts              # Orchestration only (~17 lines)
+├── config.ts             # Constants (~22 lines)
+├── constants.ts          # Collection names (~5 lines)
+│
+├── types/                # Type definitions
+│   ├── models.ts         # Domain models (~25 lines)
+│   └── server.ts         # Server types (~10 lines)
+│
+├── handlers/             # Feature folders (~25-40 lines each)
+│   ├── registerDevice/index.ts
+│   ├── registerDevice/validation.ts
+│   ├── transform/index.ts
+│   └── transform/validation.ts
+│
+├── utils/                # Shared utilities (~40-47 lines each)
+│   ├── crypto.ts
+│   └── getRequestContext.ts
+│
+└── services/             # Business logic
+    ├── collections/      # Firestore (~40-46 lines each)
+    │   ├── deviceCollection.ts
+    │   └── rateLimitCollection.ts
+    ├── externals/        # External APIs (~25 lines)
+    │   └── openAiApi.ts
+    ├── logService.ts     # Cloud Logging (~29 lines)
+    └── quotaService.ts   # Business logic (~66 lines)
 ```
+
+**All files < 70 lines! 🎉**
 
 ---
 

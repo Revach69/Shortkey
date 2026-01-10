@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
 import OpenAI from 'openai';
-import { CONFIG } from '../config';
+import { CONFIG } from '../../config';
 
 const openai = new OpenAI({
   apiKey: functions.config().openai.key,

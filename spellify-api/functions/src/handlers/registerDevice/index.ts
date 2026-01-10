@@ -1,7 +1,11 @@
 import * as functions from 'firebase-functions';
-import { RegisterDeviceRequest } from '../../types';
 import { validateRegisterDeviceRequest } from './validation';
-import { registerDevice as registerDeviceService } from '../../services/deviceCollection';
+import { registerDevice as registerDeviceService } from '../../services/collections/deviceCollection';
+
+export interface RegisterDeviceRequest {
+  deviceId: string;
+  publicKey: string;
+}
 
 /**
  * Handler for device registration
