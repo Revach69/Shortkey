@@ -32,7 +32,7 @@ export default function Features() {
           </motion.span>
           <motion.h2
             variants={fadeInUp}
-            className="text-3xl md:text-5xl font-bold mt-4 mb-6"
+            className="text-3xl md:text-5xl font-bold mt-4 mb-6 font-[family-name:var(--font-serif)]"
           >
             Everything you need
           </motion.h2>

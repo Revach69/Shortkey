@@ -25,7 +25,7 @@ export default function SpeedComparison() {
           </motion.span>
           <motion.h2
             variants={fadeInUp}
-            className="text-3xl md:text-5xl font-bold mt-4"
+            className="text-3xl md:text-5xl font-bold mt-4 font-[family-name:var(--font-mono)]"
           >
             7 steps vs 2 steps
           </motion.h2>
@@ -62,7 +62,7 @@ export default function SpeedComparison() {
                     className="flex items-center gap-3"
                   >
                     <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
-                      <span className="text-xs font-medium">{index + 1}</span>
+                      <span className="text-xs font-medium font-[family-name:var(--font-mono)]">{index + 1}</span>
                     </div>
                     <span className="opacity-80">{step}</span>
                   </motion.div>

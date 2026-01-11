@@ -27,11 +27,14 @@ export default function Hero() {
           {/* Headline */}
           <motion.h1
             variants={fadeInUp}
-            className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6"
+            className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 font-[family-name:var(--font-serif)] leading-tight"
           >
-            Stop copy-pasting
-            <br />
-            <span className="text-[var(--color-primary)]">to AI</span>
+            <span className="block font-normal text-[var(--color-muted)] mb-4">
+              Stop copy-pasting,
+            </span>
+            <span className="block text-[var(--color-primary)]">
+              to AI
+            </span>
           </motion.h1>
 
           {/* Subheadline */}
@@ -99,7 +102,7 @@ export default function Hero() {
                     transition={{ delay: 0.8, duration: 0.4 }}
                   >
                     <motion.div
-                      className="flex items-center gap-1 px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg font-mono text-sm shadow-lg"
+                      className="flex items-center gap-1 px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg font-[family-name:var(--font-mono)] text-sm shadow-lg"
                       animate={{
                         scale: [1, 1.05, 1],
                         boxShadow: [
