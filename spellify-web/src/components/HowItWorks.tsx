@@ -45,7 +45,7 @@ export default function HowItWorks() {
           </motion.span>
           <motion.h2
             variants={fadeInUp}
-            className="text-3xl md:text-5xl font-bold mt-4"
+            className="text-3xl md:text-5xl font-bold mt-4 font-[family-name:var(--font-serif)]"
           >
             Three steps. Zero friction.
           </motion.h2>
@@ -71,7 +71,7 @@ export default function HowItWorks() {
 
               <div className="relative bg-white rounded-2xl p-8 shadow-sm border border-[var(--color-border)] hover:shadow-md transition-shadow">
                 {/* Step number */}
-                <span className="absolute -top-4 left-8 px-3 py-1 bg-[var(--color-primary)] text-white text-sm font-bold rounded-full">
+                <span className="absolute -top-4 left-8 px-3 py-1 bg-[var(--color-primary)] text-white text-sm font-bold rounded-full font-[family-name:var(--font-mono)]">
                   {step.number}
                 </span>
 

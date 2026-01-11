@@ -11,7 +11,7 @@ const footerLinks = {
     { label: 'Features', href: '#features' },
     { label: 'How It Works', href: '#how-it-works' },
     { label: 'Pricing', href: '#pricing' },
-    { label: 'Download', href: '#download' },
+    { label: 'Download', href: '/download' },
   ],
   Company: [
     { label: 'About', href: '/about' },
@@ -36,7 +36,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer id="download" className="bg-[var(--color-foreground)] text-white py-16 md:py-20">
+    <footer className="bg-[var(--color-foreground)] text-white py-16 md:py-20">
       <Container>
         <motion.div
           initial="hidden"

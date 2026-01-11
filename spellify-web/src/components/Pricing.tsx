@@ -156,7 +156,7 @@ export default function Pricing() {
           </motion.span>
           <motion.h2
             variants={fadeInUp}
-            className="text-3xl md:text-5xl font-bold mt-4 mb-4"
+            className="text-3xl md:text-5xl font-bold mt-4 mb-4 font-[family-name:var(--font-serif)]"
           >
             Choose your plan
           </motion.h2>
@@ -169,7 +169,7 @@ export default function Pricing() {
         </motion.div>
 
         <motion.div
-          className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6"
+          className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 lg:gap-4 xl:gap-6"
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
@@ -183,7 +183,7 @@ export default function Pricing() {
                 variants={fadeInUp}
                 className={`relative bg-white rounded-2xl p-6 border-2 transition-all hover:shadow-lg ${
                   tier.highlighted
-                    ? 'border-[var(--color-primary)] shadow-xl scale-105'
+                    ? 'border-[var(--color-primary)] shadow-xl md:scale-105'
                     : 'border-[var(--color-border)]'
                 }`}
               >
@@ -218,7 +218,7 @@ export default function Pricing() {
                 {/* Price */}
                 <div className="mb-6">
                   <div className="flex items-baseline gap-1">
-                    <span className="text-3xl font-bold">{tier.price}</span>
+                    <span className="text-3xl font-bold font-[family-name:var(--font-mono)]">{tier.price}</span>
                     {tier.period && (
                       <span className="text-sm text-[var(--color-muted)]">
                         /{tier.period.replace('per ', '')}
@@ -226,7 +226,7 @@ export default function Pricing() {
                     )}
                   </div>
                   {tier.yearlyPrice && (
-                    <p className="text-xs text-[var(--color-muted)] mt-1">
+                    <p className="text-xs text-[var(--color-muted)] mt-1 font-[family-name:var(--font-mono)]">
                       or {tier.yearlyPrice}/year (save 31%)
                     </p>
                   )}

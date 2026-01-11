@@ -69,7 +69,7 @@ export default function Header() {
 
           {/* CTA Button */}
           <div className="hidden md:block">
-            <Button href="#download" size="sm">
+            <Button href="/download" size="sm">
               <Apple className="w-4 h-4" />
               Download for Mac
             </Button>

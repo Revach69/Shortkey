@@ -32,7 +32,7 @@ export default function Testimonials() {
           </motion.span>
           <motion.h2
             variants={fadeInUp}
-            className="text-3xl md:text-5xl font-bold mt-4"
+            className="text-3xl md:text-5xl font-bold mt-4 font-[family-name:var(--font-serif)]"
           >
             Loved by creators
           </motion.h2>

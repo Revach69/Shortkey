@@ -19,7 +19,7 @@ export default function UseCasesMarquee() {
           viewport={viewportConfig}
           variants={fadeInUp}
         >
-          <h2 className="text-2xl md:text-3xl font-bold">
+          <h2 className="text-2xl md:text-3xl font-bold font-[family-name:var(--font-serif)]">
             One shortcut for <span className="text-[var(--color-primary)]">anything</span>
           </h2>
         </motion.div>
