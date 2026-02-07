@@ -1,0 +1,25 @@
+name: Backend CI
+on:
+  push:
+    branches: [master]
+    paths: ['shortkey-api/**']
+  pull_request:
+    paths: ['shortkey-api/**']
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: shortkey-api/functions/package-lock.json
+      - name: Install dependencies
+        run: cd shortkey-api/functions && npm ci
+      - name: Lint
+        run: cd shortkey-api/functions && npm run lint
+      - name: Test
+        run: cd shortkey-api/functions && npm test
+      - name: Build
+        run: cd shortkey-api/functions && npm run build

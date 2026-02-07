@@ -1,0 +1,178 @@
+# Shortkey - Cursor AI Rules
+
+## 📚 Read These Documents Before Making ANY Changes
+
+**CRITICAL: Always read and follow these documents:**
+
+1. **`docs/BEST_PRACTICES.md`** - Code style, conventions, and patterns
+2. **`docs/ARCHITECTURE.md`** - System design and structure
+3. **`docs/FEATURES.md`** - Feature specifications
+4. **`docs/DEVELOPMENT.md`** - Development workflow
+
+---
+
+## 🎯 Core Rules (Must Follow)
+
+### Localization
+- ❌ **NEVER use hardcoded strings** in production code
+- ✅ **ALWAYS use** `Strings.swift` for user-facing text
+- ✅ **ALWAYS use** `Constants.swift` for non-translatable values
+
+### File Size
+- ✅ Keep files **< 150 lines** (preferred)
+- ✅ Max **200 lines** absolute limit
+- ✅ If larger, **break into small components** under a new folder
+
+### Component Structure
+- ✅ One component per file
+- ✅ Single Responsibility Principle
+- ✅ Group related components in subfolders
+- ✅ **Domain Models** go in `Models/` (app-wide use)
+- ✅ **DTOs** stay in service folders (internal use only)
+- ✅ **Services** are stateless (no @Published)
+- ✅ **Managers** are stateful (ObservableObject)
+
+### Code Quality
+- ✅ Follow **SOLID principles**
+- ✅ Follow **Apple HIG**
+- ✅ Add **SwiftUI previews**
+- ✅ Use **proper MARK sections**
+
+### Comments & Documentation
+- ✅ Comments explain **WHY**, never **WHAT**
+- ❌ **NEVER add trivial comments** that repeat the code
+- ✅ Only comment when explaining non-obvious logic or decisions
+- ✅ Clear naming is better than comments
+
+---
+
+## 📖 Examples in Codebase
+
+### Perfect Component Examples:
+- `Views/Sheets/ActionEditor/ActionIconPicker.swift` - Small, focused component
+- `Views/Sheets/ActionEditor/ActionNameField.swift` - Simple input field
+- `Views/Settings/Components/ConnectionStatusRow.swift` - Display component
+
+### Perfect Manager Examples:
+- `Managers/ActionsManager.swift` - CRUD with persistence (ObservableObject)
+- `Managers/SubscriptionManager/` - Folder structure for complex managers
+
+### Perfect Service Examples:
+- `Services/KeychainService.swift` - Simple stateless service
+- `Services/ShortkeyBackend/` - Folder structure for complex services
+
+### Perfect Model Examples:
+- `Models/QuotaInfo.swift` - Domain model with rich logic (in Models/)
+- `Services/ShortkeyBackend/BackendResponseModels.swift` - DTOs (in service folder)
+
+---
+
+## 🚫 Anti-Patterns (Never Do)
+
+```swift
+// ❌ BAD: Hardcoded strings
+Text("Save")
+Button("Delete")
+
+// ❌ BAD: Magic numbers
+.padding(17)
+
+// ❌ BAD: Trivial comments (repeating what code does)
+/// Can user add more actions?
+var canAddAction: Bool { ... }
+
+/// Updates an existing action
+func update(_ action: SpellAction) { ... }
+
+// ❌ BAD: Large files (> 200 lines)
+struct HugeView: View {
+    // 300+ lines
+}
+```
+
+---
+
+## ✅ Correct Patterns (Always Do)
+
+```swift
+// ✅ GOOD: Localized strings
+Text(Strings.ActionEditor.save)
+Button(Strings.Common.delete)
+
+// ✅ GOOD: Use constants
+.padding(Constants.standardPadding)
+
+// ✅ GOOD: Clear naming (no comment needed!)
+var canAddAction: Bool { ... }
+func update(_ action: SpellAction) { ... }
+
+// ✅ GOOD: Comments explain WHY, not WHAT
+// Debounce saves to avoid excessive writes
+DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: workItem)
+
+// All Pro features require subscription (policy decision)
+return isProUser
+
+// ✅ GOOD: Small, focused components
+struct HeaderView: View {
+    // 40 lines max
+}
+```
+
+---
+
+## 🔄 Workflow
+
+**Before writing ANY code:**
+1. Read `docs/BEST_PRACTICES.md`
+2. Check similar components in codebase
+3. Follow existing patterns
+4. Keep it small and focused
+
+**When asked to create a component:**
+1. Check if similar component exists
+2. Follow its structure
+3. Use Strings.swift for text
+4. Keep < 150 lines
+5. Add preview
+
+**When asked to refactor:**
+1. Break large files into small components
+2. Extract hardcoded strings to Strings.swift
+3. Move magic numbers to Constants.swift
+4. Follow patterns in docs/BEST_PRACTICES.md
+
+---
+
+## 🎓 Learn from Existing Code
+
+**Good component structure:**
+```
+Views/Sheets/ActionEditor/
+├── ActionEditorHeader.swift      (35 lines)
+├── ActionIconPicker.swift        (67 lines)
+├── ActionNameField.swift         (39 lines)
+├── ActionPromptEditor.swift      (59 lines)
+└── ActionEditorFooter.swift      (79 lines)
+```
+
+**Main file is just a coordinator:**
+```
+Views/Sheets/
+└── ActionEditorSheet.swift       (118 lines - composes components)
+```
+
+---
+
+## 📝 Remember
+
+- **Read the docs** before every change
+- **Follow existing patterns** in the codebase
+- **Keep it simple** and focused
+- **No hardcoded strings** ever
+- **Small components** always
+- **Comments explain WHY, not WHAT** - clear naming beats comments
+
+---
+
+**Documentation is the source of truth. When in doubt, check the docs!**

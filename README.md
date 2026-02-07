@@ -1,4 +1,4 @@
-# Spellify
+# Shortkey
 
 > Transform text anywhere on your Mac using AI — powered by a secure backend.
 
@@ -9,9 +9,9 @@
 
 ---
 
-## 📦 What is Spellify?
+## 📦 What is Shortkey?
 
-**Spellify** is a macOS menu bar app that lets you transform any selected text using AI, from anywhere on your Mac. Just select text, press a keyboard shortcut, choose an action, and watch your text transform instantly.
+**Shortkey** is a macOS menu bar app that lets you transform any selected text using AI, from anywhere on your Mac. Just select text, press a keyboard shortcut, choose an action, and watch your text transform instantly.
 
 ### Key Features
 
@@ -28,13 +28,13 @@
 This repository contains two projects:
 
 ```
-spellify/
-├── spellify-mac/          # macOS app (Swift + SwiftUI)
-│   ├── Spellify/          # Main app code
+shortkey/
+├── shortkey-mac/          # macOS app (Swift + SwiftUI)
+│   ├── Shortkey/          # Main app code
 │   ├── .cursorrules       # Swift/SwiftUI guidelines
 │   └── README.md          # Mac app documentation
 │
-├── spellify-api/          # Firebase backend (TypeScript)
+├── shortkey-api/          # Firebase backend (TypeScript)
 │   ├── functions/         # Cloud Functions code
 │   ├── .cursorrules       # TypeScript/Firebase guidelines
 │   └── README.md          # API documentation
@@ -55,7 +55,7 @@ spellify/
 
 1. **Download** the latest release
 2. **Install** and grant Accessibility permissions
-3. **Launch** Spellify from Applications
+3. **Launch** Shortkey from Applications
 4. **Use** the default keyboard shortcut (⌘⇧S) to transform text
 
 ### For Developers
@@ -63,22 +63,22 @@ spellify/
 #### Mac App Development
 
 ```bash
-cd spellify-mac/
-open Spellify.xcodeproj
+cd shortkey-mac/
+open Shortkey.xcodeproj
 # Build and run (⌘R)
 ```
 
-See [`spellify-mac/README.md`](spellify-mac/README.md) for details.
+See [`shortkey-mac/README.md`](shortkey-mac/README.md) for details.
 
 #### Backend Development
 
 ```bash
-cd spellify-api/
+cd shortkey-api/
 npm install
 firebase emulators:start
 ```
 
-See [`spellify-api/README.md`](spellify-api/README.md) for details.
+See [`shortkey-api/README.md`](shortkey-api/README.md) for details.
 
 ---
 
@@ -110,13 +110,13 @@ See [`spellify-api/README.md`](spellify-api/README.md) for details.
 └─────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────┐
-│              Mac App (spellify-mac/)                        │
+│              Mac App (shortkey-mac/)                        │
 │  - Signs request with device private key (P256)            │
 │  - Sends to Firebase backend                               │
 └─────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────┐
-│           Firebase Backend (spellify-api/)                  │
+│           Firebase Backend (shortkey-api/)                  │
 │  - Verifies signature (prevents spoofing)                  │
 │  - Checks rate limit (10/min)                              │
 │  - Checks quota (10/day free, 1000/day pro)                │
@@ -151,21 +151,21 @@ See [`spellify-api/README.md`](spellify-api/README.md) for details.
 | [Development](docs/DEVELOPMENT.md) | Development setup and workflow |
 | [Best Practices](docs/BEST_PRACTICES.md) | Code conventions and patterns |
 | [Monorepo Guide](docs/MONOREPO.md) | Working with the monorepo |
-| [Mac App README](spellify-mac/README.md) | Mac app specific docs |
-| [API README](spellify-api/README.md) | Backend API specific docs |
+| [Mac App README](shortkey-mac/README.md) | Mac app specific docs |
+| [API README](shortkey-api/README.md) | Backend API specific docs |
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Mac App (`spellify-mac/`)
+### Mac App (`shortkey-mac/`)
 - **Language**: Swift 5.9+
 - **UI Framework**: SwiftUI
 - **Architecture**: MVVM with Managers/Services
 - **Storage**: UserDefaults (actions), Keychain (API keys)
 - **System Integration**: Accessibility API, CGEvent, NSStatusItem
 
-### Backend (`spellify-api/`)
+### Backend (`shortkey-api/`)
 - **Language**: TypeScript
 - **Platform**: Firebase Cloud Functions (Node.js 18)
 - **Database**: Firestore

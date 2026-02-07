@@ -1,9 +1,9 @@
 # Best Practices - General Architecture
 
-> **Note**: This document covers general architectural principles used across the Spellify monorepo.  
+> **Note**: This document covers general architectural principles used across the Shortkey monorepo.  
 > For project-specific best practices, see:
-> - [Mac App Best Practices](../spellify-mac/docs/BEST_PRACTICES.md)
-> - [Backend Best Practices](../spellify-api/docs/BEST_PRACTICES.md)
+> - [Mac App Best Practices](../shortkey-mac/docs/BEST_PRACTICES.md)
+> - [Backend Best Practices](../shortkey-api/docs/BEST_PRACTICES.md)
 
 ---
 
@@ -151,7 +151,7 @@ struct QuotaInfo {
 
 **Example:**
 ```swift
-// SpellifyBackend/BackendResponseModels.swift
+// ShortkeyBackend/BackendResponseModels.swift
 struct QuotaInfoResponse: Decodable {
     let used: Int
     let limit: Int
@@ -192,7 +192,7 @@ Services/
 
 **Examples in codebase:**
 - `SubscriptionManager/` - Complex manager with multiple files
-- `SpellifyBackend/` - Complex service with multiple files
+- `ShortkeyBackend/` - Complex service with multiple files
 
 **Benefits:**
 - Each file has single responsibility
@@ -203,7 +203,7 @@ Services/
 ### Naming Conventions
 
 #### Implementation-Agnostic Names
-✅ **Good**: `SpellifyBackendService` (domain-focused)  
+✅ **Good**: `ShortkeyBackendService` (domain-focused)  
 ❌ **Bad**: `FirebaseBackendManager` (implementation detail)
 
 **Why?** If you switch from Firebase to AWS, you don't want to rename everything.
@@ -283,13 +283,13 @@ Use MARK comments for organization:
 
 For detailed best practices specific to each project:
 
-- **macOS App**: See [spellify-mac/docs/BEST_PRACTICES.md](../spellify-mac/docs/BEST_PRACTICES.md)
+- **macOS App**: See [shortkey-mac/docs/BEST_PRACTICES.md](../shortkey-mac/docs/BEST_PRACTICES.md)
   - SwiftUI patterns
   - Apple HIG compliance
   - Localization
   - Testing strategies
 
-- **Backend API**: See [spellify-api/docs/BEST_PRACTICES.md](../spellify-api/docs/BEST_PRACTICES.md)
+- **Backend API**: See [shortkey-api/docs/BEST_PRACTICES.md](../shortkey-api/docs/BEST_PRACTICES.md)
   - TypeScript conventions
   - Firebase best practices
   - API design patterns

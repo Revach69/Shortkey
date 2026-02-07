@@ -1,8 +1,8 @@
-# Spellify Architecture
+# Shortkey Architecture
 
 ## Overview
 
-Spellify is a client-server application with clean separation of concerns, making it easy to understand, test, and extend.
+Shortkey is a client-server application with clean separation of concerns, making it easy to understand, test, and extend.
 
 ---
 
@@ -10,10 +10,10 @@ Spellify is a client-server application with clean separation of concerns, makin
 
 ### Two-Tier Architecture
 
-Spellify is built as a monorepo with two independent projects:
+Shortkey is built as a monorepo with two independent projects:
 
-1. spellify-mac - Native macOS client (Swift + SwiftUI)
-2. spellify-api - Secure backend (TypeScript + Firebase)
+1. shortkey-mac - Native macOS client (Swift + SwiftUI)
+2. shortkey-api - Secure backend (TypeScript + Firebase)
 
 This architecture provides:
 - Security: Backend validates all requests, prevents abuse
@@ -27,15 +27,15 @@ This architecture provides:
 
 ### Bundle Identifier Strategy
 
-**Current:** `app.spellify.mac`
+**Current:** `app.shortkey.mac`
 
 **Naming Convention:**
-- Uses reverse domain notation with owned domain `spellify.app`
+- Uses reverse domain notation with owned domain `shortkey.app`
 - Platform-specific suffix (`.mac`) allows for future expansion
-- Future platforms: `app.spellify.ios`, `app.spellify.ipad`
-- Shared data via App Groups: `group.app.spellify`
+- Future platforms: `app.shortkey.ios`, `app.shortkey.ipad`
+- Shared data via App Groups: `group.app.shortkey`
 
-**Why not `app.spellify.Spellify`?**
+**Why not `app.shortkey.Shortkey`?**
 - Redundant product name
 - Platform suffix is clearer and more scalable
 
@@ -45,7 +45,7 @@ Views Layer -> Managers Layer -> Services Layer -> System Integration
 
 ### Directory Structure
 
-See spellify-mac/README.md for detailed directory structure.
+See shortkey-mac/README.md for detailed directory structure.
 
 Key directories:
 - Models/ - Data models
@@ -83,7 +83,7 @@ usageLogs - Analytics
 ### macOS Client
 
 AppDelegate - Main coordinator, menu bar setup
-SpellifyController - Orchestrates transformation flow
+ShortkeyController - Orchestrates transformation flow
 FirebaseBackendManager - Backend API communication
 CryptoService - P256 signing
 ActionsManager - CRUD for actions
@@ -118,7 +118,7 @@ analyticsCollection - Usage logging
 ### Transformation Flow
 
 1. User presses keyboard shortcut
-2. HotKeyManager triggers SpellifyController
+2. HotKeyManager triggers ShortkeyController
 3. AccessibilityService gets selected text
 4. ActionPickerPanel shows
 5. User selects action
@@ -189,8 +189,8 @@ Implement client in new language, use same backend, implement P256 signing
 
 ### Adding New Features
 
-- Client-only: Update spellify-mac/
-- Backend-only: Update spellify-api/
+- Client-only: Update shortkey-mac/
+- Backend-only: Update shortkey-api/
 - Both: Update both projects
 
 ---
@@ -253,5 +253,5 @@ For 1,000 users with 5 calls/day:
 - FEATURES.md - Feature specifications
 - DEVELOPMENT.md - Development setup
 - MONOREPO.md - Monorepo structure guide
-- ../spellify-mac/README.md - Mac app docs
-- ../spellify-api/README.md - Backend docs
+- ../shortkey-mac/README.md - Mac app docs
+- ../shortkey-api/README.md - Backend docs

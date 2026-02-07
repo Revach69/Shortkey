@@ -1,6 +1,6 @@
-# Spellify - Developer Getting Started Guide
+# Shortkey - Developer Getting Started Guide
 
-This guide covers everything you need to know to build, run, and deploy Spellify.
+This guide covers everything you need to know to build, run, and deploy Shortkey.
 
 ---
 
@@ -22,12 +22,12 @@ This guide covers everything you need to know to build, run, and deploy Spellify
 
 ## Project Overview
 
-Spellify is a **macOS menu bar application** that transforms selected text using AI. The project is a **monorepo** containing:
+Shortkey is a **macOS menu bar application** that transforms selected text using AI. The project is a **monorepo** containing:
 
 | Folder | Description |
 |--------|-------------|
-| `spellify-mac/` | Native macOS app (Swift + SwiftUI) |
-| `spellify-api/` | Serverless backend (TypeScript + Firebase) |
+| `shortkey-mac/` | Native macOS app (Swift + SwiftUI) |
+| `shortkey-api/` | Serverless backend (TypeScript + Firebase) |
 | `docs/` | Shared documentation |
 
 ---
@@ -53,19 +53,19 @@ Spellify is a **macOS menu bar application** that transforms selected text using
 ## Repository Structure
 
 ```
-spellify/
-├── spellify-mac/                 # macOS Application
-│   ├── Spellify/                 # Source code
-│   │   ├── SpellifyApp.swift     # App entry point
+shortkey/
+├── shortkey-mac/                 # macOS Application
+│   ├── Shortkey/                 # Source code
+│   │   ├── ShortkeyApp.swift     # App entry point
 │   │   ├── AppDelegate.swift     # Menu bar setup
 │   │   ├── Managers/             # Business logic
 │   │   ├── Services/             # System integration
 │   │   ├── Views/                # SwiftUI views
 │   │   └── Utilities/            # Helpers & constants
-│   ├── Spellify.xcodeproj        # Xcode project
-│   └── SpellifyTests/            # Unit tests
+│   ├── Shortkey.xcodeproj        # Xcode project
+│   └── ShortkeyTests/            # Unit tests
 │
-├── spellify-api/                 # Firebase Backend
+├── shortkey-api/                 # Firebase Backend
 │   ├── functions/
 │   │   ├── src/
 │   │   │   ├── index.ts          # Cloud Function exports
@@ -113,12 +113,12 @@ firebase login
 
 ### Step 1: Open the Project
 ```bash
-cd spellify-mac
-open Spellify.xcodeproj
+cd shortkey-mac
+open Shortkey.xcodeproj
 ```
 
 ### Step 2: Configure Signing (First Time Only)
-1. In Xcode, select the **Spellify** target
+1. In Xcode, select the **Shortkey** target
 2. Go to **Signing & Capabilities**
 3. Select your **Team** (Apple Developer account)
 4. Xcode will automatically manage signing
@@ -130,7 +130,7 @@ open Spellify.xcodeproj
 
 ### Step 4: Grant Accessibility Access
 1. System Settings → Privacy & Security → Accessibility
-2. Enable Spellify
+2. Enable Shortkey
 3. Restart the app if needed
 
 ### Testing Locally
@@ -142,13 +142,13 @@ The app connects to the production Firebase backend by default. For local backen
 
 ### Step 1: Install Dependencies
 ```bash
-cd spellify-api/functions
+cd shortkey-api/functions
 npm install
 ```
 
 ### Step 2: Set Up Firebase Emulators
 ```bash
-# From spellify-api/ directory
+# From shortkey-api/ directory
 firebase emulators:start --only functions,firestore
 ```
 
@@ -158,13 +158,13 @@ This starts:
 - **Emulator UI**: http://localhost:4000
 
 ### Step 3: Configure the App to Use Local Backend
-In `spellify-mac/Spellify/Utilities/Constants/NetworkConstants.swift`, temporarily change the base URL:
+In `shortkey-mac/Shortkey/Utilities/Constants/NetworkConstants.swift`, temporarily change the base URL:
 ```swift
 // Change from production:
-static let baseURL = "https://us-central1-spellify-app.cloudfunctions.net"
+static let baseURL = "https://us-central1-shortkey-app.cloudfunctions.net"
 
 // To local:
-static let baseURL = "http://localhost:5001/spellify-app/us-central1"
+static let baseURL = "http://localhost:5001/shortkey-app/us-central1"
 ```
 
 > **Important**: Don't commit this change!
@@ -174,7 +174,7 @@ static let baseURL = "http://localhost:5001/spellify-app/us-central1"
 export OPENAI_API_KEY="your-api-key-here"
 ```
 
-Or create a `.env` file in `spellify-api/functions/`.
+Or create a `.env` file in `shortkey-api/functions/`.
 
 ---
 
@@ -189,19 +189,19 @@ Or create a `.env` file in `spellify-api/functions/`.
 
 #### Option 2: Command Line
 ```bash
-cd spellify-mac
+cd shortkey-mac
 
 # Build
 xcodebuild build \
-  -scheme Spellify \
+  -scheme Shortkey \
   -configuration Release \
   -destination 'platform=macOS'
 
 # Archive
 xcodebuild archive \
-  -scheme Spellify \
+  -scheme Shortkey \
   -configuration Release \
-  -archivePath ./build/Spellify.xcarchive
+  -archivePath ./build/Shortkey.xcarchive
 ```
 
 ### Notarization (Required for Distribution)
@@ -217,14 +217,14 @@ Apple requires notarization for apps distributed outside the App Store.
 #### Step 2: Notarize via Command Line (Alternative)
 ```bash
 # Submit for notarization
-xcrun notarytool submit Spellify.zip \
+xcrun notarytool submit Shortkey.zip \
   --apple-id "your@email.com" \
   --team-id "YOUR_TEAM_ID" \
   --password "app-specific-password" \
   --wait
 
 # Staple the notarization ticket
-xcrun stapler staple Spellify.app
+xcrun stapler staple Shortkey.app
 ```
 
 ---
@@ -235,7 +235,7 @@ xcrun stapler staple Spellify.app
 
 - [ ] Apple Developer Program membership ($99/year)
 - [ ] App record created in App Store Connect
-- [ ] Bundle ID registered: `app.spellify.mac`
+- [ ] Bundle ID registered: `app.shortkey.mac`
 - [ ] App icon in all required sizes
 - [ ] Screenshots prepared (required sizes for macOS)
 - [ ] Privacy policy URL
@@ -268,7 +268,7 @@ In `Info.plist` or Xcode target settings:
 
 ### App Review Considerations
 
-Spellify requires:
+Shortkey requires:
 - **Accessibility permissions** - Explain in App Review notes why this is needed
 - **Network access** - The app connects to Firebase backend
 - **In-App Purchases** - StoreKit 2 subscription configured
@@ -288,7 +288,7 @@ the text being transformed for AI processing.
 
 ### Entitlements for App Store
 
-Current entitlements in `Spellify.entitlements`:
+Current entitlements in `Shortkey.entitlements`:
 ```xml
 <key>com.apple.security.app-sandbox</key>
 <false/>
@@ -305,7 +305,7 @@ Current entitlements in `Spellify.entitlements`:
 ### Deploy to Firebase
 
 ```bash
-cd spellify-api
+cd shortkey-api
 
 # Deploy everything (functions + Firestore rules)
 firebase deploy
@@ -321,7 +321,7 @@ firebase deploy --only firestore:rules
 
 1. **Create Firebase Project**
    ```bash
-   firebase projects:create spellify-app
+   firebase projects:create shortkey-app
    ```
 
 2. **Enable Firestore**
@@ -345,7 +345,7 @@ firebase deploy --only firestore:rules
 firebase functions:log
 
 # Test the endpoint
-curl -X POST https://us-central1-spellify-app.cloudfunctions.net/registerDevice \
+curl -X POST https://us-central1-shortkey-app.cloudfunctions.net/registerDevice \
   -H "Content-Type: application/json" \
   -d '{"data": {"deviceId": "test", "publicKey": "test"}}'
 ```
@@ -383,10 +383,10 @@ Key configuration files:
 
 ### macOS App Issues
 
-#### "Spellify needs Accessibility permissions"
+#### "Shortkey needs Accessibility permissions"
 1. System Settings → Privacy & Security → Accessibility
 2. Click the lock to make changes
-3. Add/enable Spellify
+3. Add/enable Shortkey
 4. Restart the app
 
 #### Hotkey not working
@@ -423,7 +423,7 @@ firebase emulators:start
 ### Build Issues
 
 #### "Signing requires a development team"
-- Open Xcode → Spellify target → Signing & Capabilities
+- Open Xcode → Shortkey target → Signing & Capabilities
 - Select your team
 
 #### "Cannot find CryptoKit"
@@ -436,13 +436,13 @@ firebase emulators:start
 
 ```bash
 # === macOS App ===
-cd spellify-mac
-open Spellify.xcodeproj          # Open in Xcode
-xcodebuild build -scheme Spellify # Build from CLI
-xcodebuild test -scheme Spellify  # Run tests
+cd shortkey-mac
+open Shortkey.xcodeproj          # Open in Xcode
+xcodebuild build -scheme Shortkey # Build from CLI
+xcodebuild test -scheme Shortkey  # Run tests
 
 # === Backend ===
-cd spellify-api
+cd shortkey-api
 npm install                       # Install dependencies
 firebase emulators:start          # Local development
 firebase deploy                   # Deploy to production

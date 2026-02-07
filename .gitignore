@@ -1,10 +1,10 @@
 # ============================================================================
-# Spellify Monorepo .gitignore
+# Shortkey Monorepo .gitignore
 # ============================================================================
 #
 # This is the root .gitignore for the monorepo.
 # Project-specific ignores are in:
-# - spellify-api/.gitignore (Firebase backend)
+# - shortkey-api/.gitignore (Firebase backend)
 # ============================================================================
 
 # -----------------------------------------------------------------------------
@@ -145,7 +145,7 @@ coverage/
 .nyc_output/
 
 # -----------------------------------------------------------------------------
-# End of Spellify .gitignore
+# End of Shortkey .gitignore
 # -----------------------------------------------------------------------------
 
 

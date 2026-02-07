@@ -1,0 +1,54 @@
+{
+  "identifier" : "E875C2F0",
+  "nonRenewingSubscriptions" : [ ],
+  "products" : [ ],
+  "settings" : {
+    "_applicationInternalID" : "6670314175",
+    "_developerTeamID" : "YOUR_TEAM_ID",
+    "_failTransactionsEnabled" : false,
+    "_lastAutoRenewableSubscriptionGroupID" : "21510442",
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21510442",
+      "localizations" : [ ],
+      "name" : "Shortkey Pro",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [ ],
+          "codeOffers" : [ ],
+          "displayPrice" : "4.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6670314176",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Unlock unlimited custom actions and all Pro features",
+              "displayName" : "Shortkey Pro Monthly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "app.shortkey.mac.pro.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Shortkey Pro Monthly",
+          "subscriptionGroupID" : "21510442",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

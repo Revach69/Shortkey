@@ -1,9 +1,9 @@
 # Development Guide - Monorepo
 
-> **Note**: This is the general development guide for the Spellify monorepo.  
+> **Note**: This is the general development guide for the Shortkey monorepo.  
 > For project-specific guides, see:
-> - [Mac App Development](../spellify-mac/docs/DEVELOPMENT.md)
-> - [Backend Development](../spellify-api/docs/DEVELOPMENT.md)
+> - [Mac App Development](../shortkey-mac/docs/DEVELOPMENT.md)
+> - [Backend Development](../shortkey-api/docs/DEVELOPMENT.md)
 
 ---
 
@@ -12,36 +12,36 @@
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/your-repo/spellify.git
-cd spellify
+git clone https://github.com/your-repo/shortkey.git
+cd shortkey
 ```
 
 ###Choose Your Path
 
 **Working on Mac App only?**
 ```bash
-cd spellify-mac/
-open Spellify.xcodeproj
-# See spellify-mac/docs/DEVELOPMENT.md
+cd shortkey-mac/
+open Shortkey.xcodeproj
+# See shortkey-mac/docs/DEVELOPMENT.md
 ```
 
 **Working on Backend only?**
 ```bash
-cd spellify-api/
+cd shortkey-api/
 firebase emulators:start
-# See spellify-api/docs/DEVELOPMENT.md
+# See shortkey-api/docs/DEVELOPMENT.md
 ```
 
 **Working on both?**
-- See [spellify-mac/docs/DEVELOPMENT.md](../spellify-mac/docs/DEVELOPMENT.md) for Mac setup
-- See [spellify-api/docs/DEVELOPMENT.md](../spellify-api/docs/DEVELOPMENT.md) for backend setup
+- See [shortkey-mac/docs/DEVELOPMENT.md](../shortkey-mac/docs/DEVELOPMENT.md) for Mac setup
+- See [shortkey-api/docs/DEVELOPMENT.md](../shortkey-api/docs/DEVELOPMENT.md) for backend setup
 
 ---
 
 ## Project Structure
 
 ```
-spellify/                          # Monorepo root
+shortkey/                          # Monorepo root
 ├── docs/                          # General documentation
 │   ├── README.md                  # Documentation index
 │   ├── MONOREPO.md                # Monorepo guide
@@ -49,12 +49,12 @@ spellify/                          # Monorepo root
 │   ├── BEST_PRACTICES.md          # General principles
 │   └── DEVELOPMENT.md             # This file
 │
-├── spellify-mac/                  # macOS Client
-│   ├── Spellify/                  # Source code
+├── shortkey-mac/                  # macOS Client
+│   ├── Shortkey/                  # Source code
 │   ├── docs/                      # Mac-specific docs
 │   └── README.md                  # Mac app overview
 │
-└── spellify-api/                  # Firebase Backend
+└── shortkey-api/                  # Firebase Backend
     ├── functions/                 # Cloud Functions
     ├── docs/                      # Backend-specific docs
     └── README.md                  # Backend overview
@@ -71,7 +71,7 @@ See [MONOREPO.md](MONOREPO.md) for detailed structure explanation.
 **When**: Adding UI features, fixing client bugs
 
 **Steps**:
-1. `cd spellify-mac/`
+1. `cd shortkey-mac/`
 2. Open Xcode
 3. Make changes
 4. Test with production backend
@@ -84,7 +84,7 @@ See [MONOREPO.md](MONOREPO.md) for detailed structure explanation.
 **When**: Adding AI providers, changing quota logic
 
 **Steps**:
-1. `cd spellify-api/`
+1. `cd shortkey-api/`
 2. Start emulators: `firebase emulators:start`
 3. Make changes
 4. Test with curl/Postman
@@ -100,7 +100,7 @@ See [MONOREPO.md](MONOREPO.md) for detailed structure explanation.
 **Steps**:
 1. Start backend emulators (Terminal 1):
    ```bash
-   cd spellify-api/
+   cd shortkey-api/
    firebase emulators:start
    ```
 
@@ -112,8 +112,8 @@ See [MONOREPO.md](MONOREPO.md) for detailed structure explanation.
 
 3. Open Mac app in Xcode (Terminal 2):
    ```bash
-   cd spellify-mac/
-   open Spellify.xcodeproj
+   cd shortkey-mac/
+   open Shortkey.xcodeproj
    ```
 
 4. Make changes to both projects
@@ -135,8 +135,8 @@ See [MONOREPO.md](MONOREPO.md) for detailed structure explanation.
 ```
 main                    # Production-ready code
 ├── feature/add-gemini  # New feature (both projects)
-├── fix/mac-crash       # Mac app fix (spellify-mac/ only)
-└── fix/quota-bug       # Backend fix (spellify-api/ only)
+├── fix/mac-crash       # Mac app fix (shortkey-mac/ only)
+└── fix/quota-bug       # Backend fix (shortkey-api/ only)
 ```
 
 ### Commit Messages
@@ -156,9 +156,9 @@ main                    # Production-ready code
 git checkout -b feature/add-new-action
 
 # Make changes to Mac app
-cd spellify-mac/
+cd shortkey-mac/
 # ... edit files ...
-git add Spellify/
+git add Shortkey/
 git commit -m "[mac] Add summarize action"
 
 # Make changes to docs
@@ -211,21 +211,21 @@ git push origin feature/add-new-action
 ### Mac App
 
 ```bash
-cd spellify-mac/
-xcodebuild test -scheme Spellify -destination 'platform=macOS'
+cd shortkey-mac/
+xcodebuild test -scheme Shortkey -destination 'platform=macOS'
 ```
 
-See [spellify-mac/docs/DEVELOPMENT.md](../spellify-mac/docs/DEVELOPMENT.md) for details.
+See [shortkey-mac/docs/DEVELOPMENT.md](../shortkey-mac/docs/DEVELOPMENT.md) for details.
 
 ### Backend
 
 ```bash
-cd spellify-api/
+cd shortkey-api/
 firebase emulators:start
 # Test with curl/Postman
 ```
 
-See [spellify-api/docs/DEVELOPMENT.md](../spellify-api/docs/DEVELOPMENT.md) for details.
+See [shortkey-api/docs/DEVELOPMENT.md](../shortkey-api/docs/DEVELOPMENT.md) for details.
 
 ---
 
@@ -233,8 +233,8 @@ See [spellify-api/docs/DEVELOPMENT.md](../spellify-api/docs/DEVELOPMENT.md) for 
 
 ### "Which .cursorrules should I follow?"
 
-- In `spellify-mac/`? → Follow `spellify-mac/.cursorrules`
-- In `spellify-api/`? → Follow `spellify-api/.cursorrules`
+- In `shortkey-mac/`? → Follow `shortkey-mac/.cursorrules`
+- In `shortkey-api/`? → Follow `shortkey-api/.cursorrules`
 - In root or `docs/`? → Follow `.cursorrules` (general)
 
 ### "Changes to backend don't affect Mac app"
@@ -254,5 +254,5 @@ All docs are indexed in [docs/README.md](README.md).
 - [Monorepo Guide](MONOREPO.md) - Working with the monorepo
 - [Architecture](ARCHITECTURE.md) - System design
 - [Best Practices](BEST_PRACTICES.md) - Code conventions
-- [Mac App Development](../spellify-mac/docs/DEVELOPMENT.md) - Detailed Mac setup
-- [Backend Development](../spellify-api/docs/DEVELOPMENT.md) - Detailed backend setup
+- [Mac App Development](../shortkey-mac/docs/DEVELOPMENT.md) - Detailed Mac setup
+- [Backend Development](../shortkey-api/docs/DEVELOPMENT.md) - Detailed backend setup

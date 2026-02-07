@@ -1,11 +1,11 @@
-# Spellify - Monorepo Cursor AI Rules
+# Shortkey - Monorepo Cursor AI Rules
 
 ## 📁 Project Structure
 
 This is a **monorepo** containing two projects:
 
-1. **`spellify-mac/`** - macOS app (Swift + SwiftUI)
-2. **`spellify-api/`** - Firebase backend (TypeScript + Cloud Functions)
+1. **`shortkey-mac/`** - macOS app (Swift + SwiftUI)
+2. **`shortkey-api/`** - Firebase backend (TypeScript + Cloud Functions)
 
 ---
 
@@ -31,15 +31,15 @@ This is a **monorepo** containing two projects:
 
 ## 📂 Project-Specific Rules
 
-### For `spellify-mac/` (Swift/SwiftUI)
-Read: **`spellify-mac/.cursorrules`**
+### For `shortkey-mac/` (Swift/SwiftUI)
+Read: **`shortkey-mac/.cursorrules`**
 - SwiftUI best practices
 - Localization rules (Strings.swift)
 - Component structure
 - Apple HIG guidelines
 
-### For `spellify-api/` (TypeScript/Firebase)
-Read: **`spellify-api/.cursorrules`**
+### For `shortkey-api/` (TypeScript/Firebase)
+Read: **`shortkey-api/.cursorrules`**
 - TypeScript conventions
 - Firebase best practices
 - API design patterns
@@ -50,14 +50,14 @@ Read: **`spellify-api/.cursorrules`**
 ## 🔄 Workflow
 
 **When working on Mac app:**
-1. `cd spellify-mac/`
-2. Follow `spellify-mac/.cursorrules`
+1. `cd shortkey-mac/`
+2. Follow `shortkey-mac/.cursorrules`
 3. Check `docs/BEST_PRACTICES.md`
 
 **When working on API:**
-1. `cd spellify-api/`
-2. Follow `spellify-api/.cursorrules`
-3. Check `spellify-api/README.md`
+1. `cd shortkey-api/`
+2. Follow `shortkey-api/.cursorrules`
+3. Check `shortkey-api/README.md`
 
 **When working on both:**
 1. Read `docs/MONOREPO.md` for structure
@@ -69,8 +69,8 @@ Read: **`spellify-api/.cursorrules`**
 ## 📚 Documentation
 
 - **`docs/`** - General architecture, features, best practices
-- **`spellify-mac/README.md`** - Mac app overview
-- **`spellify-api/README.md`** - Backend API overview
+- **`shortkey-mac/README.md`** - Mac app overview
+- **`shortkey-api/README.md`** - Backend API overview
 - **`README.md`** - Monorepo overview (start here!)
 
 ---

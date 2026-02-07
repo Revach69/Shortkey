@@ -1,4 +1,4 @@
-# Spellify Monorepo Guide
+# Shortkey Monorepo Guide
 
 This guide explains the monorepo structure and how to work with multiple projects in one repository.
 
@@ -6,14 +6,14 @@ This guide explains the monorepo structure and how to work with multiple project
 
 ## What is a Monorepo?
 
-A **monorepo** (monolithic repository) is a single repository that contains multiple related projects. Spellify uses this structure to keep the macOS client and Firebase backend together while maintaining clear separation.
+A **monorepo** (monolithic repository) is a single repository that contains multiple related projects. Shortkey uses this structure to keep the macOS client and Firebase backend together while maintaining clear separation.
 
 ---
 
 ## Repository Structure
 
 ```
-spellify/                           # Repository root
+shortkey/                           # Repository root
 │
 ├── .cursorrules                    # General monorepo rules
 ├── .gitignore                      # Root gitignore
@@ -28,11 +28,11 @@ spellify/                           # Repository root
 │   ├── BEST_PRACTICES.md           # Code conventions
 │   └── MONOREPO.md                 # This file
 │
-├── spellify-mac/                   # macOS Client Project
+├── shortkey-mac/                   # macOS Client Project
 │   ├── .cursorrules                # Swift/SwiftUI specific rules
 │   ├── README.md                   # Mac app documentation
-│   ├── Spellify/                   # Source code
-│   │   ├── SpellifyApp.swift
+│   ├── Shortkey/                   # Source code
+│   │   ├── ShortkeyApp.swift
 │   │   ├── AppDelegate.swift
 │   │   ├── Models/
 │   │   ├── Views/
@@ -40,10 +40,10 @@ spellify/                           # Repository root
 │   │   ├── Services/
 │   │   ├── Utilities/
 │   │   └── Resources/
-│   ├── Spellify.xcodeproj/         # Xcode project
-│   └── SpellifyUITests/
+│   ├── Shortkey.xcodeproj/         # Xcode project
+│   └── ShortkeyUITests/
 │
-└── spellify-api/                   # Firebase Backend Project
+└── shortkey-api/                   # Firebase Backend Project
     ├── .cursorrules                # TypeScript/Firebase specific rules
     ├── .gitignore                  # API-specific ignores
     ├── README.md                   # Backend documentation
@@ -91,8 +91,8 @@ spellify/                           # Repository root
 Each project has its own `.cursorrules` file with specific conventions:
 
 - **Root** (`/.cursorrules`): General monorepo rules
-- **Mac App** (`/spellify-mac/.cursorrules`): Swift/SwiftUI conventions
-- **Backend** (`/spellify-api/.cursorrules`): TypeScript/Firebase conventions
+- **Mac App** (`/shortkey-mac/.cursorrules`): Swift/SwiftUI conventions
+- **Backend** (`/shortkey-api/.cursorrules`): TypeScript/Firebase conventions
 
 **Always read the project-specific rules before making changes!**
 
@@ -101,17 +101,17 @@ Each project has its own `.cursorrules` file with specific conventions:
 #### Working on Mac App
 
 ```bash
-cd spellify-mac/
-open Spellify.xcodeproj
-# Follow spellify-mac/.cursorrules
+cd shortkey-mac/
+open Shortkey.xcodeproj
+# Follow shortkey-mac/.cursorrules
 ```
 
 #### Working on Backend
 
 ```bash
-cd spellify-api/
+cd shortkey-api/
 firebase emulators:start
-# Follow spellify-api/.cursorrules
+# Follow shortkey-api/.cursorrules
 ```
 
 #### Reading Documentation
@@ -130,9 +130,9 @@ cd docs/
 **When**: Adding UI features, fixing client bugs, improving UX
 
 **Steps**:
-1. `cd spellify-mac/`
+1. `cd shortkey-mac/`
 2. Open Xcode
-3. Make changes following `spellify-mac/.cursorrules`
+3. Make changes following `shortkey-mac/.cursorrules`
 4. Test with production backend (default)
 5. Commit changes
 
@@ -143,9 +143,9 @@ cd docs/
 **When**: Adding AI providers, changing quota logic, improving security
 
 **Steps**:
-1. `cd spellify-api/`
+1. `cd shortkey-api/`
 2. Start emulators: `firebase emulators:start`
-3. Make changes following `spellify-api/.cursorrules`
+3. Make changes following `shortkey-api/.cursorrules`
 4. Test with curl/Postman
 5. Deploy: `firebase deploy`
 6. Commit changes
@@ -159,7 +159,7 @@ cd docs/
 **Steps**:
 1. Start backend emulators:
    ```bash
-   cd spellify-api/
+   cd shortkey-api/
    firebase emulators:start
    ```
 
@@ -171,8 +171,8 @@ cd docs/
 
 3. Open Mac app in Xcode:
    ```bash
-   cd ../spellify-mac/
-   open Spellify.xcodeproj
+   cd ../shortkey-mac/
+   open Shortkey.xcodeproj
    ```
 
 4. Make changes to both projects
@@ -194,8 +194,8 @@ cd docs/
 ```bash
 main                    # Production-ready code
 ├── feature/add-gemini  # New feature (touches both projects)
-├── fix/mac-crash       # Mac app fix (spellify-mac/ only)
-└── fix/quota-bug       # Backend fix (spellify-api/ only)
+├── fix/mac-crash       # Mac app fix (shortkey-mac/ only)
+└── fix/quota-bug       # Backend fix (shortkey-api/ only)
 ```
 
 ### Commit Messages
@@ -215,9 +215,9 @@ Examples:
 git checkout -b feature/add-new-action
 
 # Make changes to Mac app
-cd spellify-mac/
+cd shortkey-mac/
 # ... edit files ...
-git add Spellify/
+git add Shortkey/
 git commit -m "[mac] Add summarize action"
 
 # Make changes to docs
@@ -238,14 +238,14 @@ git push origin feature/add-new-action
 
 | Content | Location | Reason |
 |---------|----------|--------|
-| Swift code | `spellify-mac/` | Mac app specific |
-| TypeScript code | `spellify-api/` | Backend specific |
+| Swift code | `shortkey-mac/` | Mac app specific |
+| TypeScript code | `shortkey-api/` | Backend specific |
 | Architecture docs | `docs/` | Applies to both |
-| Mac app README | `spellify-mac/README.md` | App-specific setup |
-| Backend README | `spellify-api/README.md` | Backend-specific setup |
+| Mac app README | `shortkey-mac/README.md` | App-specific setup |
+| Backend README | `shortkey-api/README.md` | Backend-specific setup |
 | General README | `README.md` | Monorepo overview |
-| Swift rules | `spellify-mac/.cursorrules` | Language-specific |
-| TypeScript rules | `spellify-api/.cursorrules` | Language-specific |
+| Swift rules | `shortkey-mac/.cursorrules` | Language-specific |
+| TypeScript rules | `shortkey-api/.cursorrules` | Language-specific |
 | General rules | `.cursorrules` | Applies to both |
 
 ---
@@ -255,8 +255,8 @@ git push origin feature/add-new-action
 ### Cloning the Repository
 
 ```bash
-git clone https://github.com/your-repo/spellify.git
-cd spellify
+git clone https://github.com/your-repo/shortkey.git
+cd shortkey
 ```
 
 You now have both projects!
@@ -265,13 +265,13 @@ You now have both projects!
 
 **Mac App**:
 ```bash
-cd spellify-mac/
-xcodebuild test -scheme Spellify -destination 'platform=macOS'
+cd shortkey-mac/
+xcodebuild test -scheme Shortkey -destination 'platform=macOS'
 ```
 
 **Backend**:
 ```bash
-cd spellify-api/
+cd shortkey-api/
 firebase emulators:start
 # Test with curl/Postman
 ```
@@ -285,7 +285,7 @@ firebase emulators:start
 
 **Backend**:
 ```bash
-cd spellify-api/
+cd shortkey-api/
 firebase deploy
 ```
 
@@ -297,7 +297,7 @@ firebase deploy
 
 **Backend** (npm):
 ```bash
-cd spellify-api/functions/
+cd shortkey-api/functions/
 npm install <package>
 ```
 
@@ -328,8 +328,8 @@ npm install <package>
 ### "Which .cursorrules should I follow?"
 
 **Check your current directory:**
-- In `spellify-mac/`? → Follow `spellify-mac/.cursorrules`
-- In `spellify-api/`? → Follow `spellify-api/.cursorrules`
+- In `shortkey-mac/`? → Follow `shortkey-mac/.cursorrules`
+- In `shortkey-api/`? → Follow `shortkey-api/.cursorrules`
 - In root or `docs/`? → Follow `.cursorrules` (general)
 
 ### "The repo is too large to clone"
@@ -354,8 +354,8 @@ Update in `FirebaseBackendManager.swift`.
 - [Main README](../README.md) - Monorepo overview
 - [Architecture](ARCHITECTURE.md) - Full system design
 - [Development Guide](DEVELOPMENT.md) - Setup and workflows
-- [Mac App README](../spellify-mac/README.md) - Client docs
-- [Backend README](../spellify-api/README.md) - API docs
+- [Mac App README](../shortkey-mac/README.md) - Client docs
+- [Backend README](../shortkey-api/README.md) - API docs
 
 ---
 
